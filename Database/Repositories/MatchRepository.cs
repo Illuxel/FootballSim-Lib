@@ -1,7 +1,7 @@
-﻿using FootBalLife.GameDB.Entities;
-using FootBalLife.GameDB.Models;
+﻿using FootBalLife.Database.Entities;
+using FootBalLife.Database.Models;
 
-namespace FootBalLife.GameDB.Repositories;
+namespace FootBalLife.Database.Repositories;
 public class MatchRepository : _BaseRepository
 {
     public List<EMatch> Retrive()
@@ -15,9 +15,9 @@ public class MatchRepository : _BaseRepository
         }
         return result;
     }
-    public EMatch Retrive(string Id)
+    public EMatch Retrive(string ID)
     {
-        Match? league = context.Matches.Find(Id);
+        Match? league = context.Matches.Find(ID);
         if (league != null)
         {
             return mapping(league);
@@ -28,14 +28,14 @@ public class MatchRepository : _BaseRepository
     public bool Modify(EMatch eData)
     {
         bool result = false;
-        Match data = context.Matches.Find(eData.Id);
+        Match data = context.Matches.Find(eData.ID);
 
         if (data == null)
         {
             data = mapping(eData, data);
             Guid myuuid = Guid.NewGuid();
             string myuuidAsString = myuuid.ToString();
-            data.Id = myuuidAsString;
+            data.ID = myuuidAsString;
             context.Matches.Add(data);
             context.SaveChanges();
             result = true;
@@ -50,9 +50,9 @@ public class MatchRepository : _BaseRepository
         return result;
 
     }
-    public bool Delete(string Id)
+    public bool Delete(string ID)
     {
-        Match? data = context.Matches.Find(Id);
+        Match? data = context.Matches.Find(ID);
         if (data != null)
         {
             context.Matches.Remove(data);
@@ -80,7 +80,7 @@ public class MatchRepository : _BaseRepository
 
         EMatch result = new EMatch();
 
-        result.Id = data.Id;
+        result.ID = data.ID;
         result.HomeTeam = data.HomeTeam;
         result.GuestTeam = data.GuestTeam;
         result.Season = data.Season;
@@ -107,8 +107,8 @@ public class MatchRepository : _BaseRepository
             result = new Match();
         }
 
-        result.Id = data.Id;
-        result.Id = data.Id;
+        result.ID = data.ID;
+        result.ID = data.ID;
         result.HomeTeam = data.HomeTeam;
         result.GuestTeam = data.GuestTeam;
         result.Season = data.Season;
@@ -116,8 +116,8 @@ public class MatchRepository : _BaseRepository
         result.HomeTeamGoals = data.HomeTeamGoals;
         result.GuestTeamGoals = data.GuestTeamGoals;
 
-        result.Team1Navigation = TeamRepository.mapping(data.HomeTeamNavigation, result.Team1Navigation);
-        result.Team2Navigation = TeamRepository.mapping(data.GuestTeamNavigation, result.Team2Navigation);
+        result.HomeTeamNavigation = TeamRepository.mapping(data.HomeTeamNavigation, result.HomeTeamNavigation);
+        result.GuestTeamNavigation = TeamRepository.mapping(data.GuestTeamNavigation, result.GuestTeamNavigation);
 
         return result;
     }

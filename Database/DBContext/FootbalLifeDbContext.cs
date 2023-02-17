@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using FootBalLife.GameDB.Models;
+using FootBalLife.Database.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace FootBalLife.GameDB.Context;
+namespace FootBalLife.Database.Context;
 
 public partial class FootbalLifeDbContext : DbContext
 {
@@ -51,23 +51,23 @@ public partial class FootbalLifeDbContext : DbContext
     {
         modelBuilder.Entity<Agent>(entity =>
         {
-            entity.HasKey(e => e.PersonId);
+            entity.HasKey(e => e.PersonID);
 
             entity.ToTable("Agent");
 
             entity.HasOne(d => d.Person).WithOne(p => p.Agent)
-                .HasForeignKey<Agent>(d => d.PersonId)
+                .HasForeignKey<Agent>(d => d.PersonID)
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<Coach>(entity =>
         {
-            entity.HasKey(e => e.PersonId);
+            entity.HasKey(e => e.PersonID);
 
             entity.ToTable("Coach");
 
             entity.HasOne(d => d.Person).WithOne(p => p.Coach)
-                .HasForeignKey<Coach>(d => d.PersonId)
+                .HasForeignKey<Coach>(d => d.PersonID)
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
@@ -75,16 +75,16 @@ public partial class FootbalLifeDbContext : DbContext
         {
             entity.ToTable("Contract");
 
-            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.ID).HasColumnName("ID");
             entity.Property(e => e.SeasonFrom).HasColumnType("TEXT");
             entity.Property(e => e.SeasonTo).HasColumnType("TEXT");
 
             entity.HasOne(d => d.Person).WithMany(p => p.Contracts)
-                .HasForeignKey(d => d.PersonId)
+                .HasForeignKey(d => d.PersonID)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
             entity.HasOne(d => d.Team).WithMany(p => p.Contracts)
-                .HasForeignKey(d => d.TeamId)
+                .HasForeignKey(d => d.TeamID)
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
@@ -92,17 +92,17 @@ public partial class FootbalLifeDbContext : DbContext
         {
             entity.ToTable("Country");
 
-            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.ID).HasColumnName("ID");
         });
 
         modelBuilder.Entity<Director>(entity =>
         {
-            entity.HasKey(e => e.PersonId);
+            entity.HasKey(e => e.PersonID);
 
             entity.ToTable("Director");
 
             entity.HasOne(d => d.Person).WithOne(p => p.Director)
-                .HasForeignKey<Director>(d => d.PersonId)
+                .HasForeignKey<Director>(d => d.PersonID)
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
@@ -110,35 +110,35 @@ public partial class FootbalLifeDbContext : DbContext
         {
             entity.ToTable("League");
 
-            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.ID).HasColumnName("ID");
             entity.Property(e => e.CurrentRating).HasDefaultValueSql("0");
 
-            entity.HasOne(d => d.Country).WithMany(p => p.Leagues).HasForeignKey(d => d.CountryId);
+            entity.HasOne(d => d.Country).WithMany(p => p.Leagues).HasForeignKey(d => d.CountryID);
         });
 
         modelBuilder.Entity<Match>(entity =>
         {
-            entity.HasKey(e => new { e.Id, e.HomeTeam, e.GuestTeam, e.Season });
+            entity.HasKey(e => new { e.ID, e.HomeTeam, e.GuestTeam, e.Season });
 
-            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.ID).HasColumnName("ID");
 
-            entity.HasOne(d => d.Team1Navigation).WithMany(p => p.MatchTeam1Navigations)
+            entity.HasOne(d => d.HomeTeamNavigation).WithMany(p => p.MatchHomeTeamNavigations)
                 .HasForeignKey(d => d.HomeTeam)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
-            entity.HasOne(d => d.Team2Navigation).WithMany(p => p.MatchTeam2Navigations)
+            entity.HasOne(d => d.GuestTeamNavigation).WithMany(p => p.MatchGuestTeamNavigations)
                 .HasForeignKey(d => d.GuestTeam)
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
         modelBuilder.Entity<NationalResultTable>(entity =>
         {
-            entity.HasKey(e => new { e.Season, e.TeamId });
+            entity.HasKey(e => new { e.Season, e.TeamID });
 
             entity.ToTable("NationalResultTable");
 
             entity.HasOne(d => d.Team).WithMany(p => p.NationalResultTables)
-                .HasForeignKey(d => d.TeamId)
+                .HasForeignKey(d => d.TeamID)
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
@@ -146,53 +146,53 @@ public partial class FootbalLifeDbContext : DbContext
         {
             entity.ToTable("Person");
 
-            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.ID).HasColumnName("ID");
 
             entity.HasOne(d => d.Country).WithMany(p => p.People)
-                .HasForeignKey(d => d.CountryId)
+                .HasForeignKey(d => d.CountryID)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
-            entity.HasOne(d => d.CurrentRole).WithMany(p => p.People).HasForeignKey(d => d.CurrentRoleId);
+            entity.HasOne(d => d.CurrentRole).WithMany(p => p.People).HasForeignKey(d => d.CurrentRoleID);
         });
 
         modelBuilder.Entity<Player>(entity =>
         {
-            entity.HasKey(e => e.PersonId);
+            entity.HasKey(e => e.PersonID);
 
             entity.ToTable("Player");
 
-            entity.HasOne(d => d.Contract).WithMany(p => p.Players).HasForeignKey(d => d.ContractId);
+            entity.HasOne(d => d.Contract).WithMany(p => p.Players).HasForeignKey(d => d.ContractID);
 
             entity.HasOne(d => d.Person).WithOne(p => p.Player)
-                .HasForeignKey<Player>(d => d.PersonId)
+                .HasForeignKey<Player>(d => d.PersonID)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
-            entity.HasOne(d => d.PositionNavigation).WithMany(p => p.Players).HasForeignKey(d => d.PositionId);
+            entity.HasOne(d => d.PositionNavigation).WithMany(p => p.Players).HasForeignKey(d => d.PositionID);
         });
 
         modelBuilder.Entity<Position>(entity =>
         {
             entity.ToTable("Position");
 
-            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.ID).HasColumnName("ID");
         });
 
         modelBuilder.Entity<Role>(entity =>
         {
             entity.ToTable("Role");
 
-            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.ID).HasColumnName("ID");
             entity.Property(e => e.IsNpc).HasColumnName("isNPC");
         });
 
         modelBuilder.Entity<Scout>(entity =>
         {
-            entity.HasKey(e => e.PersonId);
+            entity.HasKey(e => e.PersonID);
 
             entity.ToTable("Scout");
 
             entity.HasOne(d => d.Person).WithOne(p => p.Scout)
-                .HasForeignKey<Scout>(d => d.PersonId)
+                .HasForeignKey<Scout>(d => d.PersonID)
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
@@ -200,11 +200,11 @@ public partial class FootbalLifeDbContext : DbContext
         {
             entity.ToTable("Team");
 
-            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.ID).HasColumnName("ID");
             entity.Property(e => e.IsNationalTeam).HasDefaultValueSql("0");
             entity.Property(e => e.Strategy).HasDefaultValueSql("0");
 
-            entity.HasOne(d => d.League).WithMany(p => p.Teams).HasForeignKey(d => d.LeagueId);
+            entity.HasOne(d => d.League).WithMany(p => p.Teams).HasForeignKey(d => d.LeagueID);
         });
 
         OnModelCreatingPartial(modelBuilder);

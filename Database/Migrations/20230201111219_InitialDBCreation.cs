@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace GameDB.Migrations
+namespace Database.Migrations
 {
     /// <inheritdoc />
     public partial class InitialDBCreation : Migration
@@ -61,14 +61,14 @@ namespace GameDB.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     CurrentRating = table.Column<long>(type: "INTEGER", nullable: true, defaultValueSql: "0"),
-                    CountryId = table.Column<long>(type: "INTEGER", nullable: true)
+                    CountryID = table.Column<long>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_League", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_League_Country_CountryId",
-                        column: x => x.CountryId,
+                        name: "FK_League_Country_CountryID",
+                        column: x => x.CountryID,
                         principalTable: "Country",
                         principalColumn: "ID");
                 });
@@ -81,21 +81,21 @@ namespace GameDB.Migrations
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Surname = table.Column<string>(type: "TEXT", nullable: false),
                     Birthday = table.Column<byte[]>(type: "DATE", nullable: false),
-                    CurrentRoleId = table.Column<long>(type: "INTEGER", nullable: true),
-                    CountryId = table.Column<long>(type: "INTEGER", nullable: false),
+                    CurrentRoleID = table.Column<long>(type: "INTEGER", nullable: true),
+                    CountryID = table.Column<long>(type: "INTEGER", nullable: false),
                     Icon = table.Column<byte[]>(type: "BLOB", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Person", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Person_Country_CountryId",
-                        column: x => x.CountryId,
+                        name: "FK_Person_Country_CountryID",
+                        column: x => x.CountryID,
                         principalTable: "Country",
                         principalColumn: "ID");
                     table.ForeignKey(
-                        name: "FK_Person_Role_CurrentRoleId",
-                        column: x => x.CurrentRoleId,
+                        name: "FK_Person_Role_CurrentRoleID",
+                        column: x => x.CurrentRoleID,
                         principalTable: "Role",
                         principalColumn: "ID");
                 });
@@ -106,10 +106,10 @@ namespace GameDB.Migrations
                 {
                     ID = table.Column<string>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
-                    LeagueId = table.Column<long>(type: "INTEGER", nullable: true),
-                    SportsDirectorId = table.Column<long>(type: "INTEGER", nullable: true),
-                    CoachId = table.Column<long>(type: "INTEGER", nullable: true),
-                    AgentId = table.Column<long>(type: "INTEGER", nullable: true),
+                    LeagueID = table.Column<long>(type: "INTEGER", nullable: true),
+                    SportsDirectorID = table.Column<long>(type: "INTEGER", nullable: true),
+                    CoachID = table.Column<long>(type: "INTEGER", nullable: true),
+                    AgentID = table.Column<long>(type: "INTEGER", nullable: true),
                     IsNationalTeam = table.Column<long>(type: "INTEGER", nullable: true, defaultValueSql: "0"),
                     Strategy = table.Column<long>(type: "INTEGER", nullable: true, defaultValueSql: "0"),
                     BaseColor = table.Column<string>(type: "TEXT", nullable: false)
@@ -118,8 +118,8 @@ namespace GameDB.Migrations
                 {
                     table.PrimaryKey("PK_Team", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Team_League_LeagueId",
-                        column: x => x.LeagueId,
+                        name: "FK_Team_League_LeagueID",
+                        column: x => x.LeagueID,
                         principalTable: "League",
                         principalColumn: "ID");
                 });
@@ -128,14 +128,14 @@ namespace GameDB.Migrations
                 name: "Agent",
                 columns: table => new
                 {
-                    PesonId = table.Column<string>(type: "TEXT", nullable: false)
+                    PesonID = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Agent", x => x.PesonId);
+                    table.PrimaryKey("PK_Agent", x => x.PesonID);
                     table.ForeignKey(
-                        name: "FK_Agent_Person_PesonId",
-                        column: x => x.PesonId,
+                        name: "FK_Agent_Person_PesonID",
+                        column: x => x.PesonID,
                         principalTable: "Person",
                         principalColumn: "ID");
                 });
@@ -144,14 +144,14 @@ namespace GameDB.Migrations
                 name: "Coach",
                 columns: table => new
                 {
-                    PesonId = table.Column<string>(type: "TEXT", nullable: false)
+                    PesonID = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Coach", x => x.PesonId);
+                    table.PrimaryKey("PK_Coach", x => x.PesonID);
                     table.ForeignKey(
-                        name: "FK_Coach_Person_PesonId",
-                        column: x => x.PesonId,
+                        name: "FK_Coach_Person_PesonID",
+                        column: x => x.PesonID,
                         principalTable: "Person",
                         principalColumn: "ID");
                 });
@@ -160,14 +160,14 @@ namespace GameDB.Migrations
                 name: "Director",
                 columns: table => new
                 {
-                    PesonId = table.Column<string>(type: "TEXT", nullable: false)
+                    PesonID = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Director", x => x.PesonId);
+                    table.PrimaryKey("PK_Director", x => x.PesonID);
                     table.ForeignKey(
-                        name: "FK_Director_Person_PesonId",
-                        column: x => x.PesonId,
+                        name: "FK_Director_Person_PesonID",
+                        column: x => x.PesonID,
                         principalTable: "Person",
                         principalColumn: "ID");
                 });
@@ -176,14 +176,14 @@ namespace GameDB.Migrations
                 name: "Scout",
                 columns: table => new
                 {
-                    PesonId = table.Column<string>(type: "TEXT", nullable: false)
+                    PesonID = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Scout", x => x.PesonId);
+                    table.PrimaryKey("PK_Scout", x => x.PesonID);
                     table.ForeignKey(
-                        name: "FK_Scout_Person_PesonId",
-                        column: x => x.PesonId,
+                        name: "FK_Scout_Person_PesonID",
+                        column: x => x.PesonID,
                         principalTable: "Person",
                         principalColumn: "ID");
                 });
@@ -195,21 +195,21 @@ namespace GameDB.Migrations
                     ID = table.Column<string>(type: "TEXT", nullable: false),
                     SeasonFrom = table.Column<byte[]>(type: "DATE", nullable: false),
                     SeasonTo = table.Column<byte[]>(type: "DATE", nullable: false),
-                    TeamId = table.Column<string>(type: "TEXT", nullable: false),
-                    PersonId = table.Column<string>(type: "TEXT", nullable: false),
+                    TeamID = table.Column<string>(type: "TEXT", nullable: false),
+                    PersonID = table.Column<string>(type: "TEXT", nullable: false),
                     Price = table.Column<long>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Contract", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Contract_Person_PersonId",
-                        column: x => x.PersonId,
+                        name: "FK_Contract_Person_PersonID",
+                        column: x => x.PersonID,
                         principalTable: "Person",
                         principalColumn: "ID");
                     table.ForeignKey(
-                        name: "FK_Contract_Team_TeamId",
-                        column: x => x.TeamId,
+                        name: "FK_Contract_Team_TeamID",
+                        column: x => x.TeamID,
                         principalTable: "Team",
                         principalColumn: "ID");
                 });
@@ -219,24 +219,24 @@ namespace GameDB.Migrations
                 columns: table => new
                 {
                     ID = table.Column<string>(type: "TEXT", nullable: false),
-                    Team1 = table.Column<string>(type: "TEXT", nullable: false),
-                    Team2 = table.Column<string>(type: "TEXT", nullable: false),
+                    HomeTeam = table.Column<string>(type: "TEXT", nullable: false),
+                    GuestTeam = table.Column<string>(type: "TEXT", nullable: false),
                     Season = table.Column<string>(type: "TEXT", nullable: false),
                     WeekNumber = table.Column<long>(type: "INTEGER", nullable: false),
-                    Team1Goals = table.Column<long>(type: "INTEGER", nullable: false),
-                    Team2Goals = table.Column<long>(type: "INTEGER", nullable: false)
+                    HomeTeamGoals = table.Column<long>(type: "INTEGER", nullable: false),
+                    GuestTeamGoals = table.Column<long>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Matches", x => new { x.ID, x.Team1, x.Team2, x.Season });
+                    table.PrimaryKey("PK_Matches", x => new { x.ID, x.HomeTeam, x.GuestTeam, x.Season });
                     table.ForeignKey(
-                        name: "FK_Matches_Team_Team1",
-                        column: x => x.Team1,
+                        name: "FK_Matches_Team_HomeTeam",
+                        column: x => x.HomeTeam,
                         principalTable: "Team",
                         principalColumn: "ID");
                     table.ForeignKey(
-                        name: "FK_Matches_Team_Team2",
-                        column: x => x.Team2,
+                        name: "FK_Matches_Team_GuestTeam",
+                        column: x => x.GuestTeam,
                         principalTable: "Team",
                         principalColumn: "ID");
                 });
@@ -246,7 +246,7 @@ namespace GameDB.Migrations
                 columns: table => new
                 {
                     Season = table.Column<string>(type: "TEXT", nullable: false),
-                    TeamId = table.Column<string>(type: "TEXT", nullable: false),
+                    TeamID = table.Column<string>(type: "TEXT", nullable: false),
                     Wins = table.Column<long>(type: "INTEGER", nullable: false),
                     Draws = table.Column<long>(type: "INTEGER", nullable: false),
                     Loses = table.Column<long>(type: "INTEGER", nullable: false),
@@ -256,10 +256,10 @@ namespace GameDB.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_NationalResultTable", x => new { x.Season, x.TeamId });
+                    table.PrimaryKey("PK_NationalResultTable", x => new { x.Season, x.TeamID });
                     table.ForeignKey(
-                        name: "FK_NationalResultTable_Team_TeamId",
-                        column: x => x.TeamId,
+                        name: "FK_NationalResultTable_Team_TeamID",
+                        column: x => x.TeamID,
                         principalTable: "Team",
                         principalColumn: "ID");
                 });
@@ -268,13 +268,13 @@ namespace GameDB.Migrations
                 name: "Player",
                 columns: table => new
                 {
-                    PersonId = table.Column<string>(type: "TEXT", nullable: false),
-                    PositionId = table.Column<long>(type: "INTEGER", nullable: true),
-                    ContractId = table.Column<string>(type: "TEXT", nullable: true),
+                    PersonID = table.Column<string>(type: "TEXT", nullable: false),
+                    PositionID = table.Column<long>(type: "INTEGER", nullable: true),
+                    ContractID = table.Column<string>(type: "TEXT", nullable: true),
                     Speed = table.Column<long>(type: "INTEGER", nullable: false),
                     KickCount = table.Column<long>(type: "INTEGER", nullable: false),
                     Endurance = table.Column<long>(type: "INTEGER", nullable: false),
-                    Reflex = table.Column<long>(type: "INTEGER", nullable: true),
+                    Strike = table.Column<long>(type: "INTEGER", nullable: true),
                     Physics = table.Column<long>(type: "INTEGER", nullable: false),
                     Position = table.Column<long>(type: "INTEGER", nullable: true),
                     Technique = table.Column<long>(type: "INTEGER", nullable: false),
@@ -282,78 +282,78 @@ namespace GameDB.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Player", x => x.PersonId);
+                    table.PrimaryKey("PK_Player", x => x.PersonID);
                     table.ForeignKey(
-                        name: "FK_Player_Contract_ContractId",
-                        column: x => x.ContractId,
+                        name: "FK_Player_Contract_ContractID",
+                        column: x => x.ContractID,
                         principalTable: "Contract",
                         principalColumn: "ID");
                     table.ForeignKey(
-                        name: "FK_Player_Person_PersonId",
-                        column: x => x.PersonId,
+                        name: "FK_Player_Person_PersonID",
+                        column: x => x.PersonID,
                         principalTable: "Person",
                         principalColumn: "ID");
                     table.ForeignKey(
-                        name: "FK_Player_Position_PositionId",
-                        column: x => x.PositionId,
+                        name: "FK_Player_Position_PositionID",
+                        column: x => x.PositionID,
                         principalTable: "Position",
                         principalColumn: "ID");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Contract_PersonId",
+                name: "IX_Contract_PersonID",
                 table: "Contract",
-                column: "PersonId");
+                column: "PersonID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Contract_TeamId",
+                name: "IX_Contract_TeamID",
                 table: "Contract",
-                column: "TeamId");
+                column: "TeamID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_League_CountryId",
+                name: "IX_League_CountryID",
                 table: "League",
-                column: "CountryId");
+                column: "CountryID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Matches_Team1",
+                name: "IX_Matches_HomeTeam",
                 table: "Matches",
-                column: "Team1");
+                column: "HomeTeam");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Matches_Team2",
+                name: "IX_Matches_GuestTeam",
                 table: "Matches",
-                column: "Team2");
+                column: "GuestTeam");
 
             migrationBuilder.CreateIndex(
-                name: "IX_NationalResultTable_TeamId",
+                name: "IX_NationalResultTable_TeamID",
                 table: "NationalResultTable",
-                column: "TeamId");
+                column: "TeamID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Person_CountryId",
+                name: "IX_Person_CountryID",
                 table: "Person",
-                column: "CountryId");
+                column: "CountryID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Person_CurrentRoleId",
+                name: "IX_Person_CurrentRoleID",
                 table: "Person",
-                column: "CurrentRoleId");
+                column: "CurrentRoleID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Player_ContractId",
+                name: "IX_Player_ContractID",
                 table: "Player",
-                column: "ContractId");
+                column: "ContractID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Player_PositionId",
+                name: "IX_Player_PositionID",
                 table: "Player",
-                column: "PositionId");
+                column: "PositionID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Team_LeagueId",
+                name: "IX_Team_LeagueID",
                 table: "Team",
-                column: "LeagueId");
+                column: "LeagueID");
         }
 
         /// <inheritdoc />

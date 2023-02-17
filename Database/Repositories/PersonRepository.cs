@@ -1,7 +1,7 @@
-﻿using FootBalLife.GameDB.Entities;
-using FootBalLife.GameDB.Models;
+﻿using FootBalLife.Database.Entities;
+using FootBalLife.Database.Models;
 
-namespace FootBalLife.GameDB.Repositories;
+namespace FootBalLife.Database.Repositories;
 public class PersonRepository : _BaseRepository
 {
     public List<EPerson> Retrive()
@@ -14,9 +14,9 @@ public class PersonRepository : _BaseRepository
         }
         return result;
     }
-    public EPerson Retrive(string Id)
+    public EPerson Retrive(string ID)
     {
-        Person? data = context.People.Find(Id);
+        Person? data = context.People.Find(ID);
         if (data != null)
         {
             return mapping(data,false);
@@ -27,12 +27,12 @@ public class PersonRepository : _BaseRepository
     public bool Modify(EPerson eData)
     {
         bool result = false;
-        Person data = context.People.Find(eData.Id);
+        Person data = context.People.Find(eData.ID);
 
         if (data == null)
         {
             data = mapping(eData, data);
-            data.Id = Guid.NewGuid().ToString();
+            data.ID = Guid.NewGuid().ToString();
             context.People.Add(data);
             context.SaveChanges();
             result = true;
@@ -46,11 +46,10 @@ public class PersonRepository : _BaseRepository
         }
         
         return result;
-
     }
-    public bool Delete(string Id)
+    public bool Delete(string ID)
     {
-        Person? data = context.People.Find(Id);
+        Person? data = context.People.Find(ID);
         if (data != null)
         {
             context.People.Remove(data);
@@ -75,25 +74,26 @@ public class PersonRepository : _BaseRepository
         {
             return null;
         }
+
         EPerson result = new EPerson();
 
-        result.Id = data.Id;
+        result.ID = data.ID;
         result.Name = data.Name;
         result.Surname = data.Surname;
         result.Birthday = data.Birthday;
-        result.CurrentRoleId = data.CurrentRoleId;
-        result.CountryId = data.CountryId;
+        result.CurrentRoleID = data.CurrentRoleID;
+        result.CountryID = data.CountryID;
         result.Icon = data.Icon;
 
         if (!noLoop)
         {
-            result.Agent = AgentRepository.mapping(data.Id);
-            result.Coach = CoachRepository.mapping(data.Id);
-            result.Country = CountryRepository.mapping(data.CountryId);
-            result.CurrentRole = RoleRepository.mapping(data.CurrentRoleId.Value);
-            result.Director = DirectorRepository.mapping(data.Id);
-            result.Scout = ScoutRepository.mapping(data.Id);
-            result.Player = PlayerRepository.mapping(data.Id);
+            result.Agent = AgentRepository.mapping(data.ID);
+            result.Coach = CoachRepository.mapping(data.ID);
+            result.Country = CountryRepository.mapping(data.CountryID);
+            result.CurrentRole = RoleRepository.mapping(data.CurrentRoleID.Value);
+            result.Director = DirectorRepository.mapping(data.ID);
+            result.Scout = ScoutRepository.mapping(data.ID);
+            result.Player = PlayerRepository.mapping(data.ID);
             foreach (Contract one in data.Contracts)
             {
                 result.Contracts.Add(ContractRepository.mapping(one));
@@ -112,14 +112,14 @@ public class PersonRepository : _BaseRepository
         {
             result = new Person();
         }
-        result.Id = data.Id;
+
+        result.ID = data.ID;
         result.Name = data.Name;
         result.Surname = data.Surname;
         result.Birthday = data.Birthday;
-        result.CurrentRoleId = data.CurrentRoleId;
-        result.CountryId = data.CountryId;
+        result.CurrentRoleID = data.CurrentRoleID;
+        result.CountryID = data.CountryID;
         result.Icon = data.Icon;
-
 
         result.Agent = AgentRepository.mapping(data.Agent, result.Agent);
         result.Coach = CoachRepository.mapping(data.Coach, result.Coach);

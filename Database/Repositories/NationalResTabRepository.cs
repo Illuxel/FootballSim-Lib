@@ -1,7 +1,7 @@
-﻿using FootBalLife.GameDB.Entities;
-using FootBalLife.GameDB.Models;
+﻿using FootBalLife.Database.Entities;
+using FootBalLife.Database.Models;
 
-namespace FootBalLife.GameDB.Repositories;
+namespace FootBalLife.Database.Repositories;
 public class NRTRepository : _BaseRepository
 {
     public List<ENationalResultTable> Retrive()
@@ -14,9 +14,9 @@ public class NRTRepository : _BaseRepository
         }
         return result;
     }
-    public ENationalResultTable Retrive(string TeamId, string seasonId)
+    public ENationalResultTable Retrive(string TeamID, string seasonID)
     {
-        NationalResultTable? league = context.NationalResultTables.Where(b => b.TeamId == TeamId && b.Season == seasonId).FirstOrDefault();
+        NationalResultTable? league = context.NationalResultTables.Where(b => b.TeamID == TeamID && b.Season == seasonID).FirstOrDefault();
         if (league != null)
         {
             return mapping(league);
@@ -27,7 +27,7 @@ public class NRTRepository : _BaseRepository
     public bool Modify(ENationalResultTable eData)
     {
         bool result = false;
-        NationalResultTable? data = context.NationalResultTables.Where(b => b.TeamId == eData.TeamId && b.Season == eData.Season).FirstOrDefault();
+        NationalResultTable? data = context.NationalResultTables.Where(b => b.TeamID == eData.TeamID && b.Season == eData.Season).FirstOrDefault();
 
         if (data == null)
         {
@@ -46,9 +46,9 @@ public class NRTRepository : _BaseRepository
         return result;
 
     }
-    public bool Delete(string TeamId, string seasonId)
+    public bool Delete(string TeamID, string seasonID)
     {
-        NationalResultTable? data = context.NationalResultTables.Where(b => b.TeamId == TeamId && b.Season == seasonId).FirstOrDefault();
+        NationalResultTable? data = context.NationalResultTables.Where(b => b.TeamID == TeamID && b.Season == seasonID).FirstOrDefault();
         if (data != null)
         {
             context.NationalResultTables.Remove(data);
@@ -73,9 +73,11 @@ public class NRTRepository : _BaseRepository
         {
             return null;
         }
+
         ENationalResultTable result = new ENationalResultTable();
+
         result.Season = data.Season;
-        result.TeamId = data.TeamId;
+        result.TeamID = data.TeamID;
         result.Wins= data.Wins;
         result.Draws= data.Draws;
         result.Loses= data.Loses;
@@ -85,7 +87,7 @@ public class NRTRepository : _BaseRepository
         
         if (!noLoop)
         {
-            result.Team = TeamRepository.mapping(data.TeamId);
+            result.Team = TeamRepository.mapping(data.TeamID);
         }
 
         return result;
@@ -100,8 +102,9 @@ public class NRTRepository : _BaseRepository
         {
             result = new NationalResultTable();
         }
+
         result.Season = data.Season;
-        result.TeamId = data.TeamId;
+        result.TeamID = data.TeamID;
         result.Wins = data.Wins;
         result.Draws = data.Draws;
         result.Loses = data.Loses;
@@ -110,6 +113,7 @@ public class NRTRepository : _BaseRepository
         result.TotalPosition = data.TotalPosition;
 
         result.Team = TeamRepository.mapping(data.Team, result.Team);
+
         return result;
     }
 }

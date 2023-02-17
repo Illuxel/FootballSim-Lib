@@ -1,12 +1,12 @@
-﻿namespace FootBalLife.GameDB.Entities;
-
-public class EPosition
+﻿namespace FootBalLife.Database.Entities
 {
-    public long Id { get; internal set; }
+    internal class EPosition
+    {
+        public long ID { get; internal set; }
+        public long Location { get; set; }
 
-    public long Location { get; set; }
+        public string Name { get; set; } = null!;
 
-    public string Name { get; set; } = null!;
-
-    public virtual List<EPlayer> Players { get; internal set; } = new List<EPlayer>();
+        public virtual List<EPlayer> Players { get; internal set; } = new List<EPlayer>();
+    }
 }

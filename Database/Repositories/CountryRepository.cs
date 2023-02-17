@@ -1,7 +1,7 @@
-﻿using FootBalLife.GameDB.Entities;
-using FootBalLife.GameDB.Models;
+﻿using FootBalLife.Database.Entities;
+using FootBalLife.Database.Models;
 
-namespace FootBalLife.GameDB.Repositories;
+namespace FootBalLife.Database.Repositories;
 public class CountryRepository : _BaseRepository
 {
     public List<ECountry> Retrive()
@@ -15,9 +15,9 @@ public class CountryRepository : _BaseRepository
         }
         return result;
     }
-    public ECountry Retrive(long Id)
+    public ECountry Retrive(long ID)
     {
-        Country? data = context.Countries.Find(Id);
+        Country? data = context.Countries.Find(ID);
         if (data != null)
         {
             return mapping(data);
@@ -28,7 +28,7 @@ public class CountryRepository : _BaseRepository
     public bool Modify(ECountry eData)
     {
         bool result = false;
-        Country data = context.Countries.Find(eData.Id);
+        Country data = context.Countries.Find(eData.ID);
 
         if (data == null)
         {
@@ -47,9 +47,9 @@ public class CountryRepository : _BaseRepository
         return result;
 
     }
-    public bool Delete(long Id)
+    public bool Delete(long ID)
     {
-        Country? data = context.Countries.Find(Id);
+        Country? data = context.Countries.Find(ID);
         if (data != null)
         {
             context.Countries.Remove(data);
@@ -59,13 +59,13 @@ public class CountryRepository : _BaseRepository
         return false;
     }
 
-    internal static ECountry mapping(long Id)
+    internal static ECountry mapping(long ID)
     {
-        if (Id == 0)
+        if (ID == 0)
         {
             return null;
         }
-        Country data = context.Countries.Find(Id);
+        Country data = context.Countries.Find(ID);
         return mapping(data, true);
     }
 
@@ -76,16 +76,16 @@ public class CountryRepository : _BaseRepository
             return null;
         }
         ECountry result = new ECountry();
-        result.Id = data.Id;
+        result.ID = data.ID;
         result.Name = data.Name;
         result.Icon = data.Icon;
         if (!noLoop)
         {
-            foreach (League one in context.Leagues.Where(x => x.CountryId == data.Id))
+            foreach (League one in context.Leagues.Where(x => x.CountryID == data.ID))
             {
                 result.Leagues.Add(LeagueRepository.mapping(one));
             }
-            foreach (Person one in context.People.Where(x => x.CountryId == data.Id))
+            foreach (Person one in context.People.Where(x => x.CountryID == data.ID))
             {
                 result.People.Add(PersonRepository.mapping(one));
             }
@@ -103,7 +103,7 @@ public class CountryRepository : _BaseRepository
         {
             result = new Country();
         }
-        result.Id = data.Id;
+        result.ID = data.ID;
         result.Name = data.Name;
         result.Icon = data.Icon;
         return result;

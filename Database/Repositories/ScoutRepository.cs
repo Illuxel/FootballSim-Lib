@@ -1,7 +1,7 @@
-﻿using FootBalLife.GameDB.Entities;
-using FootBalLife.GameDB.Models;
+﻿using FootBalLife.Database.Entities;
+using FootBalLife.Database.Models;
 
-namespace FootBalLife.GameDB.Repositories;
+namespace FootBalLife.Database.Repositories;
 public class ScoutRepository : _BaseRepository
 {
     public List<EScout> Retrive()
@@ -14,9 +14,9 @@ public class ScoutRepository : _BaseRepository
         }
         return result;
     }
-    public EScout? Retrive(string Id)
+    public EScout? Retrive(string ID)
     {
-        Scout? data = context.Scouts.Find(Id);
+        Scout? data = context.Scouts.Find(ID);
         if (data != null)
         {
             return mapping(data);
@@ -27,7 +27,7 @@ public class ScoutRepository : _BaseRepository
     public bool Modify(EScout eData)
     {
         bool result = false;
-        var data = context.Scouts.Find(eData.PersonId);
+        var data = context.Scouts.Find(eData.PersonID);
 
         if (data == null)
         {
@@ -43,28 +43,32 @@ public class ScoutRepository : _BaseRepository
             context.SaveChanges();
             result = true;
         }
+
         return result;
 
     }
-    public bool Delete(string scoutId)
+    public bool Delete(string scoutID)
     {
-        var data = context.Scouts.Find(scoutId);
+        var data = context.Scouts.Find(scoutID);
+
         if (data != null)
         {
             context.Scouts.Remove(data);
             context.SaveChanges();
             return true;
         }
+
         return false;
     }
 
-    internal static EScout? mapping(string scoutId)
+    internal static EScout? mapping(string scoutID)
     {
-        if (string.IsNullOrEmpty(scoutId))
+        if (string.IsNullOrEmpty(scoutID))
         {
             return null;
         }
-        var data = context.Scouts.Find(scoutId);
+
+        var data = context.Scouts.Find(scoutID);
         return mapping(data, true);
     }
 
@@ -74,12 +78,15 @@ public class ScoutRepository : _BaseRepository
         {
             return null;
         }
+
         var result = new EScout();
-        result.PersonId = data.PersonId;
+        result.PersonID = data.PersonID;
+
         if (!noLoop)
         {
-            result.Person = PersonRepository.mapping(data.PersonId);
+            result.Person = PersonRepository.mapping(data.PersonID);
         }
+
         return result;
     }
 
@@ -93,7 +100,7 @@ public class ScoutRepository : _BaseRepository
         {
             result = new Scout();
         }
-        result.PersonId = data.PersonId;
+        result.PersonID = data.PersonID;
         result.Person = PersonRepository.mapping(data.Person, result.Person);
         return result;
     }

@@ -1,7 +1,7 @@
-﻿using FootBalLife.GameDB.Entities;
-using FootBalLife.GameDB.Models;
+﻿using FootBalLife.Database.Entities;
+using FootBalLife.Database.Models;
 
-namespace FootBalLife.GameDB.Repositories;
+namespace FootBalLife.Database.Repositories;
 public class PlayerRepository : _BaseRepository
 {
     public List<EPlayer> Retrive()
@@ -14,9 +14,9 @@ public class PlayerRepository : _BaseRepository
         }
         return result;
     }
-    public EPlayer Retrive(string Id)
+    public EPlayer Retrive(string ID)
     {
-        var data = context.Players.Find(Id);
+        var data = context.Players.Find(ID);
         if (data != null)
         {
             return mapping(data);
@@ -27,7 +27,7 @@ public class PlayerRepository : _BaseRepository
     public bool Modify(EPlayer eData)
     {
         bool result = false;
-        var data = context.Players.Find(eData.PersonId);
+        var data = context.Players.Find(eData.PersonID);
 
         if (data == null)
         {
@@ -46,9 +46,9 @@ public class PlayerRepository : _BaseRepository
         return result;
 
     }
-    public bool Delete(string Id)
+    public bool Delete(string ID)
     {
-        Player? data = context.Players.Find(Id);
+        Player? data = context.Players.Find(ID);
         if (data != null)
         {
             context.Players.Remove(data);
@@ -72,13 +72,14 @@ public class PlayerRepository : _BaseRepository
         {
             return null;
         }
+
         EPlayer result = new EPlayer();
 
-        result.PersonId = data.PersonId;
+        result.PersonID = data.PersonID;
         result.Speed= data.Speed;
         result.KickCount = data.KickCount;
         result.Endurance= data.Endurance;
-        result.Reflex = data.Reflex;
+        result.Strike = data.Strike;
         result.Physics = data.Physics;
         result.Position = data.Position;
         result.Technique = data.Technique;
@@ -86,12 +87,10 @@ public class PlayerRepository : _BaseRepository
 
         if (!noLoop)
         {
-            result.Person = PersonRepository.mapping(data.PersonId);
-            result.Contract = ContractRepository.mapping(data.ContractId);
-            result.PositionNavigation = PositionRepository.mapping(data.PositionId.Value);
+            result.Person = PersonRepository.mapping(data.PersonID);
+            result.Contract = ContractRepository.mapping(data.ContractID);
+            result.PositionNavigation = PositionRepository.mapping(data.PositionID.Value);
         }
-
-        
 
         return result;
     }
@@ -105,16 +104,16 @@ public class PlayerRepository : _BaseRepository
         {
             result = new Player();
         }
-        result.PersonId = data.PersonId;
+
+        result.PersonID = data.PersonID;
         result.Speed = data.Speed;
         result.KickCount = data.KickCount;
         result.Endurance = data.Endurance;
-        result.Reflex = data.Reflex;
+        result.Strike = data.Strike;
         result.Physics = data.Physics;
         result.Position = data.Position;
         result.Technique = data.Technique;
         result.Passing = data.Passing;
-
 
         result.Person = PersonRepository.mapping(data.Person, result.Person);
         result.Contract = ContractRepository.mapping(data.Contract, result.Contract);

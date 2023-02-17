@@ -1,8 +1,8 @@
-﻿namespace FootBalLife.GameDB.Models;
-
-internal class Agent
+﻿namespace FootBalLife.Database.Models
 {
-    public string PersonId { get; set; } = null!;
-
-    public virtual Person Person { get; set; } = null!;
+    public class Agent
+    {
+        public string? PersonID { get; set; }
+        public virtual Person? Person { get; set; }
+    }
 }

@@ -1,22 +1,20 @@
-﻿namespace FootBalLife.GameDB.Models;
-
-internal class Contract
+﻿namespace FootBalLife.Database.Models
 {
-    public string Id { get; set; } = null!;
+    public class Contract
+    {
+        public string? ID { get; set; }
 
-    public string SeasonFrom { get; set; } = null!;
+        public string? TeamID { get; set; }
+        public string? PersonID { get; set; }
 
-    public string SeasonTo { get; set; } = null!;
+        public string? SeasonTo { get; set; }
+        public string? SeasonFrom { get; set; }
 
-    public string TeamId { get; set; } = null!;
+        public long Price { get; set; }
 
-    public string PersonId { get; set; } = null!;
+        public virtual Person? Person { get; set; }
+        public virtual ICollection<Player> Players { get; } = new List<Player>();
 
-    public long Price { get; set; }
-
-    public virtual Person Person { get; set; } = null!;
-
-    public virtual ICollection<Player> Players { get; } = new List<Player>();
-
-    public virtual Team Team { get; set; } = null!;
+        public virtual Team? Team { get; set; }
+    }
 }

@@ -1,7 +1,7 @@
-﻿using FootBalLife.GameDB.Entities;
-using FootBalLife.GameDB.Models;
+﻿using FootBalLife.Database.Entities;
+using FootBalLife.Database.Models;
 
-namespace FootBalLife.GameDB.Repositories;
+namespace FootBalLife.Database.Repositories;
 public class LeagueRepository : _BaseRepository
 {
     public List<ELeague> Retrive()
@@ -15,9 +15,9 @@ public class LeagueRepository : _BaseRepository
 
         return result;
     }
-    public ELeague Retrive(long Id)
+    public ELeague Retrive(long ID)
     {
-        League? league = context.Leagues.Find(Id);
+        League? league = context.Leagues.Find(ID);
         if(league != null)
         {
             return mapping(league,false);
@@ -28,7 +28,7 @@ public class LeagueRepository : _BaseRepository
     public bool Modify(ELeague eData)
     {
         bool result = false;
-        League data = context.Leagues.Find(eData.Id);
+        League data = context.Leagues.Find(eData.ID);
 
         if (data == null)
         {
@@ -46,9 +46,9 @@ public class LeagueRepository : _BaseRepository
         }
         return result;
     }
-    public bool Delete(long Id)
+    public bool Delete(long ID)
     {
-        League? data = context.Leagues.Find(Id);
+        League? data = context.Leagues.Find(ID);
         if (data!=null)
         {
             context.Leagues.Remove(data);
@@ -57,29 +57,34 @@ public class LeagueRepository : _BaseRepository
         }
         return false;
     }
-    internal static ELeague mapping(long Id)
+    internal static ELeague mapping(long ID)
     {
-        if (Id == 0)
+        if (ID == 0)
         {
             return null;
         }
-        League data = context.Leagues.Find(Id);
+
+        League? data = context.Leagues.Find(ID);
+
         return mapping(data, true);
     }
-    internal static ELeague mapping(League data, bool noLoop = true)
+    internal static ELeague mapping(League? data, bool noLoop = true)
     {
         if (data == null)
         {
             return null;
         }
+
         ELeague result = new ELeague();
-        result.Id = data.Id;
+
+        result.ID = data.ID;
         result.Name = data.Name;
+        result.CountryID = data.CountryID;
         result.CurrentRating = data.CurrentRating;
-        result.CountryId = data.CountryId;
+
         if (!noLoop)
         {
-            foreach (Team one in context.Teams.Where(x => x.LeagueId == data.Id))
+            foreach (Team one in context.Teams.Where(x => x.LeagueID == data.ID))
             {
                 result.Teams.Add(TeamRepository.mapping(one));
             }
@@ -87,7 +92,7 @@ public class LeagueRepository : _BaseRepository
 
         return result;
     }
-    internal static League mapping(ELeague data, League result = null)
+    internal static League mapping(ELeague? data, League? result = null)
     {
         if (data == null)
         {
@@ -97,12 +102,12 @@ public class LeagueRepository : _BaseRepository
         {
             result = new League();
         }
-        result.Id = data.Id;
+
+        result.ID = data.ID;
         result.Name = data.Name;
         result.CurrentRating = data.CurrentRating;
-        result.CountryId = data.CountryId;
+        result.CountryID = data.CountryID;
         
-     
         return result;
     }
 }

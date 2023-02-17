@@ -1,7 +1,7 @@
-﻿using FootBalLife.GameDB.Entities;
-using FootBalLife.GameDB.Models;
+﻿using FootBalLife.Database.Entities;
+using FootBalLife.Database.Models;
 
-namespace FootBalLife.GameDB.Repositories;
+namespace FootBalLife.Database.Repositories;
 public class ContractRepository : _BaseRepository
 {
     public List<EContract> Retrive()
@@ -14,9 +14,9 @@ public class ContractRepository : _BaseRepository
         }
         return result;
     }
-    public EContract Retrive(string Id)
+    public EContract Retrive(string ID)
     {
-        Contract? data = context.Contracts.Find(Id);
+        Contract? data = context.Contracts.Find(ID);
         if (data != null)
         {
             return mapping(data);
@@ -27,14 +27,14 @@ public class ContractRepository : _BaseRepository
     public bool Modify(EContract eData)
     {
         bool result = false;
-        Contract data = context.Contracts.Find(eData.Id);
+        Contract data = context.Contracts.Find(eData.ID);
 
         if (data == null)
         {
             data = mapping(eData, data);
             Guid myuuid = Guid.NewGuid();
             string myuuidAsString = myuuid.ToString();
-            data.Id = myuuidAsString;
+            data.ID = myuuidAsString;
             context.Contracts.Add(data);
             context.SaveChanges();
             result = true;
@@ -49,9 +49,9 @@ public class ContractRepository : _BaseRepository
         return result;
 
     }
-    public bool Delete(string Id)
+    public bool Delete(string ID)
     {
-        Contract? data = context.Contracts.Find(Id);
+        Contract? data = context.Contracts.Find(ID);
         if (data != null)
         {
             context.Contracts.Remove(data);
@@ -61,13 +61,13 @@ public class ContractRepository : _BaseRepository
         return false;
     }
 
-    internal static EContract mapping(string Id)
+    internal static EContract mapping(string ID)
     {
-        if (Id == "")
+        if (ID == "")
         {
             return null;
         }
-        Contract data = context.Contracts.Find(Id);
+        Contract data = context.Contracts.Find(ID);
         return mapping(data, true);
     }
     internal static EContract mapping(Contract data, bool noLoop = true)
@@ -76,18 +76,20 @@ public class ContractRepository : _BaseRepository
         {
             return null;
         }
+
         EContract result = new EContract();
-        result.Id = data.Id;
+
+        result.ID = data.ID;
         result.SeasonFrom = data.SeasonFrom;
         result.SeasonTo = data.SeasonTo;
-        result.TeamId= data.TeamId;
-        result.PersonId= data.PersonId;
+        result.TeamID= data.TeamID;
+        result.PersonID= data.PersonID;
         result.Price= data.Price;
 
         if (!noLoop)
         {
-            result.Person = PersonRepository.mapping(data.PersonId);
-            result.Team = TeamRepository.mapping(data.TeamId);
+            result.Person = PersonRepository.mapping(data.PersonID);
+            result.Team = TeamRepository.mapping(data.TeamID);
             foreach (Player one in data.Players)
             {
                 result.Players.Add(PlayerRepository.mapping(one));
@@ -107,16 +109,18 @@ public class ContractRepository : _BaseRepository
         {
             result = new Contract();
         }
-        result.Id = data.Id;
-        result.Id = data.Id;
+
+        result.ID = data.ID;
+        result.ID = data.ID;
         result.SeasonFrom = data.SeasonFrom;
         result.SeasonTo = data.SeasonTo;
-        result.TeamId = data.TeamId;
-        result.PersonId = data.PersonId;
+        result.TeamID = data.TeamID;
+        result.PersonID = data.PersonID;
         result.Price = data.Price;
 
         result.Person = PersonRepository.mapping(data.Person, result.Person);
         result.Team = TeamRepository.mapping(data.Team, result.Team);
+
         return result;
     }
 }

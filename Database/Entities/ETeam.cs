@@ -1,30 +1,25 @@
-﻿namespace FootBalLife.GameDB.Entities;
-
-public class ETeam
+﻿namespace FootBalLife.Database.Entities
 {
-    public string Id { get; internal set; } = null!;
+    internal class ETeam
+    {
+        public string? ID { get; internal set; }
+        public string? Name { get; set; }
+        public string? BaseColor { get; set; }
+        public StrategyType Strategy { get; set; }
+        public long IsNationalTeam { get; set; }
 
-    public string Name { get; set; } = null!;
+        public long AgentID { get; set; }
+        public long CoachID { get; set; }
+        public long LeagueID { get; set; }
+        public long SportsDirectorID { get; set; }
 
-    public long? LeagueId { get; set; }
+        public virtual ELeague? League { get; internal set; }
 
-    public long? SportsDirectorId { get; set; }
+        public virtual ICollection<EContract> Contracts { get; internal set; } = new List<EContract>();
 
-    public long? CoachId { get; set; }
-    public long? AgentId { get; set; }
+        public virtual ICollection<EMatch> MatchHomeTeamNavigations { get; internal set; } = new List<EMatch>();
+        public virtual ICollection<EMatch> MatchGuestTeamNavigations { get; internal set; } = new List<EMatch>();
 
-    public long? IsNationalTeam { get; set; }
-
-    public long? Strategy { get; set; }
-
-    public string BaseColor { get; set; } = null!;
-
-    public virtual ICollection<EContract> Contracts { get; internal set; } = new List<EContract>();
-
-    public virtual ELeague? League { get; internal set; }
-
-    public virtual ICollection<EMatch> MatchHomeTeamNavigations { get; internal set; } = new List<EMatch>();
-    public virtual ICollection<EMatch> MatchGuestTeamNavigations { get; internal set; } = new List<EMatch>();
-
-    public virtual ICollection<ENationalResultTable> NationalResultTables { get; internal set; } = new List<ENationalResultTable>();
+        public virtual ICollection<ENationalResultTable> NationalResultTables { get; internal set; } = new List<ENationalResultTable>();
+    }
 }

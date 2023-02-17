@@ -1,8 +1,8 @@
-﻿namespace FootBalLife.GameDB.Entities;
-
-public class EAgent
+﻿namespace FootBalLife.Database.Entities
 {
-    public string PersonId { get; set; } = null!;
-
-    public virtual EPerson Person { get; internal set; } = null!;
+    internal class EAgent
+    {
+        public string? PersonID { get; set; }
+        public virtual EPerson? Person { get; internal set; }
+    }
 }

@@ -1,22 +1,20 @@
-﻿namespace FootBalLife.GameDB.Entities;
-
-public class ENationalResultTable
+﻿namespace FootBalLife.Database.Entities
 {
-    public string Season { get; set; } = null!;
+    internal class ENationalResultTable
+    {
+        public string? Season { get; set; }
 
-    public string TeamId { get; set; } = null!;
+        public string? TeamID { get; set; }
 
-    public long Wins { get; set; }
+        public long TotalPosition { get; set; }
 
-    public long Draws { get; set; }
+        public long Wins { get; set; }
+        public long Draws { get; set; }
+        public long Loses { get; set; }
 
-    public long Loses { get; set; }
+        public long ScoredGoals { get; set; }
+        public long MissedGoals { get; set; }
 
-    public long ScoredGoals { get; set; }
-
-    public long MissedGoals { get; set; }
-
-    public long TotalPosition { get; set; }
-
-    public virtual ETeam Team { get; internal set; } = null!;
+        public virtual ETeam? Team { get; internal set; }
+    }
 }

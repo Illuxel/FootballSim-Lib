@@ -1,16 +1,14 @@
-﻿namespace FootBalLife.GameDB.Models;
-
-internal class League
+﻿namespace FootBalLife.Database.Models
 {
-    public long Id { get; set; }
+    public class League
+    {
+        public long ID { get; set; }
+        public string? Name { get; set; }
+        public long CurrentRating { get; set; }
 
-    public string Name { get; set; } = null!;
+        public long CountryID { get; set; }
+        public virtual Country? Country { get; set; }
 
-    public long? CurrentRating { get; set; }
-
-    public long? CountryId { get; set; }
-
-    public virtual Country? Country { get; set; }
-
-    public virtual ICollection<Team> Teams { get; } = new List<Team>();
+        public virtual ICollection<Team> Teams { get; } = new List<Team>();
+    }
 }

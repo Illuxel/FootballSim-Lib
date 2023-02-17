@@ -1,7 +1,7 @@
-﻿using FootBalLife.GameDB.Entities;
-using FootBalLife.GameDB.Models;
+﻿using FootBalLife.Database.Entities;
+using FootBalLife.Database.Models;
 
-namespace FootBalLife.GameDB.Repositories;
+namespace FootBalLife.Database.Repositories;
 public class CoachRepository : _BaseRepository
 {
     public List<ECoach> Retrive()
@@ -14,9 +14,9 @@ public class CoachRepository : _BaseRepository
         }
         return result;
     }
-    public ECoach Retrive(string Id)
+    public ECoach Retrive(string ID)
     {
-        Coach? data = context.Coaches.Find(Id);
+        Coach? data = context.Coaches.Find(ID);
         if (data != null)
         {
             return mapping(data);
@@ -27,7 +27,7 @@ public class CoachRepository : _BaseRepository
     public bool Modify(ECoach eData)
     {
         bool result = false;
-        Coach data = context.Coaches.Find(eData.PersonId);
+        Coach data = context.Coaches.Find(eData.PersonID);
         if (data == null)
         {
             data = mapping(eData, data);
@@ -45,9 +45,9 @@ public class CoachRepository : _BaseRepository
         return result;
 
     }
-    public bool Delete(string Id)
+    public bool Delete(string ID)
     {
-        Coach? data = context.Coaches.Find(Id);
+        Coach? data = context.Coaches.Find(ID);
         if (data != null)
         {
             context.Coaches.Remove(data);
@@ -56,13 +56,13 @@ public class CoachRepository : _BaseRepository
         }
         return false;
     }
-    internal static ECoach mapping(string Id)
+    internal static ECoach mapping(string ID)
     {
-        if (Id == "")
+        if (ID == "")
         {
             return null;
         }
-        Coach data = context.Coaches.Find(Id);
+        Coach data = context.Coaches.Find(ID);
         return mapping(data, true);
     }
     internal static ECoach mapping(Coach data, bool noLoop = true)
@@ -72,10 +72,10 @@ public class CoachRepository : _BaseRepository
             return null;
         }
         ECoach result = new ECoach();
-        result.PersonId = data.PersonId;
+        result.PersonID = data.PersonID;
         if (!noLoop)
         {
-            result.Person = PersonRepository.mapping(data.PersonId);
+            result.Person = PersonRepository.mapping(data.PersonID);
         }
 
         return result;
@@ -90,7 +90,7 @@ public class CoachRepository : _BaseRepository
         {
             result = new Coach();
         }
-        result.PersonId = data.PersonId;
+        result.PersonID = data.PersonID;
         result.Person = PersonRepository.mapping(data.Person, result.Person);
 
         return result;

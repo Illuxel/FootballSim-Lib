@@ -1,7 +1,7 @@
-﻿using FootBalLife.GameDB.Entities;
-using FootBalLife.GameDB.Models;
+﻿using FootBalLife.Database.Entities;
+using FootBalLife.Database.Models;
 
-namespace FootBalLife.GameDB.Repositories;
+namespace FootBalLife.Database.Repositories;
 public class PositionRepository : _BaseRepository
 {
     public List<EPosition> Retrive()
@@ -14,9 +14,9 @@ public class PositionRepository : _BaseRepository
         }
         return result;
     }
-    public EPosition Retrive(long Id)
+    public EPosition Retrive(long ID)
     {
-        Position? data = context.Positions.Find(Id);
+        Position? data = context.Positions.Find(ID);
         if (data != null)
         {
             return mapping(data);
@@ -27,7 +27,7 @@ public class PositionRepository : _BaseRepository
     public bool Modify(EPosition eData)
     {
         bool result = false;
-        Position data = context.Positions.Find(eData.Id);
+        Position data = context.Positions.Find(eData.ID);
 
         if (data == null)
         {
@@ -46,9 +46,9 @@ public class PositionRepository : _BaseRepository
         return result;
 
     }
-    public bool Delete(long Id)
+    public bool Delete(long ID)
     {
-        Position? data = context.Positions.Find(Id);
+        Position? data = context.Positions.Find(ID);
         if (data != null)
         {
             context.Positions.Remove(data);
@@ -58,13 +58,13 @@ public class PositionRepository : _BaseRepository
         return false;
     }
 
-    internal static EPosition mapping(long Id)
+    internal static EPosition mapping(long ID)
     {
-        if (Id == 0)
+        if (ID == 0)
         {
             return null;
         }
-        Position data = context.Positions.Find(Id);
+        Position data = context.Positions.Find(ID);
         return mapping(data, true);
     }
     internal static EPosition mapping(Position data, bool noLoop = true)
@@ -74,7 +74,7 @@ public class PositionRepository : _BaseRepository
             return null;
         }
         EPosition result = new EPosition();
-        result.Id = data.Id;
+        result.ID = data.ID;
         result.Name = data.Name;
         result.Location = data.Location;
 
@@ -98,7 +98,7 @@ public class PositionRepository : _BaseRepository
         {
             result = new Position();
         }
-        result.Id = data.Id;
+        result.ID = data.ID;
         result.Name = data.Name;
         result.Location = data.Location;
 

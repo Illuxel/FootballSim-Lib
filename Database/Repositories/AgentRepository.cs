@@ -1,7 +1,7 @@
-﻿using FootBalLife.GameDB.Entities;
-using FootBalLife.GameDB.Models;
+﻿using FootBalLife.Database.Entities;
+using FootBalLife.Database.Models;
 
-namespace FootBalLife.GameDB.Repositories;
+namespace FootBalLife.Database.Repositories;
 public class AgentRepository : _BaseRepository
 {
     public List<EAgent> Retrive()
@@ -14,9 +14,9 @@ public class AgentRepository : _BaseRepository
         }
         return result;
     }
-    public EAgent Retrive(string Id)
+    public EAgent Retrive(string ID)
     {
-        Agent? data = context.Agents.Find(Id);
+        Agent? data = context.Agents.Find(ID);
         if (data != null)
         {
             return mapping(data);
@@ -27,7 +27,7 @@ public class AgentRepository : _BaseRepository
     public bool Modify(EAgent eData)
     {
         bool result = false;
-        Agent data = context.Agents.Find(eData.PersonId);
+        Agent data = context.Agents.Find(eData.PersonID);
         if (data == null)
         {
             data = mapping(eData, data);
@@ -45,9 +45,9 @@ public class AgentRepository : _BaseRepository
         return result;
 
     }
-    public bool Delete(string Id)
+    public bool Delete(string ID)
     {
-        Agent? data = context.Agents.Find(Id);
+        Agent? data = context.Agents.Find(ID);
         if (data != null)
         {
             context.Agents.Remove(data);
@@ -57,31 +57,33 @@ public class AgentRepository : _BaseRepository
         return false;
     }
 
-    internal static EAgent mapping(string Id)
+    internal static EAgent? mapping(string ID)
     {
-        if (Id == "")
+        if (ID == "")
         {
             return null;
         }
-        Agent data = context.Agents.Find(Id);
+
+        Agent data = context.Agents.Find(ID);
+
         return mapping(data, true);
     }
-    internal static EAgent mapping(Agent data, bool noLoop = true)
+    internal static EAgent? mapping(Agent data, bool noLoop = true)
     {
         if (data == null)
         {
             return null;
         }
         EAgent result = new EAgent();
-        result.PersonId = data.PersonId;
+        result.PersonID = data.PersonID;
         
         if (!noLoop)
         {
-            result.Person = PersonRepository.mapping(data.PersonId);
+            result.Person = PersonRepository.mapping(data.PersonID);
         }
         return result;
     }
-    internal static Agent mapping(EAgent data, Agent result = null)
+    internal static Agent? mapping(EAgent data, Agent? result = null)
     {
         if (data == null)
         {
@@ -91,9 +93,8 @@ public class AgentRepository : _BaseRepository
         {
             result = new Agent();
         }
-        result.PersonId = data.PersonId;
 
-
+        result.PersonID = data.PersonID;
         result.Person = PersonRepository.mapping(data.Person, result.Person);
 
         return result;

@@ -1,7 +1,7 @@
-﻿using FootBalLife.GameDB.Entities;
-using FootBalLife.GameDB.Models;
+﻿using FootBalLife.Database.Entities;
+using FootBalLife.Database.Models;
 
-namespace FootBalLife.GameDB.Repositories;
+namespace FootBalLife.Database.Repositories;
 public class RoleRepository : _BaseRepository
 {
     public List<ERole> Retrive()
@@ -14,9 +14,9 @@ public class RoleRepository : _BaseRepository
         }
         return result;
     }
-    public ERole Retrive(long Id)
+    public ERole Retrive(long ID)
     {
-        Role? data = context.Roles.Find(Id);
+        Role? data = context.Roles.Find(ID);
         if (data != null)
         {
             return mapping(data);
@@ -27,7 +27,7 @@ public class RoleRepository : _BaseRepository
     public bool Modify(ERole eData)
     {
         bool result = false;
-        Role data = context.Roles.Find(eData.Id);
+        Role data = context.Roles.Find(eData.ID);
 
         if (data == null)
         {
@@ -46,9 +46,9 @@ public class RoleRepository : _BaseRepository
         return result;
 
     }
-    public bool Delete(long Id)
+    public bool Delete(long ID)
     {
-        Role? data = context.Roles.Find(Id);
+        Role? data = context.Roles.Find(ID);
         if (data != null)
         {
             context.Roles.Remove(data);
@@ -58,13 +58,13 @@ public class RoleRepository : _BaseRepository
         return false;
     }
 
-    internal static ERole mapping(long Id)
+    internal static ERole mapping(long ID)
     {
-        if (Id == 0)
+        if (ID == 0)
         {
             return null;
         }
-        Role data = context.Roles.Find(Id);
+        Role data = context.Roles.Find(ID);
         return mapping(data, true);
     }
     internal static ERole mapping(Role data, bool noLoop = true)
@@ -74,7 +74,7 @@ public class RoleRepository : _BaseRepository
             return null;
         }
         ERole result = new ERole();
-        result.Id = data.Id;
+        result.ID = data.ID;
         result.Name = data.Name;
         result.IsNpc = data.IsNpc;
         result.Icon = data.Icon;
@@ -99,7 +99,7 @@ public class RoleRepository : _BaseRepository
         {
             result = new Role();
         }
-        result.Id = data.Id;
+        result.ID = data.ID;
         result.Name = data.Name;
         result.IsNpc = data.IsNpc;
         result.Icon = data.Icon;

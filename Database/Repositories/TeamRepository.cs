@@ -1,7 +1,7 @@
-﻿using FootBalLife.GameDB.Entities;
-using FootBalLife.GameDB.Models;
+﻿using FootBalLife.Database.Entities;
+using FootBalLife.Database.Models;
 
-namespace FootBalLife.GameDB.Repositories;
+namespace FootBalLife.Database.Repositories;
 
 public class TeamRepository : _BaseRepository
 {
@@ -15,9 +15,9 @@ public class TeamRepository : _BaseRepository
         }
         return result;
     }
-    public ETeam Retrive(string Id)
+    public ETeam Retrive(string ID)
     {
-        Team? data = context.Teams.Find(Id);
+        Team? data = context.Teams.Find(ID);
         if (data != null)
         {
             return mapping(data);
@@ -28,12 +28,12 @@ public class TeamRepository : _BaseRepository
     public bool Modify(ETeam eData)
     {
         bool result = false;
-        Team dbTeam = context.Teams.Find(eData.Id);
+        Team dbTeam = context.Teams.Find(eData.ID);
         
         if (dbTeam == null)
         {
             dbTeam = mapping(eData);
-            dbTeam.Id = Guid.NewGuid().ToString();
+            dbTeam.ID = Guid.NewGuid().ToString();
             context.Teams.Add(dbTeam);
             context.SaveChanges();
             result = true;
@@ -47,10 +47,10 @@ public class TeamRepository : _BaseRepository
         }
         return result;
     }
-    public bool Delete(string Id)
+    public bool Delete(string ID)
     {
         bool result = false;
-        Team? data = context.Teams.Find(Id);
+        Team? data = context.Teams.Find(ID);
         if (data != null)
         {
             context.Teams.Remove(data);
@@ -60,14 +60,13 @@ public class TeamRepository : _BaseRepository
         return result;
     }
 
-
-    internal static ETeam mapping(string Id)
+    internal static ETeam mapping(string ID)
     {
-        if (string.IsNullOrEmpty(Id))
+        if (string.IsNullOrEmpty(ID))
         {
             return null;
         }
-        Team data = context.Teams.Find(Id);
+        Team data = context.Teams.Find(ID);
         return mapping(data, true);
     }
     internal static ETeam mapping(Team data, bool noLoop = true)
@@ -79,15 +78,15 @@ public class TeamRepository : _BaseRepository
 
         ETeam result = new ETeam();
 
-        result.Id = data.Id;
+        result.ID = data.ID;
         result.Name = data.Name;
         result.Strategy = data.Strategy;
-        result.CoachId = data.CoachId;
-        result.AgentId = data.AgentId;
-        result.SportsDirectorId = data.SportsDirectorId;
+        result.CoachID = data.CoachID;
+        result.AgentID = data.AgentID;
+        result.SportsDirectorID = data.SportsDirectorID;
         result.IsNationalTeam = data.IsNationalTeam;
         result.BaseColor= data.BaseColor;
-        result.LeagueId = data.LeagueId;
+        result.LeagueID = data.LeagueID;
 
         if(!noLoop)
         {
@@ -95,11 +94,11 @@ public class TeamRepository : _BaseRepository
             {
                 result.Contracts.Add(ContractRepository.mapping(one));
             }
-            foreach (Match one in data.MatchTeam1Navigations)
+            foreach (Match one in data.MatchHomeTeamNavigations)
             {
                 result.MatchHomeTeamNavigations.Add(MatchRepository.mapping(one));
             }
-            foreach (Match one in data.MatchTeam1Navigations)
+            foreach (Match one in data.MatchHomeTeamNavigations)
             {
                 result.MatchGuestTeamNavigations.Add(MatchRepository.mapping(one));
             }
@@ -107,12 +106,12 @@ public class TeamRepository : _BaseRepository
             {
                 result.NationalResultTables.Add(NRTRepository.mapping(one));
             }
-            result.League = LeagueRepository.mapping(data.LeagueId.Value);
+            result.League = LeagueRepository.mapping(data.LeagueID);
         }
         
         return result;
     }
-    internal static Team mapping(ETeam data, Team result = null)
+    internal static Team mapping(ETeam? data, Team result = null)
     {
         if (data == null)
         {
@@ -123,15 +122,15 @@ public class TeamRepository : _BaseRepository
             result = new Team();
         }
 
-        result.Id = data.Id;
+        result.ID = data.ID;
         result.Name = data.Name;
         result.Strategy = data.Strategy;
-        result.CoachId = data.CoachId;
-        result.AgentId = data.AgentId;
-        result.SportsDirectorId = data.SportsDirectorId;
+        result.CoachID = data.CoachID;
+        result.AgentID = data.AgentID;
+        result.SportsDirectorID = data.SportsDirectorID;
         result.IsNationalTeam = data.IsNationalTeam;
         result.BaseColor = data.BaseColor;
-        result.LeagueId = data.LeagueId;
+        result.LeagueID = data.LeagueID;
 
         result.League = LeagueRepository.mapping(data.League, result.League);
 

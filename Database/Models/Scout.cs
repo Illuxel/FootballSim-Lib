@@ -1,8 +1,8 @@
-﻿namespace FootBalLife.GameDB.Models;
-
-internal class Scout
+﻿namespace FootBalLife.Database.Models
 {
-    public string PersonId { get; set; } = null!;
-
-    public virtual Person Person { get; set; } = null!;
+    public class Scout
+    {
+        public string? PersonID { get; set; }
+        public virtual Person? Person { get; set; }
+    }
 }

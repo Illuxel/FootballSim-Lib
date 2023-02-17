@@ -1,22 +1,19 @@
-﻿namespace FootBalLife.GameDB.Models;
-
-internal class NationalResultTable
+﻿namespace FootBalLife.Database.Models
 {
-    public string Season { get; set; } = null!;
+    public class NationalResultTable
+    {
+        public string? Season { get; set; }
 
-    public string TeamId { get; set; } = null!;
+        public string? TeamID { get; set; }
+        public virtual Team? Team { get; set; }
 
-    public long Wins { get; set; }
+        public long Wins { get; set; }
+        public long Draws { get; set; }
+        public long Loses { get; set; }
 
-    public long Draws { get; set; }
+        public long ScoredGoals { get; set; }
+        public long MissedGoals { get; set; }
 
-    public long Loses { get; set; }
-
-    public long ScoredGoals { get; set; }
-
-    public long MissedGoals { get; set; }
-
-    public long TotalPosition { get; set; }
-
-    public virtual Team Team { get; set; } = null!;
+        public long TotalPosition { get; set; }
+    }
 }

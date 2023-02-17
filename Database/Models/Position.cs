@@ -1,12 +1,11 @@
-﻿namespace FootBalLife.GameDB.Models;
-
-internal class Position
+﻿namespace FootBalLife.Database.Models
 {
-    public long Id { get; set; }
+    public class Position
+    {
+        public long ID { get; set; }
+        public long Location { get; set; }
+        public string? Name { get; set; }
 
-    public long Location { get; set; }
-
-    public string Name { get; set; } = null!;
-
-    public virtual ICollection<Player> Players { get; } = new List<Player>();
+        public virtual ICollection<Player> Players { get; } = new List<Player>();
+    }
 }

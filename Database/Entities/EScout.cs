@@ -1,8 +1,9 @@
-﻿namespace FootBalLife.GameDB.Entities;
-
-public class EScout
+﻿namespace FootBalLife.Database.Entities
 {
-    public string PersonId { get; internal set; } = null!;
+    internal class EScout
+    {
+        public string PersonID { get; internal set; } = null!;
 
-    public virtual EPerson Person { get; internal set; } = null!;
+        public virtual EPerson Person { get; internal set; } = null!;
+    }
 }

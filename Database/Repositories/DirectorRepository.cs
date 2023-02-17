@@ -1,7 +1,7 @@
-﻿using FootBalLife.GameDB.Entities;
-using FootBalLife.GameDB.Models;
+﻿using FootBalLife.Database.Entities;
+using FootBalLife.Database.Models;
 
-namespace FootBalLife.GameDB.Repositories;
+namespace FootBalLife.Database.Repositories;
 public class DirectorRepository : _BaseRepository
 {
     public List<EDirector> Retrive()
@@ -14,9 +14,9 @@ public class DirectorRepository : _BaseRepository
         }
         return result;
     }
-    public EDirector Retrive(string Id)
+    public EDirector Retrive(string ID)
     {
-        Director? data = context.Directors.Find(Id);
+        Director? data = context.Directors.Find(ID);
         if (data != null)
         {
             return mapping(data);
@@ -27,7 +27,7 @@ public class DirectorRepository : _BaseRepository
     public bool Modify(EDirector eData)
     {
         bool result = false;
-        Director data = context.Directors.Find(eData.PersonId);
+        Director data = context.Directors.Find(eData.PersonID);
 
         if (data == null)
         {
@@ -46,9 +46,9 @@ public class DirectorRepository : _BaseRepository
         return result;
 
     }
-    public bool Delete(string Id)
+    public bool Delete(string ID)
     {
-        Director? data = context.Directors.Find(Id);
+        Director? data = context.Directors.Find(ID);
         if (data != null)
         {
             context.Directors.Remove(data);
@@ -74,10 +74,10 @@ public class DirectorRepository : _BaseRepository
             return null;
         }
         EDirector result = new EDirector();
-        result.PersonId = data.PersonId;
+        result.PersonID = data.PersonID;
         if (!noLoop)
         {
-            result.Person = PersonRepository.mapping(data.PersonId);
+            result.Person = PersonRepository.mapping(data.PersonID);
         }
 
         return result;
@@ -92,7 +92,7 @@ public class DirectorRepository : _BaseRepository
         {
             result = new Director();
         }
-        result.PersonId = data.PersonId;
+        result.PersonID = data.PersonID;
 
 
         result.Person = PersonRepository.mapping(data.Person, result.Person);

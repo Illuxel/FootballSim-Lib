@@ -1,0 +1,5 @@
+E:\My Projects\GitHub\FLLteam\FootbalLife-Lib\Sandbox\obj\Debug\net7.0\Sandbox.csproj.AssemblyReference.cache
+E:\My Projects\GitHub\FLLteam\FootbalLife-Lib\Sandbox\obj\Debug\net7.0\Sandbox.GeneratedMSBuildEditorConfig.editorconfig
+E:\My Projects\GitHub\FLLteam\FootbalLife-Lib\Sandbox\obj\Debug\net7.0\Sandbox.AssemblyInfoInputs.cache
+E:\My Projects\GitHub\FLLteam\FootbalLife-Lib\Sandbox\obj\Debug\net7.0\Sandbox.AssemblyInfo.cs
+E:\My Projects\GitHub\FLLteam\FootbalLife-Lib\Sandbox\obj\Debug\net7.0\Sandbox.csproj.CoreCompileInputs.cache

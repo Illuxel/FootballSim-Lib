@@ -1,16 +1,14 @@
-﻿namespace FootBalLife.GameDB.Entities;
-
-public class ELeague
+﻿namespace FootBalLife.Database.Entities
 {
-    public long Id { get; internal set; }
+    internal class ELeague
+    {
+        public long ID { get; internal set; }
+        public string? Name { get; set; }
+        public long CurrentRating { get; set; }
 
-    public string Name { get; set; } = null!;
+        public long CountryID { get; set; }
+        public virtual ECountry? Country { get; internal set; }
 
-    public long? CurrentRating { get; set; }
-
-    public long? CountryId { get; set; }
-
-    public virtual ECountry? Country { get; internal set; }
-
-    public virtual List<ETeam> Teams { get; internal set; } = new List<ETeam>();
+        public virtual List<ETeam> Teams { get; internal set; } = new List<ETeam>();
+    }
 }

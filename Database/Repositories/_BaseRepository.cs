@@ -1,6 +1,6 @@
-﻿using FootBalLife.GameDB.Context;
+﻿using FootBalLife.Database.Context;
 
-namespace FootBalLife.GameDB.Repositories;
+namespace FootBalLife.Database.Repositories;
 public abstract class _BaseRepository
 {
     protected static FootbalLifeDbContext context = new FootbalLifeDbContext();
