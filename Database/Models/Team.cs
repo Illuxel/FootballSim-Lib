@@ -9,12 +9,11 @@
         public long IsNationalTeam { get; set; }
 
         public long LeagueID { get; set; }
+        public virtual League? League { get; set; }
 
         public long AgentID { get; set; }
         public long CoachID { get; set; }
         public long SportsDirectorID { get; set; }
-
-        public virtual League? League { get; set; }
 
         public virtual ICollection<Contract> Contracts { get; } = new List<Contract>();
 
@@ -26,9 +25,9 @@
         // returns first player that have playerPostion
         public Player GetPlayer(PlayerPostion playerPostion)
         {
-            Contracts.First().Players
+            //Contracts.First().Players
 
-            var selectedPlayers = Players.Where(player => player.PositionID == (long)playerPostion);
+            var selectedPlayers = Contracts.Where(player => player.PositionID == (long)playerPostion);
             return selectedPlayers.MaxBy(player => player.Endurance);
         }
 
