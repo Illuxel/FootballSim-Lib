@@ -1,4 +1,4 @@
-﻿using FootBalLife.Database;
+﻿using FootBalLife.Database.Models;
 
 namespace FootBalLife.Services.MatchGenerator
 {

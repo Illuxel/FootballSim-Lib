@@ -1,4 +1,4 @@
-﻿namespace Services.Services.MatchGenerator.Data.Gen
+﻿namespace Services.Services.MatchGenerator
 {
     public class ChancesResultFactory
     {

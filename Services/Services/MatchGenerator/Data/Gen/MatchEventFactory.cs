@@ -3,6 +3,8 @@ using FootBalLife.Database.Models;
 
 using FootBalLife.Services.MatchGenerator.Events;
 
+using Services.Services.MatchGenerator;
+
 namespace FootBalLife.Services.MatchGenerator
 {
     internal static class MatchEventFactory
@@ -72,7 +74,7 @@ namespace FootBalLife.Services.MatchGenerator
 
         public static IMatchEvent CreateNextEvent(IMatchEvent fromCurrent)
         {
-            var nextEventName = ChoiseResult.Next(fromCurrent.NextEventsChances);
+            var nextEventName = ChancesResultFactory.Next(fromCurrent.NextEventsChances);
             var nextMatchEvent = MatchEvents.GetEvent(nextEventName);
 
             var homeTeam = fromCurrent.HomeTeam;

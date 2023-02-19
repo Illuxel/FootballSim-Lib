@@ -28,7 +28,7 @@ namespace FootBalLife.Services.MatchGenerator
 
             while (true) 
             {
-                var currentEvent = MatchEventFactory.CreateStrategyEvent(strategyEventName, _homeTeam.StrategyID, EventLocation.Center) as MatchEventProcess;
+                var currentEvent = MatchEventFactory.CreateStrategyEvent(strategyEventName, _homeTeam.Strategy, EventLocation.Center) as MatchEventProcess;
 
                 currentEvent.HomeTeam = _homeTeam;
                 currentEvent.GuestTeam = _guestTeam;
