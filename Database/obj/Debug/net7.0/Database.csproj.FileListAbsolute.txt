@@ -1,0 +1,14 @@
+E:\My Projects\GitHub\FLLteam\FootbalLife-Lib\Database\obj\Debug\net7.0\Database.csproj.AssemblyReference.cache
+E:\My Projects\GitHub\FLLteam\FootbalLife-Lib\Database\obj\Debug\net7.0\Database.GeneratedMSBuildEditorConfig.editorconfig
+E:\My Projects\GitHub\FLLteam\FootbalLife-Lib\Database\obj\Debug\net7.0\Database.AssemblyInfoInputs.cache
+E:\My Projects\GitHub\FLLteam\FootbalLife-Lib\Database\obj\Debug\net7.0\Database.AssemblyInfo.cs
+E:\My Projects\GitHub\FLLteam\FootbalLife-Lib\Database\obj\Debug\net7.0\Database.csproj.CoreCompileInputs.cache
+E:\My Projects\GitHub\FLLteam\FootbalLife-Lib\Database\bin\Debug\net7.0\Database.deps.json
+E:\My Projects\GitHub\FLLteam\FootbalLife-Lib\Database\bin\Debug\net7.0\Database.runtimeconfig.json
+E:\My Projects\GitHub\FLLteam\FootbalLife-Lib\Database\bin\Debug\net7.0\Database.dll
+E:\My Projects\GitHub\FLLteam\FootbalLife-Lib\Database\bin\Debug\net7.0\Database.pdb
+E:\My Projects\GitHub\FLLteam\FootbalLife-Lib\Database\obj\Debug\net7.0\Database.dll
+E:\My Projects\GitHub\FLLteam\FootbalLife-Lib\Database\obj\Debug\net7.0\refint\Database.dll
+E:\My Projects\GitHub\FLLteam\FootbalLife-Lib\Database\obj\Debug\net7.0\Database.pdb
+E:\My Projects\GitHub\FLLteam\FootbalLife-Lib\Database\obj\Debug\net7.0\Database.genruntimeconfig.cache
+E:\My Projects\GitHub\FLLteam\FootbalLife-Lib\Database\obj\Debug\net7.0\ref\Database.dll

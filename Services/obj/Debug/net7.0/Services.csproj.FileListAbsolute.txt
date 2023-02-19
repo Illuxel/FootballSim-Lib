@@ -1,0 +1,5 @@
+E:\My Projects\GitHub\FLLteam\FootbalLife-Lib\Services\obj\Debug\net7.0\Services.csproj.AssemblyReference.cache
+E:\My Projects\GitHub\FLLteam\FootbalLife-Lib\Services\obj\Debug\net7.0\Services.GeneratedMSBuildEditorConfig.editorconfig
+E:\My Projects\GitHub\FLLteam\FootbalLife-Lib\Services\obj\Debug\net7.0\Services.AssemblyInfoInputs.cache
+E:\My Projects\GitHub\FLLteam\FootbalLife-Lib\Services\obj\Debug\net7.0\Services.AssemblyInfo.cs
+E:\My Projects\GitHub\FLLteam\FootbalLife-Lib\Services\obj\Debug\net7.0\Services.csproj.CoreCompileInputs.cache
