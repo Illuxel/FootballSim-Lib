@@ -1,5 +1,6 @@
-﻿using FootBalLife.Database.Models;
+﻿using FootBalLife.Database;
 using FootBalLife.Services.MatchGenerator.Events;
+using System.Collections.Generic;
 
 namespace FootBalLife.Services.MatchGenerator
 {
@@ -40,7 +41,7 @@ namespace FootBalLife.Services.MatchGenerator
 
                     currentEvent.OnProcessEvent();
 
-                    Console.WriteLine(currentEvent.EventCode + ':' + currentEvent.Location.ToString() + ':' + currentEvent.HomeTeam.Name);
+                    //Console.WriteLine(currentEvent.EventCode + ':' + currentEvent.Location.ToString() + ':' + currentEvent.HomeTeam.Name);
 
                     _matchEvents.Add(currentEvent);
 

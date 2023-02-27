@@ -1,4 +1,8 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 
 using FootBalLife.Database;
@@ -92,7 +96,7 @@ namespace FootBalLife.Services.MatchGenerator
             var eventsArray = eventsObject["Events"]
                 .AsArray();
 
-            var currentEventObject = eventsArray.FirstOrDefault(e => e["EventCode"].ToString() == fromName, new JsonObject())
+            var currentEventObject = eventsArray.FirstOrDefault(e => e["EventCode"].ToString() == fromName)
                 .AsObject();
 
             return currentEventObject;
@@ -148,7 +152,6 @@ namespace FootBalLife.Services.MatchGenerator
             catch (Exception e) 
             {
                 // writing to log
-                Console.WriteLine(e.Message);
 
                 _parsedEvents = null;
             }

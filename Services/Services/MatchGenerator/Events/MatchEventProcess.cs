@@ -1,4 +1,6 @@
-﻿using FootBalLife.Database.Models;
+﻿using FootBalLife.Database;
+using System;
+using System.Collections.Generic;
 
 namespace FootBalLife.Services.MatchGenerator.Events
 {

@@ -1,5 +1,6 @@
 ﻿using FootBalLife.Database;
-using FootBalLife.Database.Models;
+using System;
+using System.Collections.Generic;
 
 namespace FootBalLife.Services.PlayerStatsGen
 {
@@ -23,27 +24,27 @@ namespace FootBalLife.Services.PlayerStatsGen
         {
             _players.Clear();
 
-            var postions = Enum.GetValues<PlayerPostion>();
+            //var positions = Enum.GetValues<PlayerPosition>();
             var random = new Random();
 
             for (int i = 0; i < _playersCount; ++i)
             {
                 var player = new Player
                 {
-                    PersonID = i.ToString(),
-                    PositionID = (long)postions[random.Next(1, 3)],
-                    Speed = ValueRandomGen.Next(_basicValue, _errorValue),
+                    //PersonID = i.ToString(),
+                    //PositionCode = positions[random.Next(1, 3)],
+                    /*Speed = ValueRandomGen.Next(_basicValue, _errorValue),
                     Strike = ValueRandomGen.Next(_basicValue, _errorValue),
                     Endurance = ValueRandomGen.Next(_basicValue, _errorValue),
                     Physics = ValueRandomGen.Next(_basicValue, _errorValue),
                     Technique = ValueRandomGen.Next(_basicValue, _errorValue),
-                    Passing = ValueRandomGen.Next(_basicValue, _errorValue)
+                    Passing = ValueRandomGen.Next(_basicValue, _errorValue)*/
                 };
 
                 _players.Add(player);
             }
 
-            _players.First().PositionID = (long)PlayerPostion.GoalKeeper;
+            //_players.First().PositionID = (long)PlayerPostion.GoalKeeper;
         }
         public List<Player> GetPlayersStats()
         {

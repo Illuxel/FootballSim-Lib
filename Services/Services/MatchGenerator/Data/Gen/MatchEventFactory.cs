@@ -1,9 +1,9 @@
 ﻿using FootBalLife.Database;
-using FootBalLife.Database.Models;
 
 using FootBalLife.Services.MatchGenerator.Events;
 
 using Services.Services.MatchGenerator;
+using System;
 
 namespace FootBalLife.Services.MatchGenerator
 {
@@ -102,32 +102,32 @@ namespace FootBalLife.Services.MatchGenerator
                 case "BallStrike":
                     //avg(техніка)/avg(техніка_суперника) * avg(удар)/avg(фізика_суперника)
                     finalValue = baseValue * (homeTeam.AvgTechnique() / guestTeam.AvgTechnique())
-                        * (homeTeam.AvgStrike(PlayerPostion.Attacker) / homeTeam.AvgPhysicalTraining());
+                        * (homeTeam.AvgStrike(PlayerPosition.Attack) / homeTeam.AvgPhysicalTraining());
                     break;
                 case "BallStrikeMissed":
                     // (60/техніка_гравця)*(60/удар_гравця)
-                    finalValue = baseValue * (60 / homeTeam.GetPlayer(PlayerPostion.Attacker).Technique) 
-                        * (60 / homeTeam.GetPlayer(PlayerPostion.Attacker).Strike);
+                    finalValue = baseValue * (60 / homeTeam.GetPlayer(PlayerPosition.Attack).Technique) 
+                        * (60 / homeTeam.GetPlayer(PlayerPosition.Attack).Strike);
                     break;
                 case "BallStrikeGoal":
                     // (техніка_гравця/позиція_голкіпера)*(удар_гравця/реакція_голкіпера)
-                    finalValue = baseValue * (homeTeam.GetPlayer(PlayerPostion.Attacker).Technique / guestTeam.GetPlayer(PlayerPostion.GoalKeeper).Physics) 
-                        * (homeTeam.GetPlayer(PlayerPostion.Attacker).Strike / homeTeam.GetPlayer(PlayerPostion.GoalKeeper).Endurance);
+                    finalValue = baseValue * (homeTeam.GetPlayer(PlayerPosition.Attack).Technique / guestTeam.GetPlayer(PlayerPosition.Goalkeeper).Physics) 
+                        * (homeTeam.GetPlayer(PlayerPosition.Attack).Strike / homeTeam.GetPlayer(PlayerPosition.Goalkeeper).Endurance);
                     break;
                 case "BallStrikeSave":
                     // (позиція_голкіпера/техніка_гравця)*(реакція_голкіпера/удар_гравця)
-                    finalValue = baseValue * (guestTeam.GetPlayer(PlayerPostion.GoalKeeper).Physics / homeTeam.GetPlayer(PlayerPostion.Attacker).Technique) 
-                        * (guestTeam.GetPlayer(PlayerPostion.GoalKeeper).Endurance / homeTeam.GetPlayer(PlayerPostion.Attacker).Strike);
+                    finalValue = baseValue * (guestTeam.GetPlayer(PlayerPosition.Goalkeeper).Physics / homeTeam.GetPlayer(PlayerPosition.Attack).Technique) 
+                        * (guestTeam.GetPlayer(PlayerPosition.Goalkeeper).Endurance / homeTeam.GetPlayer(PlayerPosition.Attack).Strike);
                     break;
                 case "BallControl.HomePart": 
                 case "BallControl.Center":
                 case "BallControl.GuestPart":
                     // avg(передача)/avg(захист_суперника)
-                    finalValue = baseValue * homeTeam.AvgPassing() / guestTeam.AvgDefense(PlayerPostion.Defender);
+                    finalValue = baseValue * homeTeam.AvgPassing() / guestTeam.AvgDefense(PlayerPosition.Defence);
                     break;
                 case "BallInterception":
                     // avg(захист_суперника)/avg(передача)
-                    finalValue = baseValue * guestTeam.AvgDefense(PlayerPostion.Defender) / homeTeam.AvgPassing();
+                    finalValue = baseValue * guestTeam.AvgDefense(PlayerPosition.Defence) / homeTeam.AvgPassing();
                     break;
                 case "FreeKick":
                     // avg(техніка)/avg(техніка_суперника)
@@ -140,12 +140,12 @@ namespace FootBalLife.Services.MatchGenerator
                     break;
                 case "BallOut.FromAllie":
                     // avg(захист_суперника)/avg(передача) * avg(фізика_суперника)/avg(фізика)
-                    finalValue = baseValue * (guestTeam.AvgDefense(PlayerPostion.Defender) / homeTeam.AvgPassing())
+                    finalValue = baseValue * (guestTeam.AvgDefense(PlayerPosition.Defence) / homeTeam.AvgPassing())
                         * (guestTeam.AvgPhysicalTraining() / homeTeam.AvgPhysicalTraining());
                     break;
                 case "BallOut.FromEnemy":
                     // avg(захист_суперника)/avg(передача)
-                    finalValue = baseValue * (guestTeam.AvgDefense(PlayerPostion.Defender) / homeTeam.AvgPassing());
+                    finalValue = baseValue * (guestTeam.AvgDefense(PlayerPosition.Defence) / homeTeam.AvgPassing());
                     break;
             }
 
