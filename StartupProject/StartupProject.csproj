@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Database\DatabaseLayer.csproj" />
+    <ProjectReference Include="..\DatabaseLayer\DatabaseLayer.csproj" />
     <ProjectReference Include="..\Services\Services.csproj" />
   </ItemGroup>
 
