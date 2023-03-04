@@ -2,7 +2,7 @@
 {
     public class Match
     {
-        public string Id { get; internal set; }
+        public string Id { get; set; }
         public string MatchDate { get; set; }
 
         public string? HomeTeamId { get; set; }

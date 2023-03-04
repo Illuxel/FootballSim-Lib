@@ -1,5 +1,6 @@
-﻿using FootBalLife.Database.Repositories;
+﻿using Services.Services;
 using System;
+using System.Diagnostics;
 
 namespace StartupProject
 {
@@ -7,12 +8,26 @@ namespace StartupProject
     {
         static void Main(string[] args)
         {
-            TeamRepository teamRepository = new TeamRepository();
-            var teams = teamRepository.Retrive();
-            foreach(var item in teams)
-            {
-                Console.WriteLine(item.Name);
-            }
+
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+
+
+
+
+
+            var cmc = new ScheduleMatchGenerator();
+            cmc.Generate(DateTime.Now.Year);
+
+
+
+
+
+
+            stopWatch.Stop();
+            TimeSpan ts = stopWatch.Elapsed;
+            Console.WriteLine($"Час виконання коду: {ts}"); 
+
         }
     }
 }
