@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\FootbalLife-Lib\\Services\\Services.csproj": {}
+    "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\Services\\Services.csproj": {}
   },
   "projects": {
-    "D:\\FootbalLife-Lib\\Services\\Services.csproj": {
+    "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\DatabaseLayer\\DatabaseLayer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\FootbalLife-Lib\\Services\\Services.csproj",
-        "projectName": "Services",
-        "projectPath": "D:\\FootbalLife-Lib\\Services\\Services.csproj",
+        "projectUniqueName": "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\DatabaseLayer\\DatabaseLayer.csproj",
+        "projectName": "DatabaseLayer",
+        "projectPath": "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\DatabaseLayer\\DatabaseLayer.csproj",
         "packagesPath": "C:\\Users\\illay\\.nuget\\packages\\",
-        "outputPath": "D:\\FootbalLife-Lib\\Services\\obj\\",
+        "outputPath": "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\DatabaseLayer\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -44,6 +44,87 @@
         "netstandard2.1": {
           "targetAlias": "netstandard2.1",
           "dependencies": {
+            "Dapper": {
+              "target": "Package",
+              "version": "[2.0.123, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.2, )"
+            },
+            "System.Data.SQLite": {
+              "target": "Package",
+              "version": "[1.0.117, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.102\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\Services\\Services.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\Services\\Services.csproj",
+        "projectName": "Services",
+        "projectPath": "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\Services\\Services.csproj",
+        "packagesPath": "C:\\Users\\illay\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\Services\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\illay\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {
+              "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\DatabaseLayer\\DatabaseLayer.csproj": {
+                "projectPath": "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\DatabaseLayer\\DatabaseLayer.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "dependencies": {
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.2, )"
+            },
             "System.Text.Json": {
               "target": "Package",
               "version": "[7.0.2, )"
