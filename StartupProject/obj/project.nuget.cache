@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "dgSpecHash": "RZSXvrLRJJ/7g7oJTVJl02dGih+cw2RmhcGIlYwTshv+Wo8FwDGXII8ff9mRW3SGEUBTTFlLlWQAk+EydAA45A==",
+  "success": false,
+  "projectFilePath": "D:\\FootbalLife-Lib\\StartupProject\\StartupProject.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\illay\\.nuget\\packages\\system.text.encodings.web\\7.0.0\\system.text.encodings.web.7.0.0.nupkg.sha512",
+    "C:\\Users\\illay\\.nuget\\packages\\system.text.json\\7.0.2\\system.text.json.7.0.2.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1104",
+      "level": "Error",
+      "message": "Unable to find project 'D:\\FootbalLife-Lib\\Database\\DatabaseLayer.csproj'. Check that the project reference is valid and that the project file exists.",
+      "libraryId": "D:\\FootbalLife-Lib\\Database\\DatabaseLayer.csproj",
+      "targetGraphs": [
+        "net7.0"
+      ]
+    }
+  ]
+}

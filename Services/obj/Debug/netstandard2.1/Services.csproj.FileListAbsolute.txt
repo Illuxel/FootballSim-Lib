@@ -1,0 +1,5 @@
+D:\FootbalLife-Lib\Services\obj\Debug\netstandard2.1\Services.csproj.AssemblyReference.cache
+D:\FootbalLife-Lib\Services\obj\Debug\netstandard2.1\Services.GeneratedMSBuildEditorConfig.editorconfig
+D:\FootbalLife-Lib\Services\obj\Debug\netstandard2.1\Services.AssemblyInfoInputs.cache
+D:\FootbalLife-Lib\Services\obj\Debug\netstandard2.1\Services.AssemblyInfo.cs
+D:\FootbalLife-Lib\Services\obj\Debug\netstandard2.1\Services.csproj.CoreCompileInputs.cache
