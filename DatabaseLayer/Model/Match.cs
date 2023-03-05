@@ -2,20 +2,18 @@
 {
     public class Match
     {
-        public string Id { get; set; }
-        public string MatchDate { get; set; }
+        public string? ID { get; internal set; }
 
-        public string? HomeTeamId { get; set; }
-        public string? GuestTeamId { get; set; }
+        public string? Season { get; set; }
+        public long WeekNumber { get; set; }
 
-        public int HomeTeamGoals { get; set; }
-        public int GuestTeamGoals { get; set; }
+        public string? HomeTeam { get; set; }
+        public string? GuestTeam { get; set; }
 
-        public Team? HomeTeamNavigation { get; internal set; }
-        public Team? GuestTeamNavigation { get; internal set; }
+        public long HomeTeamGoals { get; set; }
+        public long GuestTeamGoals { get; set; }
 
-        public int TourNumber { get; set; }
-        public int LeagueId { get; set; }
-        public League League { get; internal set; }
+        public virtual Team? HomeTeamNavigation { get; internal set; }
+        public virtual Team? GuestTeamNavigation { get; internal set; }
     }
 }

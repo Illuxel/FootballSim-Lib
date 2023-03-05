@@ -2,6 +2,8 @@
 using DatabaseLayer.DBSettings;
 using System.Data.SQLite;
 using Dapper;
+using System.Linq;
+using System;
 
 namespace FootBalLife.Database.Repositories
 {
@@ -26,48 +28,27 @@ namespace FootBalLife.Database.Repositories
                 return results.AsList();
             }
         }
-
-        public List<Team> Retrive(int leagueId)
-        {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
-            {
-                var sql = @"SELECT Team.*, League.*
-                    FROM Team 
-                    LEFT JOIN League on Team.LeagueID = League.ID
-                    WHERE Team.LeagueID = @leagueId";
-                var results = connection.Query<Team, League, Team>(
-                    sql,
-                    (team, league) =>
-                    {
-                        team.League = league;
-                        return team;
-                    },
-                    param: new { leagueId },
-                    splitOn: "LeagueID"
-                );
-                return results.AsList();
-            }
-        }
-
         public Team Retrive(string teamId)
         {
-            if(string.IsNullOrEmpty(teamId))
-            {
-                return null;
-            }
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
-                connection.Open();
-                var query = @"SELECT * FROM TEAM
-                    WHERE ID = @teamId"
+                var query = @"SELECT Team.*, Contract.*, League.*
+                    FROM Team
+                    LEFT JOIN Contract ON Contract.TeamID = Team.ID
+                    LEFT JOIN League on Team.LeagueID = League.ID
+                    WHERE Team.ID = @teamId"
                 ;
-                
-                var team = connection.QuerySingleOrDefault<Team>(query, new { teamId });
 
-                team.League = connection.QuerySingleOrDefault<League>(
-                    "SELECT * FROM LEAGUE WHERE LEAGUE.ID = @id", new { id = team.LeagueID });
-                return team;
-                
+                using (var multi = connection.QueryMultiple(query, new { teamId }))
+                {
+                    var team = multi.Read<Team>().FirstOrDefault();
+                    var contracts = multi.Read<Contract>();
+                    var league = multi.Read<League>().FirstOrDefault();
+                    //team.Contracts = contracts.ToList();
+                    team.League = league;
+
+                    return team;
+                }
             }
         }
 
@@ -76,7 +57,7 @@ namespace FootBalLife.Database.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
-                var record = connection.QuerySingleOrDefault<Team>("SELECT * FROM Team WHERE ID = @teamId", new { teamId = team.Id });
+                var record = connection.QuerySingleOrDefault<Role>("SELECT * FROM Team WHERE ID = @teamId", new { teamId = team.Id });
                 bool result = false;
                 if (record == null)
                 {
@@ -95,7 +76,7 @@ namespace FootBalLife.Database.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
-                var record = connection.QuerySingleOrDefault<Team>("SELECT * FROM Team WHERE ID = @teamId", new { teamId = team.Id });
+                var record = connection.QuerySingleOrDefault<Role>("SELECT * FROM Team WHERE ID = @teamId", new { teamId = team.Id });
                 bool result = false;
                 if (record != null)
                 {
