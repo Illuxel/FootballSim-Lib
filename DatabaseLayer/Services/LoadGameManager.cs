@@ -7,9 +7,6 @@ using System.IO;
 using System.Linq;
 using DatabaseLayer.DBSettings;
 
-// Переробити заповнення даних в SaveInfo.json(З Dictiaonary в Class)
-// Шлях до оригінальної Бд ініціалізовувати в databasemanager за замовчуванням
-
 namespace FootBalLife.LoadGameManager
 {
     public class PlayerData
@@ -58,42 +55,33 @@ namespace FootBalLife.LoadGameManager
     public class LoadGameManager
     {
         public static LoadGameManager? instance;
-        public string _pathtosave { get; set; }
-        private static string _savePathInfo;
-        private static string _originalDbFileName = "FootbalLifeDB.db";
-        private static string _userDataFileName = "UserData.json";
-
-
-
-        private LoadGameManager(string pathtosave)
+        private LoadGameManager(string pathToSave)
         {
-            _pathtosave = pathtosave;
-            _savePathInfo = Path.Combine(pathtosave, "SavesInfo.json");
+            DatabaseManager._pathToSave = pathToSave;
+            DatabaseManager._savePathInfo = Path.Combine(pathToSave, "SavesInfo.json");
         }
 
-        public static LoadGameManager GetInstance(string currentPath = "")
+        public static LoadGameManager GetInstance(string pathToSave = "")
         {
             if (instance == null)
             {
-                instance = new LoadGameManager(currentPath);
+                instance = new LoadGameManager(pathToSave);
                 
             }
             return instance;
-
-
         }
 
         public List<SaveInfo> GetAllSaves()
         {
             List<SaveInfo> result = new List<SaveInfo>();
-            DirectoryInfo dir = new DirectoryInfo(_pathtosave);
+            DirectoryInfo dir = new DirectoryInfo(DatabaseManager._pathToSave);
             DirectoryInfo[] info = dir.GetDirectories("*.*");
             foreach (DirectoryInfo d in info)
             {
-                string path = Path.Combine(_pathtosave, d.Name, _userDataFileName);
+                string path = Path.Combine(DatabaseManager._pathToSave, d.Name, DatabaseManager._userDataFileName);
                 string json = File.ReadAllText(path);
                 PlayerData someData = JsonConvert.DeserializeObject<PlayerData>(json);
-                SaveInfo saveInfo = new SaveInfo() { PlayerData = someData, DbLocalPath = Path.Combine(_pathtosave, d.Name), SaveName = d.Name };
+                SaveInfo saveInfo = new SaveInfo() { PlayerData = someData, DbLocalPath = Path.Combine(DatabaseManager._pathToSave, d.Name), SaveName = d.Name };
                 result.Add(saveInfo);
             }
             return result;
@@ -101,7 +89,7 @@ namespace FootBalLife.LoadGameManager
         public bool Delete(string saveName)
         {
             //Get Save for deleting
-            DirectoryInfo dir = new DirectoryInfo(_pathtosave);
+            DirectoryInfo dir = new DirectoryInfo(DatabaseManager._pathToSave);
             var saveDirectory = dir.GetDirectories($"{saveName}.*").FirstOrDefault();
 
             //Deleting save
@@ -113,15 +101,15 @@ namespace FootBalLife.LoadGameManager
             var lastModifySaveDate = DateTime.MinValue;
             foreach (DirectoryInfo saveFolder in info)
             {
-                var lastModifyDateTime = File.GetLastWriteTime(Path.Combine(_pathtosave, saveFolder.Name));
+                var lastModifyDateTime = File.GetLastWriteTime(Path.Combine(DatabaseManager._pathToSave, saveFolder.Name));
                 if (lastModifyDateTime > lastModifySaveDate)
                 {
                     lastModifySaveName = saveFolder.Name;
                 }
             }
 
-            SaveInfoJson dataToJSON = new SaveInfoJson(Path.Combine(_pathtosave, lastModifySaveName));
-            File.WriteAllText(_savePathInfo, JsonConvert.SerializeObject(dataToJSON, Formatting.Indented));
+            SaveInfoJson dataToJSON = new SaveInfoJson(Path.Combine(DatabaseManager._pathToSave, lastModifySaveName));
+            File.WriteAllText(DatabaseManager._savePathInfo, JsonConvert.SerializeObject(dataToJSON, Formatting.Indented));
 
 
             return true;
@@ -131,7 +119,7 @@ namespace FootBalLife.LoadGameManager
         {
             //getting directory
             SaveInfo saveInfo = new SaveInfo();
-            string jsonSave = File.ReadAllText(_savePathInfo);
+            string jsonSave = File.ReadAllText(DatabaseManager._savePathInfo);
             string savePath = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonSave).ElementAt(0).Value.ToString();
             if (!Directory.Exists(savePath))
             {
@@ -142,11 +130,11 @@ namespace FootBalLife.LoadGameManager
             DatabaseManager.SetConnectionString(savePath);
 
             //Filling class with data
-            string json = File.ReadAllText(Path.Combine(savePath, _userDataFileName));
+            string json = File.ReadAllText(Path.Combine(savePath, DatabaseManager._userDataFileName));
             PlayerData someData = JsonConvert.DeserializeObject<PlayerData>(json);
             saveInfo.SaveName = savePath.Substring(savePath.LastIndexOf("\\") + 1, savePath.Length - savePath.LastIndexOf("\\") - 1);
             saveInfo.PlayerData = someData;
-            saveInfo.DbLocalPath = Path.Combine(savePath, _originalDbFileName);
+            saveInfo.DbLocalPath = Path.Combine(savePath, DatabaseManager._originalDbFileName);
 
             
             return saveInfo;
@@ -154,7 +142,7 @@ namespace FootBalLife.LoadGameManager
         public SaveInfo? Load(string SaveName)
         {
             //Validate of Exist directory
-            string savePath = Path.Combine(_pathtosave, SaveName);
+            string savePath = Path.Combine(DatabaseManager._pathToSave, SaveName);
             var saveInfo = new SaveInfo();
             if (!Directory.Exists(savePath))
             {
@@ -163,19 +151,19 @@ namespace FootBalLife.LoadGameManager
 
             //Refresh Json SaveInfo
             SaveInfoJson dataToJSON = new SaveInfoJson(savePath);
-            File.WriteAllText(_savePathInfo, JsonConvert.SerializeObject(dataToJSON, Formatting.Indented));
+            File.WriteAllText(DatabaseManager._savePathInfo, JsonConvert.SerializeObject(dataToJSON, Formatting.Indented));
 
             //Create connection to database
             DatabaseManager.SetConnectionString(savePath);
 
             //getting data
-            savePath = Path.Combine(savePath, _userDataFileName);
+            savePath = Path.Combine(savePath, DatabaseManager._userDataFileName);
             string json = File.ReadAllText(savePath);
             PlayerData someData = JsonConvert.DeserializeObject<PlayerData>(json);
             
             saveInfo.SaveName = SaveName;
             saveInfo.PlayerData = someData;
-            saveInfo.DbLocalPath = Path.Combine(savePath, _originalDbFileName);
+            saveInfo.DbLocalPath = Path.Combine(savePath, DatabaseManager._originalDbFileName);
 
             
 
@@ -206,15 +194,15 @@ namespace FootBalLife.LoadGameManager
 
             //Create Save Info File
             SaveInfoJson dataToJSON = new SaveInfoJson(path);
-            File.WriteAllText(_savePathInfo, JsonConvert.SerializeObject(dataToJSON, Formatting.Indented));
+            File.WriteAllText(DatabaseManager._savePathInfo, JsonConvert.SerializeObject(dataToJSON, Formatting.Indented));
 
             
 
             //Filling the database with data
             Directory.CreateDirectory(path);
-            File.Copy(DatabaseManager.ODBPath, Path.Combine(path, _originalDbFileName));
+            File.Copy(DatabaseManager._originalDbFilePath, Path.Combine(path, DatabaseManager._originalDbFileName));
             var json = JsonConvert.SerializeObject(data, Formatting.Indented);
-            var jsonpath = Path.Combine(path, _userDataFileName);
+            var jsonpath = Path.Combine(path, DatabaseManager._userDataFileName);
             File.WriteAllText(jsonpath, json);
 
             //Create connection to database
@@ -223,7 +211,7 @@ namespace FootBalLife.LoadGameManager
             //Filling the class SaveInfo with data
             saveInfo.SaveName = saveName;
             saveInfo.PlayerData = data;
-            saveInfo.DbLocalPath = Path.Combine(path, _originalDbFileName);
+            saveInfo.DbLocalPath = Path.Combine(path, DatabaseManager._originalDbFileName);
             return saveInfo;
         }
 
@@ -232,7 +220,7 @@ namespace FootBalLife.LoadGameManager
         {
             if (SaveName != "")
             {
-                string result = _pathtosave + "\\" + SaveName;
+                string result = DatabaseManager._pathToSave + "\\" + SaveName;
                 if (Directory.Exists(result))
                 {
                     throw new Exception("Save with this name is exist");
@@ -255,13 +243,13 @@ namespace FootBalLife.LoadGameManager
                 ++saveNumber;
             }
 
-            return Path.Combine(_pathtosave,"Save" + saveNumber);
+            return Path.Combine(DatabaseManager._pathToSave, "Save" + saveNumber);
         }
 
         private List<string> GetFilesInfo()
         {
             var list = new List<string>();
-            DirectoryInfo dir = new DirectoryInfo(_pathtosave);
+            DirectoryInfo dir = new DirectoryInfo(DatabaseManager._pathToSave);
             DirectoryInfo[] info = dir.GetDirectories("*Save*.*");
             foreach (DirectoryInfo file in info)
             {

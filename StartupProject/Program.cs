@@ -14,14 +14,13 @@ namespace StartupProject
             string ch = Console.ReadLine();
             var guidString = Guid.NewGuid().ToString();
             PlayerData someData = new PlayerData(guidString, "Mikola", "21/01/2023", 1991.1);
-            var fileManager = LoadGameManager.GetInstance("D:\\daaaaaaaaaaaaatttttttttaaaaaaaaaaa");
+            var fileManager = LoadGameManager.GetInstance("D:\\SaveFolder");
 
             SaveInfo saveInfo = new SaveInfo();
 
 
             switch (ch)
             {
-
                 case "1":
                     saveInfo = fileManager.Continue();
                     saveInfo.Show();

@@ -11,17 +11,23 @@ namespace DatabaseLayer.DBSettings
     public static class DatabaseManager
     {
         internal static string ConnectionString { get; set; }
-        internal static string ODBPath { get; } = "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\DatabaseLayer\\Database\\FootbalLifeDB.db";
+       
+
+        internal static string _pathToSave { get; set; }
+        internal static string _savePathInfo;
+        internal static string _originalDbFileName = "FootbalLifeDB.db";
+        internal static string _userDataFileName = "UserData.json";
+        internal static string _originalDbFilePath { get; } = Path.Combine(".", "Database", _originalDbFileName);
 
 
         public static string getOriginDataBasePath()
         {
-            return ODBPath;
+            return _originalDbFileName;
         }
 
         public static void SetConnectionString(string dataBasePath)
         {
-            ConnectionString = "Data Source=" + dataBasePath + "\\FootbalLifeDB.db";
+            ConnectionString = "Data Source=" + Path.Combine(dataBasePath, _originalDbFileName);
         }
     }
 }
