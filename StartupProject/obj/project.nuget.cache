@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "+Y0OivCfI3AHitiXZS1JGB+j1YgIAMvJ8xe0Eef50RldIRmiDGb3aE+2oZURhXt4zitaWp+9ntmvtg9kYFrNWA==",
+  "dgSpecHash": "Ck4+yI4pwuDf/PrnCo04q0cs1f+bl8o32HC2MN7cnHUk87WsIop6xnR7tBILcRUUMRC/7LsIYi4wihm82bfvSg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\StartupProject\\StartupProject.csproj",
+  "projectFilePath": "D:\\FootbalLife-Lib\\StartupProject\\StartupProject.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\illay\\.nuget\\packages\\dapper\\2.0.123\\dapper.2.0.123.nupkg.sha512",
     "C:\\Users\\illay\\.nuget\\packages\\entityframework\\6.4.4\\entityframework.6.4.4.nupkg.sha512",

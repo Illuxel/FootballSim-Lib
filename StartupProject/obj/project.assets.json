@@ -1479,11 +1479,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\StartupProject\\StartupProject.csproj",
+      "projectUniqueName": "D:\\FootbalLife-Lib\\StartupProject\\StartupProject.csproj",
       "projectName": "StartupProject",
-      "projectPath": "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\StartupProject\\StartupProject.csproj",
+      "projectPath": "D:\\FootbalLife-Lib\\StartupProject\\StartupProject.csproj",
       "packagesPath": "C:\\Users\\illay\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\StartupProject\\obj\\",
+      "outputPath": "D:\\FootbalLife-Lib\\StartupProject\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -1504,11 +1504,11 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\DatabaseLayer\\DatabaseLayer.csproj": {
-              "projectPath": "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\DatabaseLayer\\DatabaseLayer.csproj"
+            "D:\\FootbalLife-Lib\\DatabaseLayer\\DatabaseLayer.csproj": {
+              "projectPath": "D:\\FootbalLife-Lib\\DatabaseLayer\\DatabaseLayer.csproj"
             },
-            "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\Services\\Services.csproj": {
-              "projectPath": "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\Services\\Services.csproj"
+            "D:\\FootbalLife-Lib\\Services\\Services.csproj": {
+              "projectPath": "D:\\FootbalLife-Lib\\Services\\Services.csproj"
             }
           }
         }

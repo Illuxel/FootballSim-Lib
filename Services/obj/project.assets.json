@@ -1730,11 +1730,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\Services\\Services.csproj",
+      "projectUniqueName": "D:\\FootbalLife-Lib\\Services\\Services.csproj",
       "projectName": "Services",
-      "projectPath": "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\Services\\Services.csproj",
+      "projectPath": "D:\\FootbalLife-Lib\\Services\\Services.csproj",
       "packagesPath": "C:\\Users\\illay\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\Services\\obj\\",
+      "outputPath": "D:\\FootbalLife-Lib\\Services\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -1755,8 +1755,8 @@
         "netstandard2.1": {
           "targetAlias": "netstandard2.1",
           "projectReferences": {
-            "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\DatabaseLayer\\DatabaseLayer.csproj": {
-              "projectPath": "C:\\Users\\illay\\Desktop\\FootbalLife-Lib-main\\DatabaseLayer\\DatabaseLayer.csproj"
+            "D:\\FootbalLife-Lib\\DatabaseLayer\\DatabaseLayer.csproj": {
+              "projectPath": "D:\\FootbalLife-Lib\\DatabaseLayer\\DatabaseLayer.csproj"
             }
           }
         }
