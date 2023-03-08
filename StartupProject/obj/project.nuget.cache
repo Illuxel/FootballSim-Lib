@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Ck4+yI4pwuDf/PrnCo04q0cs1f+bl8o32HC2MN7cnHUk87WsIop6xnR7tBILcRUUMRC/7LsIYi4wihm82bfvSg==",
+  "dgSpecHash": "Zaxys6qy8B5hjeBNw/6tUvpAjNPjmsQiFsiOIE35aVy7UW/d3Armzy6BPf4x9sBjjIpsIV3zAiS7AUDQKle4Cw==",
   "success": true,
-  "projectFilePath": "D:\\FootbalLife-Lib\\StartupProject\\StartupProject.csproj",
+  "projectFilePath": "C:\\Users\\illay\\Desktop\\FootbalGame\\StartupProject\\StartupProject.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\illay\\.nuget\\packages\\dapper\\2.0.123\\dapper.2.0.123.nupkg.sha512",
     "C:\\Users\\illay\\.nuget\\packages\\entityframework\\6.4.4\\entityframework.6.4.4.nupkg.sha512",
@@ -10,7 +10,7 @@
     "C:\\Users\\illay\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
     "C:\\Users\\illay\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
     "C:\\Users\\illay\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
-    "C:\\Users\\illay\\.nuget\\packages\\newtonsoft.json\\13.0.2\\newtonsoft.json.13.0.2.nupkg.sha512",
+    "C:\\Users\\illay\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
     "C:\\Users\\illay\\.nuget\\packages\\runtime.native.system.data.sqlclient.sni\\4.7.0\\runtime.native.system.data.sqlclient.sni.4.7.0.nupkg.sha512",
     "C:\\Users\\illay\\.nuget\\packages\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
     "C:\\Users\\illay\\.nuget\\packages\\runtime.win-x64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-x64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",

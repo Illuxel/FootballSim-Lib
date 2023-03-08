@@ -1,67 +1,137 @@
 ﻿using System.Collections.Generic;
 using System;
+using DatabaseLayer.DBSettings;
+using System.Data.SQLite;
+using Dapper;
+using System.Linq;
+using System.Data;
 
 namespace FootBalLife.Database.Repositories
 {
     public class MatchRepository
-    {/*
-        public List<Match> Retrive()
+    {
+        public List<Match> Retrive(string teamId)
         {
             List<Match> result = new List<Match>();
-            var listData = context.Matches;
-            foreach (Match data in listData)
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
-                result.Add(mapping(data));
-
+                connection.Open();
+                result = connection.Query<Match>(
+                    "SELECT * FROM Match WHERE HomeTeamId = @teamId or GuestTeamId = @teamId",
+                    new { teamId }).AsList();
             }
+
             return result;
         }
-        public Match Retrive(string ID)
-        {
-            Match? league = context.Matches.Find(ID);
-            if (league != null)
-            {
-                return mapping(league);
-            }
-            return new Match();
-        }
 
-        public bool Modify(Match eData)
+        public List<Match> Retrive(int leagueId, int tourNumber = 0)
         {
-            bool result = false;
-            Match data = context.Matches.Find(eData.ID);
+            List<Match> result = new List<Match>();
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                var sql = "SELECT * FROM Match WHERE LeagueId = @leagueId";
+                var sqlParams = new { leagueId };
+                
+                result = connection.Query<Match>(sql, sqlParams).AsList();
+                if (tourNumber != 0)
+                {
+                    return result.Where(item => item.TourNumber == tourNumber).ToList();
+                }
+            }
 
-            if (data == null)
-            {
-                data = mapping(eData, data);
-                Guid myuuid = Guid.NewGuid();
-                string myuuidAsString = myuuid.ToString();
-                data.ID = myuuidAsString;
-                context.Matches.Add(data);
-                context.SaveChanges();
-                result = true;
-            }
-            else
-            {
-                data = mapping(eData, data);
-                context.Matches.Update(data);
-                context.SaveChanges();
-                result = true;
-            }
             return result;
-
         }
-        public bool Delete(string ID)
+
+        public void Insert(List<Match> matches)
         {
-            Match? data = context.Matches.Find(ID);
-            if (data != null)
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
-                context.Matches.Remove(data);
-                context.SaveChanges();
-                return true;
+                connection.Open();
+                using (IDbTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        var rowsAffected = connection.Execute(
+                        @"INSERT INTO Match (Id, HomeTeamId, GuestTeamId, MatchDate, HomeTeamGoals, 
+                            GuestTeamGoals, TourNumber, LeagueId)
+                            VALUES (@Id, @HomeTeamId, @GuestTeamId, @MatchDate, @HomeTeamGoals, 
+                            @GuestTeamGoals, @TourNumber, @LeagueId)",
+                        matches, transaction);
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw ex;
+                    }
+                }
             }
-            return false;
+        }
+
+        public bool Insert(Match match)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                match.Id = Guid.NewGuid().ToString();
+                var record = connection.QuerySingleOrDefault<Match>("SELECT * FROM Match WHERE Id = @id",
+                    new { id = match.Id });
+                bool result = false;
+                if (record == null)
+                {
+                    var rowsAffected = connection.Execute(
+                        @"INSERT INTO Match (Id, HomeTeamId, GuestTeamId, MatchDate, HomeTeamGoals, 
+                           GuestTeamGoals, TourNumber, LeagueId)
+                         VALUES (@Id, @HomeTeamId, @GuestTeamId, @MatchDate, @HomeTeamGoals, 
+                           @GuestTeamGoals, @TourNumber, @LeagueId)",
+                        match);
+                    result = rowsAffected == 1;
+                }
+                return result;
+            }
+        }
+
+        /*public void Insert(List<Match> matches)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                foreach(var match in matches)
+                {
+                    match.Id = Guid.NewGuid().ToString();
+                }
+                connection.Insert(matches);
+
+                //return rowsAffected == 1;
+            }
         }*/
+
+        public bool Update(Match match)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                var record = connection.QuerySingleOrDefault<Match>("SELECT * FROM Match WHERE Id = @id",
+                    new { id = match.Id });
+                bool result = false;
+                if (record != null)
+                {
+                    var rowsAffected = connection.Execute(
+                        @"UPDATE Match
+                            SET HomeTeamId = @HomeTeamId,
+                                GuestTeamId = @GuestTeamId,
+                                MatchDate = @MatchDate,
+                                HomeTeamGoals = @HomeTeamGoals,
+                                GuestTeamGoals = @GuestTeamGoals,
+                                TourNumber = @TourNumber,
+                                LeagueId = @LeagueId
+                            WHERE d = @Id;",
+                        match);
+                    result = rowsAffected == 1;
+                }
+                return result;
+            }
+        }
     }
 }
 

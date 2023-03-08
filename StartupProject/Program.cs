@@ -1,8 +1,14 @@
 ﻿using FootBalLife.Database.Repositories;
-using FootBalLife.LoadGameManager;
+using Services.Services;
 using System;
 using System.Collections.Generic;
-using DatabaseLayer.DBSettings;
+using System.Diagnostics;
+
+using FootBalLife.Database.Repositories;
+using DatabaseLayer.Services;
+using System;
+using System.Collections.Generic;
+using Services.PersonNameGenaration;
 
 namespace StartupProject
 {
@@ -10,6 +16,7 @@ namespace StartupProject
     {
         static void Main(string[] args)
         {
+
             Console.WriteLine("Choise operation!");
             string ch = Console.ReadLine();
             var guidString = Guid.NewGuid().ToString();
@@ -25,12 +32,32 @@ namespace StartupProject
                     saveInfo = fileManager.Continue();
                     saveInfo.Show();
 
-                    TeamRepository teamRepository1 = new TeamRepository();
-                    var teams = teamRepository1.Retrive();
-                    foreach (var item in teams)
+                    PersonNameGenaration nameGeneration = new PersonNameGenaration();
+
+                    foreach (var one in nameGeneration.CreatePersonNames(9, 30))
                     {
-                        Console.WriteLine(item.Name);
+                        Console.WriteLine("Name: " + one.Name + ". Surname: " + one.Surname);
                     }
+
+                    Stopwatch stopWatch = new Stopwatch();
+                    stopWatch.Start();
+
+
+
+
+
+                    var cmc = new ScheduleMatchGenerator();
+                    cmc.Generate(DateTime.Now.Year);
+
+
+
+
+
+
+                    stopWatch.Stop();
+                    TimeSpan ts = stopWatch.Elapsed;
+                    Console.WriteLine($"Час виконання коду: {ts}");
+
                     break;
                 case "2":
                     Console.WriteLine("Choise Name!");
@@ -71,7 +98,9 @@ namespace StartupProject
                     break;
             }
 
-        }
 
+             
+
+        }
     }
 }
