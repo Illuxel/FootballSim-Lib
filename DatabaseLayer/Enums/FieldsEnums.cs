@@ -3,10 +3,10 @@
     public enum PlayerPosition
     {
         All,
+        Goalkeeper,
         Attack,
         Defence,
-        Midfield,
-        Goalkeeper
+        Midfield
     }
     public enum StrategyType
     {

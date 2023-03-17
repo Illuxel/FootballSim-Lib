@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using DatabaseLayer.DBSettings;
 using System.Data.SQLite;
 using Dapper;
+using System.Linq;
 
 namespace FootBalLife.Database.Repositories
 {
@@ -26,6 +27,29 @@ namespace FootBalLife.Database.Repositories
                 return results.AsList();
             }
         }
+        
+        public Team Retrive(string teamId)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                var query = @"SELECT Team.*, Contract.*, League.*
+                    FROM Team
+                    LEFT JOIN Contract ON Contract.TeamID = Team.ID
+                    LEFT JOIN League on Team.LeagueID = League.ID
+                    WHERE Team.ID = @teamId"
+                ;
+
+                using (var multi = connection.QueryMultiple(query, new { teamId }))
+                {
+                    var team = multi.Read<Team>().FirstOrDefault();
+                    var contracts = multi.Read<Contract>();
+                    var league = multi.Read<League>().FirstOrDefault();
+                    //team.Contracts = contracts.ToList();
+                    team.League = league;
+
+                    return team;
+                }
+
 
         public List<Team> Retrive(int leagueId)
         {
@@ -76,6 +100,7 @@ namespace FootBalLife.Database.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
+
                 var record = connection.QuerySingleOrDefault<Team>("SELECT * FROM Team WHERE ID = @teamId", new { teamId = team.Id });
                 bool result = false;
                 if (record == null)
@@ -95,7 +120,9 @@ namespace FootBalLife.Database.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
+
                 var record = connection.QuerySingleOrDefault<Team>("SELECT * FROM Team WHERE ID = @teamId", new { teamId = team.Id });
+
                 bool result = false;
                 if (record != null)
                 {

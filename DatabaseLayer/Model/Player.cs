@@ -2,7 +2,7 @@
 {
     public class Player
     {
-        public string? PersonID { get; internal set; }
+        public string? PersonID { get; set; }
 
         public string? PositionCode { get; set; }
 

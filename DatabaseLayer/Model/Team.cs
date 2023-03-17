@@ -1,4 +1,4 @@
-﻿using FootBalLife.Database.Repositories;
+using FootBalLife.Database.Repositories;
 using System.Collections.Generic;
 using System.Linq;
 
