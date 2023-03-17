@@ -32,7 +32,8 @@ namespace FootBalLife.Database.Repositories
             }
         }
 
-        public List<Player> Retrive(Guid teamId)
+
+        public List<Player> Retrive(string teamId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {

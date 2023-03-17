@@ -4,6 +4,7 @@ using DatabaseLayer.DBSettings;
 using System.Data.SQLite;
 using Dapper;
 using System.Linq;
+using System.Data;
 
 namespace FootBalLife.Database.Repositories
 {
@@ -42,6 +43,31 @@ namespace FootBalLife.Database.Repositories
             return result;
         }
 
+        public void Insert(List<Match> matches)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                using (IDbTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        var rowsAffected = connection.Execute(
+                        @"INSERT INTO Match (Id, HomeTeamId, GuestTeamId, MatchDate, HomeTeamGoals, 
+                            GuestTeamGoals, TourNumber, LeagueId)
+                            VALUES (@Id, @HomeTeamId, @GuestTeamId, @MatchDate, @HomeTeamGoals, 
+                            @GuestTeamGoals, @TourNumber, @LeagueId)",
+                        matches, transaction);
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw ex;
+                    }
+                }
+            }
+        }
+
         public bool Insert(Match match)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
@@ -65,12 +91,26 @@ namespace FootBalLife.Database.Repositories
             }
         }
 
+        /*public void Insert(List<Match> matches)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                foreach(var match in matches)
+                {
+                    match.Id = Guid.NewGuid().ToString();
+                }
+                connection.Insert(matches);
+
+                //return rowsAffected == 1;
+            }
+        }*/
+
         public bool Update(Match match)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
-                match.Id = Guid.NewGuid().ToString();
                 var record = connection.QuerySingleOrDefault<Match>("SELECT * FROM Match WHERE Id = @id",
                     new { id = match.Id });
                 bool result = false;

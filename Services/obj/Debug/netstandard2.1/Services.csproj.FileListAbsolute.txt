@@ -1,0 +1,14 @@
+C:\Users\illay\Desktop\FootbalGame\Services\obj\Debug\netstandard2.1\Services.csproj.AssemblyReference.cache
+C:\Users\illay\Desktop\FootbalGame\Services\obj\Debug\netstandard2.1\Services.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\illay\Desktop\FootbalGame\Services\obj\Debug\netstandard2.1\Services.AssemblyInfoInputs.cache
+C:\Users\illay\Desktop\FootbalGame\Services\obj\Debug\netstandard2.1\Services.AssemblyInfo.cs
+C:\Users\illay\Desktop\FootbalGame\Services\obj\Debug\netstandard2.1\Services.csproj.CoreCompileInputs.cache
+C:\Users\illay\Desktop\FootbalGame\Services\bin\Debug\netstandard2.1\Database\FootbalLifeDB.db
+C:\Users\illay\Desktop\FootbalGame\Services\bin\Debug\netstandard2.1\Services.deps.json
+C:\Users\illay\Desktop\FootbalGame\Services\bin\Debug\netstandard2.1\Services.dll
+C:\Users\illay\Desktop\FootbalGame\Services\bin\Debug\netstandard2.1\Services.pdb
+C:\Users\illay\Desktop\FootbalGame\Services\bin\Debug\netstandard2.1\DatabaseLayer.dll
+C:\Users\illay\Desktop\FootbalGame\Services\bin\Debug\netstandard2.1\DatabaseLayer.pdb
+C:\Users\illay\Desktop\FootbalGame\Services\obj\Debug\netstandard2.1\Services.csproj.CopyComplete
+C:\Users\illay\Desktop\FootbalGame\Services\obj\Debug\netstandard2.1\Services.dll
+C:\Users\illay\Desktop\FootbalGame\Services\obj\Debug\netstandard2.1\Services.pdb
