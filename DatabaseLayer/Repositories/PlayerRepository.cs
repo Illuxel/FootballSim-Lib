@@ -3,6 +3,8 @@ using DatabaseLayer.DBSettings;
 using System.Data.SQLite;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data;
+using System;
 
 namespace FootBalLife.Database.Repositories
 {
@@ -98,6 +100,31 @@ namespace FootBalLife.Database.Repositories
                     result = rowsAffected == 1;
                 }
                 return result;
+            }
+        }
+
+        public void Insert(List<Player> players)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                using (IDbTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        var rowsAffected = connection.Execute(
+                        @"INSERT INTO Player (PersonID, PositionCode, ContractId, Speed, Kick, 
+                            Endurance, Strike, Physics, Technique, Passing) 
+                        VALUES (@PersonID, @PositionCode, @ContractId, @Speed, @Kick, 
+                            @Endurance, @Strike, @Physics, @Technique, @Passing)",
+                        players, transaction);
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw ex;
+                    }
+                }
             }
         }
 
