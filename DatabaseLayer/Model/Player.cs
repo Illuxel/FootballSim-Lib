@@ -2,7 +2,7 @@
 {
     public class Player
     {
-        public string? PersonID { get; internal set; }
+        public string PersonID { get; set; }
 
         public string? PositionCode { get; set; }
 
@@ -10,16 +10,19 @@
 
         public int Kick { get; set; }
 
-        public long Speed { get; set; }
-        
-        //у воротаря ця властивість - Рефлекси
+        //відповідає за рівень "свіжості гравця"
         public long Endurance { get; set; }
-        public long Strike { get; set; }
 
+        //ігрові характеристики
+        public long Strike { get; set; }
+        public long Speed { get; set; }
         //у воротаря ця властивість - Вибір позиції
         public long Physics { get; set; }
         public long Technique { get; set; }
         public long Passing { get; set; }
+
+        //у воротаря ця властивість - Рефлекси
+        public int Dribbling { get; set; }
 
         public Person? Person { get; internal set; }
         public Position? Position { get; set; }

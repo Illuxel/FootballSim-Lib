@@ -114,9 +114,9 @@ namespace FootBalLife.Database.Repositories
                     {
                         var rowsAffected = connection.Execute(
                         @"INSERT INTO Player (PersonID, PositionCode, ContractId, Speed, Kick, 
-                            Endurance, Strike, Physics, Technique, Passing) 
+                            Endurance, Strike, Physics, Technique, Passing, Dribbling) 
                         VALUES (@PersonID, @PositionCode, @ContractId, @Speed, @Kick, 
-                            @Endurance, @Strike, @Physics, @Technique, @Passing)",
+                            @Endurance, @Strike, @Physics, @Technique, @Passing, @Dribbling)",
                         players, transaction);
                     }
                     catch (Exception ex)
@@ -146,7 +146,8 @@ namespace FootBalLife.Database.Repositories
                             Strike = @Strike, 
                             Physics = @Physics, 
                             Technique = @Technique, 
-                            Passing = @Passing 
+                            Passing = @Passing,
+                            Dribbling = @Dribbling
                         WHERE PersonID = @PersonID",
                         player);
                     result = rowsAffected == 1;
