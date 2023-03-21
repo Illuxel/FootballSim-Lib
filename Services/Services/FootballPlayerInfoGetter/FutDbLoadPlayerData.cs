@@ -1,12 +1,12 @@
-﻿using FootBalLife.Database;
-using FootBalLife.Database.Repositories;
+﻿using DatabaseLayer;
+using DatabaseLayer.Repositories;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
 
-namespace Services.Services
+namespace BusinessLogicLayer.Services
 {
     public class FutDbLoadPlayerData
     {

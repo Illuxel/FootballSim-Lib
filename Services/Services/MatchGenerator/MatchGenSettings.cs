@@ -1,6 +1,7 @@
-﻿using System.Reflection;
+﻿using System.IO;
+using System.Reflection;
 
-namespace FootBalLife.Services.MatchGenerator
+namespace BusinessLogicLayer.Services.MatchGenerator
 {
     public static class MatchGenSettings
     {

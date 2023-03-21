@@ -1,4 +1,4 @@
-﻿namespace FootBalLife.Database
+﻿namespace DatabaseLayer
 {
     public class Director
     {

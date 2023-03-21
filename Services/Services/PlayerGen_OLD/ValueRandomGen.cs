@@ -1,4 +1,6 @@
-﻿namespace FootBalLife.Services.PlayerStatsGen
+﻿using System;
+
+namespace BusinessLogicLayer.Services
 {
     public class ValueRandomGen
     {
@@ -22,16 +24,16 @@
         {
             return Next(_mean, _stdDev, _minVal, _maxVal);
         }
-        public static long Next(double mean, double stdDev, double minVal = 1, double maxVal = 100)
+        public static int Next(double mean, double stdDev, double minVal = 1, double maxVal = 100)
         {
-            Random random = new();
+            Random random = new Random();
 
             double u1 = random.NextDouble();
             double u2 = random.NextDouble();
 
             double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
 
-            return (long)(Math.Max(Math.Min(mean + stdDev * randStdNormal, maxVal), minVal));
+            return (int)(Math.Max(Math.Min(mean + stdDev * randStdNormal, maxVal), minVal));
         }
     }
 }

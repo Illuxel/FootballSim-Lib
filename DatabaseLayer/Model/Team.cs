@@ -1,8 +1,8 @@
-using FootBalLife.Database.Repositories;
+using DatabaseLayer.Repositories;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FootBalLife.Database
+namespace DatabaseLayer
 {
     public class Team
     {

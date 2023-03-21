@@ -1,6 +1,9 @@
-﻿using FootBalLife.Database;
+﻿using DatabaseLayer;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace FootBalLife.Services.MatchGenerator
+namespace BusinessLogicLayer.Services.MatchGenerator
 {
     internal static class MatchEventFactory
     {
@@ -25,7 +28,7 @@ namespace FootBalLife.Services.MatchGenerator
 
             matchEvent.IsBallIntercepted =  MatchEventsJson.GetValue<bool>(eventCode, "IsBallIntercepted");
 
-            if (matchEvent is not BallControlEvent || matchEvent is BallControlEvent && !eventArg.Any())
+            if (!(matchEvent is BallControlEvent) || matchEvent is BallControlEvent && !eventArg.Any())
             {
                 var locationName = MatchEventsJson.GetValue<string>(eventCode, "BaseEventLocation");
                 matchEvent.Location = Enum.Parse<EventLocation>(locationName);
@@ -102,17 +105,17 @@ namespace FootBalLife.Services.MatchGenerator
                     break; 
                 case "BallStrikeMissed":
                     // (60/техніка_гравця)*(60/удар_гравця)
-                    nextChance = baseValue * (60 / homeTeam.GetPlayer(PlayerPosition.Attack).Technique)
+                    nextChance = baseValue * (60 / homeTeam.GetPlayer(PlayerPosition.Attack).Dribbling)
                         * (60 / homeTeam.GetPlayer(PlayerPosition.Attack).Strike);
                     break;
                 case "BallStrikeGoal":
                     // (техніка_гравця/позиція_голкіпера)*(удар_гравця/реакція_голкіпера)
-                    nextChance = baseValue * (homeTeam.GetPlayer(PlayerPosition.Attack).Technique / guestTeam.GetPlayer(PlayerPosition.Goalkeeper).Physics)
+                    nextChance = baseValue * (homeTeam.GetPlayer(PlayerPosition.Attack).Dribbling / guestTeam.GetPlayer(PlayerPosition.Goalkeeper).Physics)
                         * (homeTeam.GetPlayer(PlayerPosition.Attack).Strike / homeTeam.GetPlayer(PlayerPosition.Goalkeeper).Endurance);
                     break;
                 case "BallStrikeSave":
                     // (позиція_голкіпера/техніка_гравця)*(реакція_голкіпера/удар_гравця)
-                    nextChance = baseValue * (guestTeam.GetPlayer(PlayerPosition.Goalkeeper).Physics / homeTeam.GetPlayer(PlayerPosition.Attack).Technique)
+                    nextChance = baseValue * (guestTeam.GetPlayer(PlayerPosition.Goalkeeper).Physics / homeTeam.GetPlayer(PlayerPosition.Attack).Dribbling)
                         * (guestTeam.GetPlayer(PlayerPosition.Goalkeeper).Endurance / homeTeam.GetPlayer(PlayerPosition.Attack).Strike);
                     break;
                 case "BallControl.HomePart":

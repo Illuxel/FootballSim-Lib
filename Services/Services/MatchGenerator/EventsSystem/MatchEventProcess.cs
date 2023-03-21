@@ -1,6 +1,8 @@
-﻿using FootBalLife.Database;
+﻿using DatabaseLayer;
+using System;
+using System.Collections.Generic;
 
-namespace FootBalLife.Services.MatchGenerator
+namespace BusinessLogicLayer.Services.MatchGenerator
 {
     internal class MatchEventProcess : IMatchGameEvent
     {

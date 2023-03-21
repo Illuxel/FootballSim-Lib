@@ -3,7 +3,7 @@ using DatabaseLayer.DBSettings;
 using System.Data.SQLite;
 using Dapper;
 
-namespace FootBalLife.Database.Repositories
+namespace DatabaseLayer.Repositories
 {
     public class PersonNameRepository
     {

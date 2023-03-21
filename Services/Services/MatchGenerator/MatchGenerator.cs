@@ -1,6 +1,7 @@
-﻿using FootBalLife.Database;
+﻿using DatabaseLayer;
+using System;
 
-namespace FootBalLife.Services.MatchGenerator
+namespace BusinessLogicLayer.Services.MatchGenerator
 {
     public class MatchGenerator
     {

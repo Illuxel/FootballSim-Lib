@@ -1,10 +1,10 @@
-﻿using FootBalLife.Database.Repositories;
+﻿using DatabaseLayer.Repositories;
 using System;
 using System.Collections.Generic;
-using FootBalLife.Database;
+using DatabaseLayer;
 using System.Linq;
 
-namespace Services.PersonNameGenaration
+namespace BusinessLogicLayer.Services
 {
     public class PersonNameGenaration
     {

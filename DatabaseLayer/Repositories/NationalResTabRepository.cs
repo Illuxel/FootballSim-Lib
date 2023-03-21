@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace FootBalLife.Database.Repositories
+namespace DatabaseLayer.Repositories
 {
     public class NRTRepository
     {/*

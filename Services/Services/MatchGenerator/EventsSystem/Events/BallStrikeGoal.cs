@@ -1,4 +1,7 @@
-﻿namespace FootBalLife.Services.MatchGenerator
+﻿using DatabaseLayer;
+using System;
+
+namespace BusinessLogicLayer.Services.MatchGenerator
 {
     internal class BallStrikeGoalEvent : MatchEventProcess
     {
@@ -8,7 +11,7 @@
         }
         public override void ProcessEvent()
         {
-            ScoredPlayer = new Guid(HomeTeam.GetPlayer(Database.PlayerPosition.Attack).PersonID);
+            ScoredPlayer = new Guid(HomeTeam.GetPlayer(PlayerPosition.Attack).PersonID);
 
             base.ProcessEvent();
         }

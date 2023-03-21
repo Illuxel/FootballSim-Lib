@@ -1,4 +1,4 @@
-﻿namespace FootBalLife.Services.MatchGenerator
+﻿namespace BusinessLogicLayer.Services.MatchGenerator
 {
     internal class BallInterceptionEvent : MatchEventProcess
     {

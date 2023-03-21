@@ -1,8 +1,8 @@
-﻿using FootBalLife.Database;
+﻿using DatabaseLayer;
 using System;
 using System.Collections.Generic;
 
-namespace FootBalLife.Services.PlayerStatsGen
+namespace BusinessLogicLayer.Services
 {
     public class PlayerStatsGen
     {

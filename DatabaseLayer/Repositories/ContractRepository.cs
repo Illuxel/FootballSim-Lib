@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-namespace FootBalLife.Database.Repositories
+namespace DatabaseLayer.Repositories
 {
     public class ContractRepository
     {

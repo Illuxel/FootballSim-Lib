@@ -6,7 +6,7 @@ using System.Linq;
 using System;
 using System.Data;
 
-namespace FootBalLife.Database.Repositories
+namespace DatabaseLayer.Repositories
 {
     public class PersonRepository
     {

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 
-namespace FootBalLife.Database.Repositories
+namespace DatabaseLayer.Repositories
 {
     public class GoalRepository
     {

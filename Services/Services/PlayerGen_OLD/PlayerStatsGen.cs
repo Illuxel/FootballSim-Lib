@@ -1,8 +1,12 @@
-﻿using FootBalLife.Database;
+﻿using DatabaseLayer;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace FootBalLife.Services.PlayerStatsGen
+namespace BusinessLogicLayer.Services
 {
-    public class PlayerStatsGen
+    public class PlayerStatsGen_old
     {
         private readonly List<Player> _players;
 
@@ -11,7 +15,7 @@ namespace FootBalLife.Services.PlayerStatsGen
         private readonly int _basicValue;
         private readonly int _errorValue;
 
-        public PlayerStatsGen(int basicValue, int errorValue)
+        public PlayerStatsGen_old(int basicValue, int errorValue)
         {
             _basicValue = basicValue;
             _errorValue = errorValue;
@@ -23,8 +27,11 @@ namespace FootBalLife.Services.PlayerStatsGen
             _players.Clear();
 
             var rand = new Random();
-            List<PlayerPosition> pos = Enum.GetValues<PlayerPosition>().ToList();
-
+            List<PlayerPosition> pos = new List<PlayerPosition>();
+            pos.Add(PlayerPosition.Goalkeeper);
+            pos.Add(PlayerPosition.Attack);
+            pos.Add(PlayerPosition.Defence);
+            pos.Add(PlayerPosition.Midfield);
             for (int i = 0; i < _playersCount; ++i)
             {
 
@@ -38,8 +45,9 @@ namespace FootBalLife.Services.PlayerStatsGen
                     Strike = ValueRandomGen.Next(_basicValue, _errorValue, 20),
                     Endurance = ValueRandomGen.Next(_basicValue, _errorValue, 20),
                     Physics = ValueRandomGen.Next(_basicValue, _errorValue, 20),
-                    Technique = ValueRandomGen.Next(_basicValue, _errorValue, 20),
-                    Passing = ValueRandomGen.Next(_basicValue, _errorValue, 20)
+                    Dribbling = ValueRandomGen.Next(_basicValue, _errorValue, 20),
+                    Passing = ValueRandomGen.Next(_basicValue, _errorValue, 20),
+                    Defending = ValueRandomGen.Next(_basicValue, _errorValue, 20)
                 };
 
                 _players.Add(player);

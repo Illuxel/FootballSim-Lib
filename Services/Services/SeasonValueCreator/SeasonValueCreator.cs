@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Services.Services
+namespace BusinessLogicLayer.Services
 {
     public class SeasonValueCreator
     {

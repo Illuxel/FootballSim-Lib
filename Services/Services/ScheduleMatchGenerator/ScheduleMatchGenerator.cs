@@ -1,10 +1,10 @@
-﻿using FootBalLife.Database;
-using FootBalLife.Database.Repositories;
+﻿using DatabaseLayer;
+using DatabaseLayer.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Services.Services
+namespace BusinessLogicLayer.Services
 {
     public class ScheduleMatchGenerator
     {

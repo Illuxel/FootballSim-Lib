@@ -1,6 +1,8 @@
-﻿using FootBalLife.Database;
+﻿using DatabaseLayer;
+using System;
+using System.Collections.Generic;
 
-namespace FootBalLife.Services.MatchGenerator
+namespace BusinessLogicLayer.Services.MatchGenerator
 {
     public class MatchResult
     {
@@ -31,11 +33,11 @@ namespace FootBalLife.Services.MatchGenerator
 
                 if (homeTeamGoals > guestTeamGoals)
                 {
-                     return HomeTeam.Id;
+                     return new Guid(HomeTeam.Id);
                 } 
                 if (homeTeamGoals < guestTeamGoals)
                 {
-                     return GuestTeam.Id;
+                     return new Guid(GuestTeam.Id);
                 }
 
                 return null;

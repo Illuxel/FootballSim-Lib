@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Services.Services
+namespace BusinessLogicLayer.Services
 {
     internal class FutDbResponseResult
     {

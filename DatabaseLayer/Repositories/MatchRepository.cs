@@ -6,7 +6,7 @@ using Dapper;
 using System.Linq;
 using System.Data;
 
-namespace FootBalLife.Database.Repositories
+namespace DatabaseLayer.Repositories
 {
     public class MatchRepository
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FootBalLife.Database
+namespace DatabaseLayer
 {
     public class Person
     {

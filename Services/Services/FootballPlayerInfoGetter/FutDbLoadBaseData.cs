@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Net.Http;
 using System.Collections.Generic;
-using FootBalLife.Database;
-using FootBalLife.Database.Repositories;
+using DatabaseLayer;
+using DatabaseLayer.Repositories;
 using System.Text.Json;
 using System.Linq;
 
-namespace Services.FetchPlayerData
+namespace BusinessLogicLayer.FetchPlayerData
 {
 
     internal class FutDBProcessing

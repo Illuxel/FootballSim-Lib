@@ -4,7 +4,7 @@ using System.Data.SQLite;
 using Dapper;
 using System;
 
-namespace FootBalLife.Database.Repositories
+namespace DatabaseLayer.Repositories
 {
     public class CountryRepository
     {

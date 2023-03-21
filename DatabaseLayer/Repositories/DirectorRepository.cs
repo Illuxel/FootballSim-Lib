@@ -4,7 +4,7 @@ using Dapper;
 using System.Data.SQLite;
 using System.Linq;
 
-namespace FootBalLife.Database.Repositories
+namespace DatabaseLayer.Repositories
 {
     public class DirectorRepository
     {

@@ -1,4 +1,8 @@
-﻿namespace FootBalLife.Services.MatchGenerator
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace BusinessLogicLayer.Services.MatchGenerator
 {
     public class ResultFromChances
     {
@@ -22,7 +26,7 @@
 
             if (eventChances.Count == 1)
             {
-                return eventChances.Keys.FirstOrDefault(string.Empty);
+                return eventChances.Keys.FirstOrDefault();
             }
 
             var rand = new Random();
