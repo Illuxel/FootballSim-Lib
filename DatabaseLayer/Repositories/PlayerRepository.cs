@@ -3,6 +3,7 @@ using DatabaseLayer.DBSettings;
 using System.Data.SQLite;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data;
 using System;
 
 namespace FootBalLife.Database.Repositories
@@ -31,7 +32,6 @@ namespace FootBalLife.Database.Repositories
                 return results.AsList();
             }
         }
-
 
         public List<Player> Retrive(string teamId)
         {
@@ -93,13 +93,38 @@ namespace FootBalLife.Database.Repositories
                 {
                     var rowsAffected = connection.Execute(
                         @"INSERT INTO Player (PersonID, PositionCode, ContractId, Speed, Kick, 
-                            Endurance, Strike, Physics, Technique, Passing) 
+                            Endurance, Strike, Physics, Defending, Passing, Dribbling, Rating) 
                         VALUES (@PersonID, @PositionCode, @ContractId, @Speed, @Kick, 
-                            @Endurance, @Strike, @Physics, @Technique, @Passing)",
+                            @Endurance, @Strike, @Physics, @Defending, @Passing, @Dribbling, @Rating)",
                         player);
                     result = rowsAffected == 1;
                 }
                 return result;
+            }
+        }
+
+        public void Insert(List<Player> players)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                using (IDbTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        var rowsAffected = connection.Execute(
+                        @"INSERT INTO Player (PersonID, PositionCode, ContractId, Speed, Kick, 
+                            Endurance, Strike, Physics, Defending, Passing, Dribbling, Rating) 
+                        VALUES (@PersonID, @PositionCode, @ContractId, @Speed, @Kick, 
+                            @Endurance, @Strike, @Physics, @Defending, @Passing, @Dribbling, Rating)",
+                        players, transaction);
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw ex;
+                    }
+                }
             }
         }
 
@@ -120,8 +145,10 @@ namespace FootBalLife.Database.Repositories
                             Endurance = @Endurance, 
                             Strike = @Strike, 
                             Physics = @Physics, 
-                            Technique = @Technique, 
-                            Passing = @Passing 
+                            Defending = @Defending, 
+                            Passing = @Passing,
+                            Dribbling = @Dribbling,
+                            Rating = @Rating
                         WHERE PersonID = @PersonID",
                         player);
                     result = rowsAffected == 1;

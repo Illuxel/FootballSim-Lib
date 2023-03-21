@@ -10,32 +10,31 @@ namespace Services.Services
     {
         private static int _countDaysOfRest = 7;
         private static string _emptyTeamName = "Dummy";
+
+
+        private SeasonValueCreator _seasonCreator ;
+        private LeagueRepository _leagueRepository;
+        private TeamRepository _teamRepository;
+
+        public ScheduleMatchGenerator() 
+        {
+            _seasonCreator = new SeasonValueCreator();
+            _leagueRepository = new LeagueRepository();
+            _teamRepository = new TeamRepository();
+        }
         public void Generate(int year)
         {
             var matches = new List<Match>();
-            var leagueRepository = new LeagueRepository();
-            var leagues = leagueRepository.Retrive();
-            var teamRepository = new TeamRepository();
-            var firstTourDate = getFirstTourDate(year);
+            var leagues = _leagueRepository.Retrive();
+            var firstTourDate = _seasonCreator.GetSeasonStartDate(year);
             foreach (var league in leagues)
             {
-                var teams = teamRepository.Retrive(league.Id);
+                var teams = _teamRepository.Retrive(league.Id);
                 matches.AddRange(generateNationalCalendarMatch(firstTourDate, teams, league.Id));
             }
 
             var matchRepository = new MatchRepository();
             matchRepository.Insert(matches);
-        }
-
-        private DateTime getFirstTourDate(int year)
-        {
-            DateTime firstTourDate = new DateTime(year, 8, 1);
-            while (firstTourDate.DayOfWeek != DayOfWeek.Saturday)
-            {
-                firstTourDate = firstTourDate.AddDays(1);
-            }
-            firstTourDate = firstTourDate.AddDays(7);
-            return firstTourDate;
         }
 
         private List<Match> generateNationalCalendarMatch(DateTime startDate,  List<Team> teams, int leagueId)

@@ -3,6 +3,8 @@ using DatabaseLayer.DBSettings;
 using System.Data.SQLite;
 using Dapper;
 using System.Linq;
+using System;
+using System.Data;
 
 namespace FootBalLife.Database.Repositories
 {
@@ -56,17 +58,44 @@ namespace FootBalLife.Database.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
-                var record = connection.QuerySingleOrDefault<Agent>("SELECT * FROM Person WHERE ID = @personID", new { personID = person.Id });
-                bool result = false;
-                if (record == null)
-                {
-                    var rowsAffected = connection.Execute(
-                        @"INSERT INTO Person (ID, Name, Surname, Birthday, CurrentRoleId, CountryId, Icon)
-                        VALUES (@ID, @Name, @Surname, @Birthday, @CurrentRoleId, @CountryId, @Icon)",
-                        person);
-                    result = rowsAffected == 1;
-                }
+                person.Id = Guid.NewGuid().ToString();
+               
+                var rowsAffected = connection.Execute(
+                    @"INSERT INTO Person (ID, Name, Surname, Birthday, CurrentRoleId, CountryId, Icon)
+                    VALUES (@ID, @Name, @Surname, @Birthday, @CurrentRoleId, @CountryId, @Icon)",
+                    person);
+                var result = rowsAffected == 1;
+                
                 return result;
+            }
+        }
+
+        public bool Insert(List<Person> persons)
+        {
+            foreach(var person in persons)
+            {
+                person.Id = Guid.NewGuid().ToString();
+            }
+
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                using (IDbTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        var rowsAffected = connection.Execute(
+                        @"INSERT INTO Person (ID, Name, Surname, Birthday, CurrentRoleId, CountryId, Icon)
+                            VALUES (@ID, @Name, @Surname, @Birthday, @CurrentRoleId, @CountryId, @Icon)",
+                        persons, transaction);
+                        return rowsAffected == 1;
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw ex;
+                    }
+                }
             }
         }
 

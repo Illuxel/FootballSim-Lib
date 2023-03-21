@@ -106,17 +106,17 @@ namespace FootBalLife.Services.MatchGenerator
                     break;
                 case "BallStrikeMissed":
                     // (60/техніка_гравця)*(60/удар_гравця)
-                    finalValue = baseValue * (60 / homeTeam.GetPlayer(PlayerPosition.Attack).Technique) 
+                    finalValue = baseValue * (60 / homeTeam.GetPlayer(PlayerPosition.Attack).Dribbling) 
                         * (60 / homeTeam.GetPlayer(PlayerPosition.Attack).Strike);
                     break;
                 case "BallStrikeGoal":
                     // (техніка_гравця/позиція_голкіпера)*(удар_гравця/реакція_голкіпера)
-                    finalValue = baseValue * (homeTeam.GetPlayer(PlayerPosition.Attack).Technique / guestTeam.GetPlayer(PlayerPosition.Goalkeeper).Physics) 
+                    finalValue = baseValue * (homeTeam.GetPlayer(PlayerPosition.Attack).Dribbling / guestTeam.GetPlayer(PlayerPosition.Goalkeeper).Physics) 
                         * (homeTeam.GetPlayer(PlayerPosition.Attack).Strike / homeTeam.GetPlayer(PlayerPosition.Goalkeeper).Endurance);
                     break;
                 case "BallStrikeSave":
                     // (позиція_голкіпера/техніка_гравця)*(реакція_голкіпера/удар_гравця)
-                    finalValue = baseValue * (guestTeam.GetPlayer(PlayerPosition.Goalkeeper).Physics / homeTeam.GetPlayer(PlayerPosition.Attack).Technique) 
+                    finalValue = baseValue * (guestTeam.GetPlayer(PlayerPosition.Goalkeeper).Physics / homeTeam.GetPlayer(PlayerPosition.Attack).Dribbling) 
                         * (guestTeam.GetPlayer(PlayerPosition.Goalkeeper).Endurance / homeTeam.GetPlayer(PlayerPosition.Attack).Strike);
                     break;
                 case "BallControl.HomePart": 
