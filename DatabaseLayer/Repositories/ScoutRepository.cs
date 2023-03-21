@@ -27,7 +27,7 @@ namespace DatabaseLayer.Repositories
                 return scouts;
             }
         }
-        public Scout? Retrive(string personId)
+        public Scout Retrive(string personId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {

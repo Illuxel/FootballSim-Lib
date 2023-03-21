@@ -6,14 +6,14 @@ namespace DatabaseLayer
 {
     public class Team
     {
-        public string? Id { get; internal set; }
-        public string? Name { get; set; }
-        public string? BaseColor { get; set; }
+        public string Id { get; internal set; }
+        public string Name { get; set; }
+        public string BaseColor { get; set; }
         public StrategyType Strategy { get; set; }
         public int IsNationalTeam { get; set; }
 
         public int LeagueID { get; set; }
-        public League? League { get; internal set; }
+        public League League { get; internal set; }
 
         public string ScoutID { get; set; }
         public string CoachID { get; set; }

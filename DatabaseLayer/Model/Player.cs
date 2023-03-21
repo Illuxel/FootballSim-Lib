@@ -4,9 +4,9 @@
     {
         public string PersonID { get; set; }
 
-        public string? PositionCode { get; set; }
+        public string PositionCode { get; set; }
 
-        public string? ContractID { get; set; }
+        public string ContractID { get; set; }
 
         public int Kick { get; set; }
         public int Rating { get; set; }
@@ -25,7 +25,7 @@
         //у воротаря ця властивість - Рефлекси
         public int Dribbling { get; set; }
 
-        public Person? Person { get; internal set; }
-        public Position? Position { get; set; }
+        public Person Person { get; internal set; }
+        public Position Position { get; set; }
     }
 }
