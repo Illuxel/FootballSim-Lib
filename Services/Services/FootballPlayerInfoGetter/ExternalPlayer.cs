@@ -67,7 +67,7 @@ namespace Services.Services
         }
         public string GetFirstName()
         {
-            var value = LastName.Replace(Name, "");
+            var value = Name.Replace(LastName, "");
             return value;
 
         }

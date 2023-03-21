@@ -2,6 +2,7 @@
 using DatabaseLayer.DBSettings;
 using System.Data.SQLite;
 using Dapper;
+using System;
 
 namespace FootBalLife.Database.Repositories
 {
@@ -20,8 +21,8 @@ namespace FootBalLife.Database.Repositories
                     {
                         team.League = league;
                         return team;
-                    },
-                    splitOn: "LeagueID"
+                    }
+                    //splitOn: "LeagueID" // Спричиняє помилку незаповненості таблиць
                 );
                 return results.AsList();
             }
@@ -42,8 +43,8 @@ namespace FootBalLife.Database.Repositories
                         team.League = league;
                         return team;
                     },
-                    param: new { leagueId },
-                    splitOn: "LeagueID"
+                    param: new { leagueId }
+                    //splitOn: "LeagueID"
                 );
                 return results.AsList();
             }
@@ -51,7 +52,7 @@ namespace FootBalLife.Database.Repositories
 
         public Team Retrive(string teamId)
         {
-            if(string.IsNullOrEmpty(teamId))
+            if (string.IsNullOrEmpty(teamId))
             {
                 return null;
             }
@@ -61,13 +62,13 @@ namespace FootBalLife.Database.Repositories
                 var query = @"SELECT * FROM TEAM
                     WHERE ID = @teamId"
                 ;
-                
+
                 var team = connection.QuerySingleOrDefault<Team>(query, new { teamId });
 
                 team.League = connection.QuerySingleOrDefault<League>(
                     "SELECT * FROM LEAGUE WHERE LEAGUE.ID = @id", new { id = team.LeagueID });
                 return team;
-                
+
             }
         }
 
@@ -81,8 +82,8 @@ namespace FootBalLife.Database.Repositories
                 if (record == null)
                 {
                     var rowsAffected = connection.Execute(
-                        @"INSERT INTO Team (ID, Name, LeagueID, SportDirectorID, CoachId, ScoutId, IsNationalTeam, Strategy, BaseColor) 
-                            VALUES (@Id, @Name, @LeagueId, @SportDirectorId, @CoachId, @ScoutId, @IsNationalTeam, @Strategy, @BaseColor)", team);
+                        @"INSERT INTO Team (ID, Name, LeagueID, SportDirectorID, CoachId, ScoutId, IsNationalTeam, Strategy, BaseColor, ExtId, ExtName) 
+                            VALUES (@Id, @Name, @LeagueId, @SportDirectorId, @CoachId, @ScoutId, @IsNationalTeam, @Strategy, @BaseColor, @ExtId, @ExtName)", team);
                     result = rowsAffected == 1;
                 }
                 return result;
@@ -92,6 +93,7 @@ namespace FootBalLife.Database.Repositories
 
         public bool Update(Team team)
         {
+
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
@@ -99,17 +101,20 @@ namespace FootBalLife.Database.Repositories
                 bool result = false;
                 if (record != null)
                 {
+                    Console.WriteLine(team.ExtName);
                     var rowsAffected = connection.Execute(
                         @"UPDATE Team SET 
                             Name = @Name, 
                             LeagueID = @LeagueId,
-                            SportDirectorID = @SportDirectorId,
+                            SportsDirectorID = @SportDirectorId,
                             CoachId = @CoachId,
                             ScoutId = @ScoutId, 
                             IsNationalTeam = @IsNationalTeam,
                             Strategy = @Strategy,
-                            BaseColor = @BaseColor
-                        WHERE ID = @Id",
+                            BaseColor = @BaseColor,
+                            ExtId = @ExtId,
+                            ExtName = @ExtName 
+                            WHERE ID = @Id",
                         team);
                     result = rowsAffected == 1;
                 }

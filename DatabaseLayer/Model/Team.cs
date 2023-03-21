@@ -17,21 +17,27 @@ namespace FootBalLife.Database
 
         public string ScoutID { get; set; }
         public string CoachID { get; set; }
+        public int ExtId { get; set; }
+        public string ExtName { get; set; }
         public string SportsDirectorId { get; set; }
 
 
+
+
         private List<Player> _players;
-        public List<Player> Players { get 
-            {  
-                if(_players == null)
+        public List<Player> Players
+        {
+            get
+            {
+                if (_players == null)
                 {
                     _players = new List<Player>();
                     var playerRepos = new PlayerRepository();
                     var players = playerRepos.Retrive(this.Id);
                     _players.AddRange(players);
                 }
-                return _players; 
-            } 
+                return _players;
+            }
         }
         /*
         public virtual ICollection<Contract> Contracts { get; internal set; } = new List<Contract>();
@@ -85,10 +91,10 @@ namespace FootBalLife.Database
         public double AvgTechnique(PlayerPosition playerPostion = PlayerPosition.All)
         {
             return playerPostion == PlayerPosition.All
-                ? Players.Average(p => p.Technique)
+                ? Players.Average(p => p.Dribbling)
                 : Players
                     .Where(p => p.Position.Location == playerPostion)
-                    .Average(p => p.Technique);
+                    .Average(p => p.Dribbling);
         }
         public double AvgPassing(PlayerPosition playerPostion = PlayerPosition.All)
         {

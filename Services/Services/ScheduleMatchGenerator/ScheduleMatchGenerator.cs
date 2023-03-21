@@ -10,22 +10,26 @@ namespace Services.Services
     {
         private static int _countDaysOfRest = 7;
         private static string _emptyTeamName = "Dummy";
+
+
         private SeasonValueCreator _seasonCreator ;
+        private LeagueRepository _leagueRepository;
+        private TeamRepository _teamRepository;
 
         public ScheduleMatchGenerator() 
         {
             _seasonCreator = new SeasonValueCreator();
+            _leagueRepository = new LeagueRepository();
+            _teamRepository = new TeamRepository();
         }
         public void Generate(int year)
         {
             var matches = new List<Match>();
-            var leagueRepository = new LeagueRepository();
-            var leagues = leagueRepository.Retrive();
-            var teamRepository = new TeamRepository();
+            var leagues = _leagueRepository.Retrive();
             var firstTourDate = _seasonCreator.GetSeasonStartDate(year);
             foreach (var league in leagues)
             {
-                var teams = teamRepository.Retrive(league.Id);
+                var teams = _teamRepository.Retrive(league.Id);
                 matches.AddRange(generateNationalCalendarMatch(firstTourDate, teams, league.Id));
             }
 

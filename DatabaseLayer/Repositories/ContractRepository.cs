@@ -3,6 +3,7 @@ using DatabaseLayer.DBSettings;
 using System.Data.SQLite;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace FootBalLife.Database.Repositories
 {
@@ -103,6 +104,7 @@ namespace FootBalLife.Database.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
+                contract.Id = Guid.NewGuid().ToString();
                 var record = connection.QuerySingleOrDefault<Agent>("SELECT * FROM contract WHERE ID = @id", new { id = contract.Id });
                 bool result = false;
                 if (record == null)

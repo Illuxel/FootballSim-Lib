@@ -1,11 +1,14 @@
 ﻿using FootBalLife.Database;
 using FootBalLife.Database.Repositories;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
 using System.Text.Json;
 
 namespace Services.Services
 {
-    public class FootballPlayerInfoGetter
+    public class FutDbLoadPlayerData
     {
         private string _baseUrlFifaApi = "https://futdb.app/api";
         private string _authToken
@@ -13,7 +16,7 @@ namespace Services.Services
             get { return "4413e956-c92e-43a5-ac00-1fc3bbf76f15"; }
         }
 
-        private int _playerRoleId = 3;
+        private static int _playerRoleId = 3;
 
         private string _playerJsonExample = @"{
               ""id"": 14112,
@@ -120,36 +123,35 @@ namespace Services.Services
               }
             }";
 
-        private int _contractPriceKoef = 100000;
-
 
         private TeamRepository _teamRepos;
         private PersonRepository _personRepos;
         private PlayerRepository _playerRepos;
         private ContractRepository _contractRepos;
         private SeasonValueCreator _seasonValueCreator;
-        public FootballPlayerInfoGetter()
+        private LeagueRepository _leagueRepos;
+        private CountryRepository _countryRepository;
+        public FutDbLoadPlayerData()
         {
             _teamRepos = new TeamRepository();
             _personRepos = new PersonRepository();
             _playerRepos = new PlayerRepository();
             _contractRepos = new ContractRepository();
             _seasonValueCreator = new SeasonValueCreator();
+            _leagueRepos = new LeagueRepository();
+            _countryRepository = new CountryRepository();
         }
 
         public void FillPlayerInfo(string currentSeason)
         {
-            var leagueRepos = new LeagueRepository();
-            var leagues = leagueRepos.Retrive();
-
-           
-            foreach(var league in leagues)
+            var leagues = _leagueRepos.Retrive();
+            var countries = _countryRepository.Retrive();
+            foreach (var league in leagues)
             {
                 var teams = _teamRepos.Retrive(league.Id);
                 foreach(var team in teams)
                 {
-                    //var players = getPlayers(team.ExtId); //
-                    var players = getPlayers(0);
+                    var players = getPlayers(team.ExtId);
                     foreach(var extPlayer in players)
                     {
                         var person = new Person();
@@ -157,97 +159,111 @@ namespace Services.Services
                         person.Name = extPlayer.GetFirstName();
                         person.Surname = extPlayer.LastName;
                         person.Birthday = extPlayer.GetBirthDate();
+                        person.CountryID = countries.Where(item => item.ExtId == extPlayer.CountryId).Select(value => value.Id).FirstOrDefault();
 
                         _personRepos.Insert(person);
-
-
-                        var player = new Player();
-                        player.PersonID = person.Id;
-                        player.Passing = extPlayer.Passing;
-                        player.Strike = extPlayer.Shooting;
-                        player.PositionCode = extPlayer.Position;
-                        player.Physics = extPlayer.Physicality != 0 ? extPlayer.Physicality  : extPlayer.Positioning;
-                        player.Speed = extPlayer.Pace;
-                        player.Dribbling = extPlayer.Dribbling != 0? extPlayer.Dribbling : extPlayer.Reflexes;
-
-                        _playerRepos.Insert(player);
-
 
                         var contract = new Contract();
                         contract.SeasonFrom = currentSeason;
                         contract.SeasonTo = _seasonValueCreator.GetFutureSeason(currentSeason, 3);
                         contract.PersonId = person.Id;
                         contract.TeamId = team.Id;
-                        contract.Price = extPlayer.Rating * _contractPriceKoef;
+                        contract.Price = getContractPrice(extPlayer.Rating);
 
                         _contractRepos.Insert(contract);
 
+                        var player = new Player();
+                        player.PersonID = person.Id;
+                        player.Passing = extPlayer.Passing;
+                        player.Strike = extPlayer.Shooting;
+                        player.PositionCode = extPlayer.Position;
+                        player.Physics = extPlayer.Positioning == 0 ? extPlayer.Physicality  : extPlayer.Positioning;
+                        player.Speed = extPlayer.Pace;
+                        player.Dribbling = extPlayer.Reflexes == 0? extPlayer.Dribbling : extPlayer.Reflexes;
+                        player.Defending = extPlayer.Defending;
+                        player.Rating = extPlayer.Rating;
+                        player.ContractID = contract.Id;
+                        _playerRepos.Insert(player);
                     }
                 }
             }
-
-           
         }
 
-        //викликати endpoint https://futdb.app/api/players/search
-        /* body:
+
+        private int getContractPrice(int avaragePlayerRating)
         {
-		  "name": "string",
-		  "ratingMin": 0,
-		  "ratingMax": 0,
-		  "rating": 0,
-		  "rarity": 0,
-		  "position": "string",
-		  "club": 0,
-		  "league": 0,
-		  "nation": 0,
-		  "weakFoot": 0,
-		  "skillMoves": 0
-		}
-         */
+            if(avaragePlayerRating >= 90)
+            {
+                return avaragePlayerRating * 100000;
+            }
+            else if(avaragePlayerRating >= 85)
+            {
+                return avaragePlayerRating * 65000;
+            }
+            else if (avaragePlayerRating >= 80)
+            {
+                return avaragePlayerRating * 45000;
+            }
+            else if (avaragePlayerRating >= 75)
+            {
+                return avaragePlayerRating * 30000;
+            }
+            else if (avaragePlayerRating >= 70)
+            {
+                return avaragePlayerRating * 20000;
+            }
+            else if (avaragePlayerRating >= 60)
+            {
+                return avaragePlayerRating * 7000;
+            }
+            return avaragePlayerRating * 4500;
+        }
+
         private List<ExternalPlayer> getPlayers(int fifaTeamId)
         {
             var players = new List<ExternalPlayer>();
 
+
+            var url = string.Format("{0}/{1}", _baseUrlFifaApi, "players/search");
+            var headers = new WebHeaderCollection();
+            headers.Add("Accept", "application/json");
+            headers.Add("Content-Type", "application/json");
+            headers.Add("X-AUTH-TOKEN", _authToken);
+
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            //request.Method = "GET";
+            request.Method = "POST";
+            request.Headers = headers;
+
+            var body = new Dictionary<string, object>();
+            body.Add("club", fifaTeamId);
+            var jsonBody = JsonSerializer.Serialize(body);
+            using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+            {
+                streamWriter.Write(jsonBody);
+            }
+             
+            using var webResponse = request.GetResponse();
+            using var webStream = webResponse.GetResponseStream();
+
+            using var reader = new StreamReader(webStream);
+            var data = reader.ReadToEnd();
+
+            if(data != null)
+            {
+
+                var responseResult = JsonSerializer.Deserialize<FutDbResponseResult>(data);
+
+                foreach (var item in responseResult.Items)
+                {
+                    var jsonData = JsonSerializer.Serialize(item);
+                    players.Add(getExternalPlayer(jsonData));
+                }
+            }
+
             var player = getExternalPlayer(_playerJsonExample);
             players.Add(player);
             return players;
-        }
-
-        private int getFifaLeagueId(int leagueId)
-        {
-            switch(leagueId)
-            {
-                case 1: return 13;
-                case 2: return 53;
-                case 3: return 16;
-                case 4: return 31;
-                case 5: return 19;
-                case 6: return 308;
-                case 7: return 10;
-                case 8: return 4;
-                case 9: return 332;
-                case 10: return 66;
-                default: return 0;
-            }
-        }
-
-        private int getLeagueId(int fifaLeagueId)
-        {
-            switch (fifaLeagueId)
-            {
-                case 13: return 1;
-                case 53: return 2;
-                case 16: return 3;
-                case 31: return 4;
-                case 19: return 5;
-                case 308: return 6;
-                case 10: return 7;
-                case 4: return 8;
-                case 332: return 9;
-                case 66: return 10;
-                default: return 0;
-            }
         }
 
         private ExternalPlayer getExternalPlayer(string json)

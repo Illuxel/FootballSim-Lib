@@ -40,8 +40,6 @@ namespace Services.Services
         public string GetFutureSeason(string currentSeason, int addedYears)
         {
             var startedYear = GetStartYear(currentSeason);
-            startedYear += addedYears;
-
 
             return getSeason(startedYear + addedYears);
         }
@@ -57,6 +55,10 @@ namespace Services.Services
             }
             firstTourDate = firstTourDate.AddDays(7);
             return firstTourDate;
+        }
+        public DateTime GetSeasonStartDate(string season)
+        {
+            return GetSeasonStartDate(GetStartYear(season));
         }
     }
 }

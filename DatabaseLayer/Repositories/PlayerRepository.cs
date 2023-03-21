@@ -93,9 +93,9 @@ namespace FootBalLife.Database.Repositories
                 {
                     var rowsAffected = connection.Execute(
                         @"INSERT INTO Player (PersonID, PositionCode, ContractId, Speed, Kick, 
-                            Endurance, Strike, Physics, Technique, Passing) 
+                            Endurance, Strike, Physics, Defending, Passing, Dribbling, Rating) 
                         VALUES (@PersonID, @PositionCode, @ContractId, @Speed, @Kick, 
-                            @Endurance, @Strike, @Physics, @Technique, @Passing)",
+                            @Endurance, @Strike, @Physics, @Defending, @Passing, @Dribbling, @Rating)",
                         player);
                     result = rowsAffected == 1;
                 }
@@ -114,9 +114,9 @@ namespace FootBalLife.Database.Repositories
                     {
                         var rowsAffected = connection.Execute(
                         @"INSERT INTO Player (PersonID, PositionCode, ContractId, Speed, Kick, 
-                            Endurance, Strike, Physics, Technique, Passing, Dribbling) 
+                            Endurance, Strike, Physics, Defending, Passing, Dribbling, Rating) 
                         VALUES (@PersonID, @PositionCode, @ContractId, @Speed, @Kick, 
-                            @Endurance, @Strike, @Physics, @Technique, @Passing, @Dribbling)",
+                            @Endurance, @Strike, @Physics, @Defending, @Passing, @Dribbling, Rating)",
                         players, transaction);
                     }
                     catch (Exception ex)
@@ -145,9 +145,10 @@ namespace FootBalLife.Database.Repositories
                             Endurance = @Endurance, 
                             Strike = @Strike, 
                             Physics = @Physics, 
-                            Technique = @Technique, 
+                            Defending = @Defending, 
                             Passing = @Passing,
-                            Dribbling = @Dribbling
+                            Dribbling = @Dribbling,
+                            Rating = @Rating
                         WHERE PersonID = @PersonID",
                         player);
                     result = rowsAffected == 1;

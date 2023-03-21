@@ -2,6 +2,7 @@
 using DatabaseLayer.DBSettings;
 using System.Data.SQLite;
 using Dapper;
+using System;
 
 namespace FootBalLife.Database.Repositories
 {
@@ -24,16 +25,18 @@ namespace FootBalLife.Database.Repositories
             }
         }
 
-        internal bool Insert(Country country)
+        public bool Insert(Country country)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
+
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<Country>("SELECT * FROM Country WHERE ID = @countryId", new { countryId = country.Id });
                 bool result = false;
                 if (record == null)
                 {
-                    var rowsAffected = connection.Execute("INSERT INTO Country (ID, Icon, Name) VALUES (@Id, @Icon, @Name)",
+                    Console.WriteLine(country.Name);
+                    var rowsAffected = connection.Execute("INSERT INTO Country (ID, Icon, Name,ExtId) VALUES (@id, @icon, @name, @ExtId)",
                         country);
                     result = rowsAffected == 1;
                 }
@@ -50,7 +53,7 @@ namespace FootBalLife.Database.Repositories
                 bool result = false;
                 if (record != null)
                 {
-                    var rowsAffected = connection.Execute("UPDATE Country SET Icon = @Icon, Name = @Name WHERE ID = @Id",
+                    var rowsAffected = connection.Execute("UPDATE Country SET Icon = @Icon, Name = @Name, ExtId = @ExtId WHERE ID = @Id",
                         country);
                     result = rowsAffected == 1;
                 }

@@ -9,17 +9,18 @@
         public string? ContractID { get; set; }
 
         public int Kick { get; set; }
+        public int Rating { get; set; }
 
         //відповідає за рівень "свіжості гравця"
-        public long Endurance { get; set; }
+        public int Endurance { get; set; }
 
         //ігрові характеристики
-        public long Strike { get; set; }
-        public long Speed { get; set; }
+        public int Strike { get; set; }
+        public int Speed { get; set; }
         //у воротаря ця властивість - Вибір позиції
-        public long Physics { get; set; }
-        public long Technique { get; set; }
-        public long Passing { get; set; }
+        public int Physics { get; set; }
+        public int Defending { get; set; }
+        public int Passing { get; set; }
 
         //у воротаря ця властивість - Рефлекси
         public int Dribbling { get; set; }

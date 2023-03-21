@@ -57,7 +57,7 @@ namespace FootBalLife.Database.Repositories
                 bool result = false;
                 if (record == null)
                 {
-                    var rowsAffected = connection.Execute("INSERT INTO League (ID, Name, CurrentRating, CountryId) VALUES (@ID, @Name, @CurrentRating, @CountryId)",
+                    var rowsAffected = connection.Execute("INSERT INTO League (ID, Name, CurrentRating, CountryId, ExtId) VALUES (@ID, @Name, @CurrentRating, @CountryId, @ExtId)",
                         league);
                     result = rowsAffected == 1;
                 }
@@ -74,7 +74,7 @@ namespace FootBalLife.Database.Repositories
                 bool result = false;
                 if (record != null)
                 {
-                    var rowsAffected = connection.Execute("UPDATE League SET Name = @Name, CurrentRating = @CurrentRating, CountryID = @CountryId WHERE ID = @Id",
+                    var rowsAffected = connection.Execute("UPDATE League SET Name = @Name, CurrentRating = @CurrentRating, CountryID = @CountryId, ExtId = @ExtId WHERE ID = @Id",
                         league);
                     result = rowsAffected == 1;
                 }
