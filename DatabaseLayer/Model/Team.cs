@@ -75,10 +75,10 @@ namespace DatabaseLayer
         public double AvgDefense(PlayerPosition playerPostion = PlayerPosition.All)
         {
             return playerPostion == PlayerPosition.All
-                ? Players.Average(p => p.Endurance)
+                ? Players.Average(p => p.Defending)
                 : Players
                     .Where(p => p.Position.Location == playerPostion)
-                    .Average(p => p.Endurance);
+                    .Average(p => p.Defending);
         }
         public double AvgPhysicalTraining(PlayerPosition playerPostion = PlayerPosition.All)
         {

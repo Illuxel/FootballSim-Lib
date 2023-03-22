@@ -111,12 +111,12 @@ namespace BusinessLogicLayer.Services.MatchGenerator
                 case "BallStrikeGoal":
                     // (техніка_гравця/позиція_голкіпера)*(удар_гравця/реакція_голкіпера)
                     nextChance = baseValue * (homeTeam.GetPlayer(PlayerPosition.Attack).Dribbling / guestTeam.GetPlayer(PlayerPosition.Goalkeeper).Physics)
-                        * (homeTeam.GetPlayer(PlayerPosition.Attack).Strike / homeTeam.GetPlayer(PlayerPosition.Goalkeeper).Endurance);
+                        * (homeTeam.GetPlayer(PlayerPosition.Attack).Strike / homeTeam.GetPlayer(PlayerPosition.Goalkeeper).Defending);
                     break;
                 case "BallStrikeSave":
                     // (позиція_голкіпера/техніка_гравця)*(реакція_голкіпера/удар_гравця)
                     nextChance = baseValue * (guestTeam.GetPlayer(PlayerPosition.Goalkeeper).Physics / homeTeam.GetPlayer(PlayerPosition.Attack).Dribbling)
-                        * (guestTeam.GetPlayer(PlayerPosition.Goalkeeper).Endurance / homeTeam.GetPlayer(PlayerPosition.Attack).Strike);
+                        * (guestTeam.GetPlayer(PlayerPosition.Goalkeeper).Defending / homeTeam.GetPlayer(PlayerPosition.Attack).Strike);
                     break;
                 case "BallControl.HomePart":
                 case "BallControl.Center":

@@ -5,6 +5,6 @@ namespace BusinessLogicLayer.Services.MatchGenerator
 {
     public static class MatchGenSettings
     {
-        public static string EventsFilePath = $"{Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)}/Events.json";
+        public static string EventsFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Events.json");
     }
 }

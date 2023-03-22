@@ -13,7 +13,7 @@ namespace DatabaseLayer.Repositories
     {
         public List<Player> Retrive()
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            /*using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 var query = @"SELECT Player.*, Person.*, Position.*
                     FROM Player
@@ -30,14 +30,16 @@ namespace DatabaseLayer.Repositories
                     splitOn: "PersonID, PositionCode");
 
                 return results.AsList();
-            }
+            }*/
+
+            return retrieve("1=1");
         }
 
         public List<Player> Retrive(string teamId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
-                var query = @"SELECT Player.*, Person.*, c.*
+                /*var query = @"SELECT Player.*, Person.*, Position.*
                     FROM Player
                     INNER JOIN Person ON Player.PersonID = Person.ID
                     LEFT JOIN Position ON Player.PositionCode = Position.Code
@@ -52,9 +54,39 @@ namespace DatabaseLayer.Repositories
                         return player;
                     },
                     param: new { teamId },
-                    splitOn: "PersonID, PositionCode");
+                    splitOn: "PersonID, PositionCode");*/
 
-                return results.AsList();
+                return retrieve("Contract.TeamID = @teamId", new { teamId });
+
+            }
+
+        }
+
+        private List<Player> retrieve(string condition, object queryParams = null)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                var query = string.Format(@"SELECT Player.*, Person.*, Position.*
+                    FROM Player
+                    INNER JOIN Person ON Player.PersonID = Person.ID
+                    LEFT JOIN Position ON Player.PositionCode = Position.Code
+                    INNER JOIN Contract ON Contract.PersonID = Person.ID
+                    WHERE {0}", condition);
+                var players = connection.Query<Player>(query, param: queryParams);
+                var positionQuery = @"SELECT * FROM Position";
+                var potitions = connection.Query<Position>(positionQuery);
+                var personQuery = @"SELECT * FROM Person WHERE ID IN @ids";
+                var persons = connection.Query<Person>(
+                    personQuery,
+                    param: new { ids = players.Select(item => item.PersonID) }
+                );
+
+                foreach (var player in players)
+                {
+                    player.Position = potitions.Where(item => item.Code == player.PositionCode).FirstOrDefault();
+                    player.Person = persons.Where(item => item.Id == player.PersonID).FirstOrDefault();
+                }
+                return players.AsList();
             }
         }
 
@@ -62,7 +94,7 @@ namespace DatabaseLayer.Repositories
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
-                var query = @"SELECT Player.*, Person.*, c.*
+                var query = @"SELECT Player.*, Person.*, PositionCode.*
                     FROM Player
                     INNER JOIN Person ON Player.PersonID = Person.ID
                     LEFT JOIN Position ON Player.PositionCode = Position.Code

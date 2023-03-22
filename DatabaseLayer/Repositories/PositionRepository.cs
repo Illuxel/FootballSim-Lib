@@ -30,7 +30,7 @@ namespace DatabaseLayer.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
-                var record = connection.QuerySingleOrDefault<Position>("SELECT * FROM Position WHERE ID = @positionCode", new { positionCode = position.Id });
+                var record = connection.QuerySingleOrDefault<Position>("SELECT * FROM Position WHERE ID = @positionCode", new { positionCode = position.Code });
                 bool result = false;
                 if (record == null)
                 {
@@ -47,7 +47,7 @@ namespace DatabaseLayer.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
-                var record = connection.QuerySingleOrDefault<Position>("SELECT * FROM Position WHERE ID = @positionCode", new { positionCode = position.Id });
+                var record = connection.QuerySingleOrDefault<Position>("SELECT * FROM Position WHERE ID = @positionCode", new { positionCode = position.Code });
                 bool result = false;
                 if (record != null)
                 {

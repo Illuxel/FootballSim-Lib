@@ -4,7 +4,23 @@ namespace DatabaseLayer.DBSettings
 {
     public static class DatabaseManager
     {
-        internal static string ConnectionString { get; set; }
+        private static string _defaultConnectionString = "Data Source=.\\Database\\FootbalLifeDB.db";
+
+        private static string _connectionString;
+        internal static string ConnectionString { 
+            get
+            {   
+                if(string.IsNullOrEmpty(_connectionString))
+                {
+                    return _defaultConnectionString;
+                }
+                return _connectionString;
+            } 
+            set 
+            {
+                _connectionString = value; 
+            } 
+        }
         internal static string PathToSave { get; set; }
         internal static string SavePathInfo;
         internal static string OriginalDbFileName = "FootbalLifeDB.db";

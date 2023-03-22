@@ -32,19 +32,12 @@ namespace DatabaseLayer.Repositories
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
-                var sql = @"SELECT Team.*, League.*
+                var sql = @"SELECT Team.*
                     FROM Team 
-                    LEFT JOIN League on Team.LeagueID = League.ID
                     WHERE Team.LeagueID = @leagueId";
-                var results = connection.Query<Team, League, Team>(
+                var results = connection.Query<Team>(
                     sql,
-                    (team, league) =>
-                    {
-                        team.League = league;
-                        return team;
-                    },
                     param: new { leagueId }
-                    //splitOn: "LeagueID"
                 );
                 return results.AsList();
             }
@@ -68,7 +61,6 @@ namespace DatabaseLayer.Repositories
                 team.League = connection.QuerySingleOrDefault<League>(
                     "SELECT * FROM LEAGUE WHERE LEAGUE.ID = @id", new { id = team.LeagueID });
                 return team;
-
             }
         }
 
