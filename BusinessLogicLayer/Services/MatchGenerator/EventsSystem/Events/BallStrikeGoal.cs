@@ -1,7 +1,7 @@
 ﻿using DatabaseLayer;
 using System;
 
-namespace BusinessLogicLayer.Services.MatchGenerator
+namespace BusinessLogicLayer.Services
 {
     internal class BallStrikeGoalEvent : MatchEventProcess
     {

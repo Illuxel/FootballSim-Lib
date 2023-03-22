@@ -1,4 +1,4 @@
-﻿namespace BusinessLogicLayer.Services.MatchGenerator
+﻿namespace BusinessLogicLayer.Services
 {
     public enum EventLocation
     {

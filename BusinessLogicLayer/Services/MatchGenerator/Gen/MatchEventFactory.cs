@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BusinessLogicLayer.Services.MatchGenerator
+namespace BusinessLogicLayer.Services
 {
     internal static class MatchEventFactory
     {

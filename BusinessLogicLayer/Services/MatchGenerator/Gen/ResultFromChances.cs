@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BusinessLogicLayer.Services.MatchGenerator
+namespace BusinessLogicLayer.Services
 {
     public class ResultFromChances
     {

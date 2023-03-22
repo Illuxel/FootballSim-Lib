@@ -1,13 +1,15 @@
-﻿using DatabaseLayer;
-using System;
-using System.Drawing;
-using BusinessLogicLayer;
-using BusinessLogicLayer.Services;
+﻿using BusinessLogicLayer.Services;
 using DatabaseLayer.Repositories;
+using DatabaseLayer;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace StartupProject
 {
-    internal class Program
+    internal class MatchGeneratingExampleUsing
     {
         public static void OnMatchGoal(Goal goal)
         {
@@ -26,7 +28,7 @@ namespace StartupProject
             Console.WriteLine("Match paused");
         }
 
-        private void generateMatch()
+        public void GenerateMatch()
         {
             var teamRepository = new TeamRepository();
             var teams = teamRepository.Retrive(1);
@@ -47,34 +49,6 @@ namespace StartupProject
             var result = match.MatchData;
 
             Console.WriteLine(result.Winner.ToString());
-        }
-        public static void Main(string[] args)
-        {
-            /* var playersStats = new PlayerStatsGen(25, 45);
-
-             playersStats.Start();
-
-             var homeTeam = new Team()
-             {
-                 Id = Guid.NewGuid(),
-                 Name = "Barselona",
-                 Strategy = StrategyType.TotalPressing, // initial strategy
-                 Players = playersStats.GetPlayers(),
-                 BaseColor = Color.Red.ToString(),
-             };
-
-             playersStats.Start();
-
-             var guestTeam = new Team()
-             {
-                 Id = Guid.NewGuid(),
-                 Name = "Dinamo",
-                 Strategy = StrategyType.BallСontrol, // initial strategy
-                 Players = playersStats.GetPlayers(),
-                 BaseColor = Color.Red.ToString()
-             };
-            */
-            
         }
     }
 }

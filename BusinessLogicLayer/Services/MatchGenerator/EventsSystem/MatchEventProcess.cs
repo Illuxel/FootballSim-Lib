@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace BusinessLogicLayer.Services.MatchGenerator
+namespace BusinessLogicLayer.Services
 {
     internal class MatchEventProcess : IMatchGameEvent
     {

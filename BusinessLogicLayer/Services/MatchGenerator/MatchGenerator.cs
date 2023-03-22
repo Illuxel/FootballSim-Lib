@@ -1,7 +1,7 @@
 ﻿using DatabaseLayer;
 using System;
 
-namespace BusinessLogicLayer.Services.MatchGenerator
+namespace BusinessLogicLayer.Services
 {
     public class MatchGenerator
     {
@@ -69,7 +69,7 @@ namespace BusinessLogicLayer.Services.MatchGenerator
 
             while (!_isMatcFinished)
             {
-                MatchEventProcess? currentEvent = MatchEventFactory.CreateStrategyEvent(strategyEventName, HomeTeamStrategy, EventLocation.Center) as MatchEventProcess;
+                var currentEvent = BusinessLogicLayer.Services.MatchEventFactory.CreateStrategyEvent(strategyEventName, HomeTeamStrategy, EventLocation.Center) as MatchEventProcess;
 
                 if (currentEvent == null)
                 {
