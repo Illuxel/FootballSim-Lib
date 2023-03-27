@@ -3,6 +3,7 @@ using DatabaseLayer.DBSettings;
 using System.Data.SQLite;
 using Dapper;
 using System;
+using DatabaseLayer.Enums;
 
 namespace DatabaseLayer.Repositories
 {
@@ -14,15 +15,17 @@ namespace DatabaseLayer.Repositories
             {
                 var sql = @"SELECT Team.*, League.*
                     FROM Team 
-                    LEFT JOIN League on Team.LeagueID = League.ID";
+                    LEFT JOIN League on Team.LeagueID = League.ID
+                    WHERE TEAM.RowState = @rowState";
                 var results = connection.Query<Team, League, Team>(
                     sql,
                     (team, league) =>
                     {
                         team.League = league;
                         return team;
-                    }
-                    //splitOn: "LeagueID" // Спричиняє помилку незаповненості таблиць
+                    },
+                    param: new { rowState = DbRowState.IsActive },
+                    splitOn: "Id" 
                 );
                 return results.AsList();
             }
@@ -74,8 +77,10 @@ namespace DatabaseLayer.Repositories
                 if (record == null)
                 {
                     var rowsAffected = connection.Execute(
-                        @"INSERT INTO Team (ID, Name, LeagueID, SportDirectorID, CoachId, ScoutId, IsNationalTeam, Strategy, BaseColor, ExtId, ExtName) 
-                            VALUES (@Id, @Name, @LeagueId, @SportDirectorId, @CoachId, @ScoutId, @IsNationalTeam, @Strategy, @BaseColor, @ExtId, @ExtName)", team);
+                        @"INSERT INTO Team (ID, Name, LeagueID, Budget, SportDirectorID, CoachId, ScoutId, 
+                            IsNationalTeam, Strategy, BaseColor, ExtId, ExtName) 
+                          VALUES (@Id, @Name, @LeagueId, @Budget, @SportDirectorId, @CoachId, @ScoutId, 
+                            @IsNationalTeam, @Strategy, @BaseColor, @ExtId, @ExtName)", team);
                     result = rowsAffected == 1;
                 }
                 return result;
@@ -99,6 +104,7 @@ namespace DatabaseLayer.Repositories
                             Name = @Name, 
                             LeagueID = @LeagueId,
                             SportsDirectorID = @SportDirectorId,
+                            Budget = @Budget,
                             CoachId = @CoachId,
                             ScoutId = @ScoutId, 
                             IsNationalTeam = @IsNationalTeam,

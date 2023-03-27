@@ -3,6 +3,7 @@ using DatabaseLayer.DBSettings;
 using System.Data.SQLite;
 using System.Collections.Generic;
 using System.Linq;
+using DatabaseLayer.Enums;
 
 namespace DatabaseLayer.Repositories
 {
@@ -14,7 +15,8 @@ namespace DatabaseLayer.Repositories
             {
                 var sql = @"SELECT League.*, Country.*
                     FROM League 
-                    INNER JOIN Country ON League.CountryID = Country.ID";
+                    INNER JOIN Country ON League.CountryID = Country.ID
+                    WHERE League.RowState = @rowState";
                 var results = connection.Query<League, Country, League>(
                     sql,
                     (league, country) =>
@@ -22,6 +24,7 @@ namespace DatabaseLayer.Repositories
                         league.Country = country;
                         return league;
                     },
+                    param: new { rowState = DbRowState.IsActive },
                     splitOn: "Id"
                 );
                 return results.AsList();

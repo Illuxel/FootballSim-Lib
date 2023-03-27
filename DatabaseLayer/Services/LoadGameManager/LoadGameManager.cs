@@ -8,24 +8,6 @@ using DatabaseLayer.DBSettings;
 
 namespace DatabaseLayer.Services
 {
-    public class PlayerData
-    {
-        public string Id { get; set; }
-        public string PlayerName { get; set; } = "";
-
-        public string Date { get; set; } = "";
-
-        public double Money { get; set; } = 0.0;
-
-        public PlayerData(string Id, string PlayerName, string Date, double Money)
-        {
-            this.Id = Id;
-            this.PlayerName = PlayerName;
-            this.Money = Money;
-            this.Date = Date;
-        }
-    }
-
     public class SaveInfoJson
     {
         public string PathForDataBase { get; set; }
@@ -38,22 +20,17 @@ namespace DatabaseLayer.Services
 
     public class SaveInfo
     {
-        public PlayerData PlayerData { get; set; }
+        public PlayerGameData PlayerData { get; set; }
         public string DbLocalPath { get; set; }
         public string SaveName { get; set; }
-        
-        public void Show()
-        {
-            Console.WriteLine("ConnectionString: " + DbLocalPath + ". User data: " + PlayerData.Date + " Save name "+ SaveName);
-        }
 
-        public SaveInfo(PlayerData data, string connectionString) { this.PlayerData = data; this.DbLocalPath = connectionString; }
+        public SaveInfo(PlayerGameData data, string connectionString) { PlayerData = data; DbLocalPath = connectionString; }
         public SaveInfo() { }
     }
 
     public class LoadGameManager
     {
-        public static LoadGameManager? instance;
+        public static LoadGameManager instance;
         private LoadGameManager(string pathToSave)
         {
             DatabaseManager.PathToSave = pathToSave;
@@ -65,7 +42,7 @@ namespace DatabaseLayer.Services
             if (instance == null)
             {
                 instance = new LoadGameManager(pathToSave);
-                
+
             }
             return instance;
         }
@@ -79,7 +56,7 @@ namespace DatabaseLayer.Services
             {
                 string path = Path.Combine(DatabaseManager.PathToSave, d.Name, DatabaseManager.UserDataFileName);
                 string json = File.ReadAllText(path);
-                PlayerData someData = JsonConvert.DeserializeObject<PlayerData>(json);
+                PlayerGameData someData = JsonConvert.DeserializeObject<PlayerGameData>(json);
                 SaveInfo saveInfo = new SaveInfo() { PlayerData = someData, DbLocalPath = Path.Combine(DatabaseManager.PathToSave, d.Name), SaveName = d.Name };
                 result.Add(saveInfo);
             }
@@ -114,7 +91,7 @@ namespace DatabaseLayer.Services
             return true;
         }
 
-        public SaveInfo? Continue()
+        public SaveInfo Continue()
         {
             //getting directory
             SaveInfo saveInfo = new SaveInfo();
@@ -130,15 +107,15 @@ namespace DatabaseLayer.Services
 
             //Filling class with data
             string json = File.ReadAllText(Path.Combine(savePath, DatabaseManager.UserDataFileName));
-            PlayerData someData = JsonConvert.DeserializeObject<PlayerData>(json);
+            PlayerGameData someData = JsonConvert.DeserializeObject<PlayerGameData>(json);
             saveInfo.SaveName = savePath.Substring(savePath.LastIndexOf("\\") + 1, savePath.Length - savePath.LastIndexOf("\\") - 1);
             saveInfo.PlayerData = someData;
             saveInfo.DbLocalPath = Path.Combine(savePath, DatabaseManager.OriginalDbFileName);
 
-            
+
             return saveInfo;
         }
-        public SaveInfo? Load(string SaveName)
+        public SaveInfo Load(string SaveName)
         {
             //Validate of Exist directory
             string savePath = Path.Combine(DatabaseManager.PathToSave, SaveName);
@@ -158,18 +135,18 @@ namespace DatabaseLayer.Services
             //getting data
             savePath = Path.Combine(savePath, DatabaseManager.UserDataFileName);
             string json = File.ReadAllText(savePath);
-            PlayerData someData = JsonConvert.DeserializeObject<PlayerData>(json);
-            
+            PlayerGameData someData = JsonConvert.DeserializeObject<PlayerGameData>(json);
+
             saveInfo.SaveName = SaveName;
             saveInfo.PlayerData = someData;
             saveInfo.DbLocalPath = Path.Combine(savePath, DatabaseManager.OriginalDbFileName);
 
-            
+
 
             return saveInfo;
         }
 
-        public SaveInfo? NewGame(PlayerData data, string saveName = "")
+        public SaveInfo NewGame(PlayerGameData data, string saveName = "")
         {
 
             var saveInfo = new SaveInfo();
@@ -195,7 +172,7 @@ namespace DatabaseLayer.Services
             SaveInfoJson dataToJSON = new SaveInfoJson(path);
             File.WriteAllText(DatabaseManager.SavePathInfo, JsonConvert.SerializeObject(dataToJSON, Formatting.Indented));
 
-            
+
 
             //Filling the database with data
             Directory.CreateDirectory(path);
@@ -235,7 +212,7 @@ namespace DatabaseLayer.Services
             {
                 var saves = listSaves.OrderBy(x => x);
                 var saveNumberString = Regex.Match(saves.Last(), @"\d+");
-                if (!Int32.TryParse(string.Join("", saveNumberString), out saveNumber))
+                if (!int.TryParse(string.Join("", saveNumberString), out saveNumber))
                 {
                     return string.Empty;
                 }

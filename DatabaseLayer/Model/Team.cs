@@ -10,6 +10,9 @@ namespace DatabaseLayer
         public string Name { get; set; }
         public string BaseColor { get; set; }
         public StrategyType Strategy { get; set; }
+
+        //введеться виключно в Євро
+        public double Budget { get; set; }
         public int IsNationalTeam { get; set; }
 
         public int LeagueID { get; set; }
