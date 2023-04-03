@@ -23,8 +23,7 @@ namespace DatabaseLayer
         public int ExtId { get; set; }
         public string ExtName { get; set; }
         public string SportsDirectorId { get; set; }
-
-
+        public TacticSchema TacticSchema { get; set; }
 
 
         private List<Player> _players;
@@ -36,7 +35,7 @@ namespace DatabaseLayer
                 {
                     _players = new List<Player>();
                     var playerRepos = new PlayerRepository();
-                    var players = playerRepos.Retrive(this.Id);
+                    var players = playerRepos.Retrive(Id);
                     _players.AddRange(players);
                 }
                 return _players;
@@ -52,60 +51,6 @@ namespace DatabaseLayer
         public ICollection<NationalResultTable> NationalResultTables { get; internal set; } = new List<NationalResultTable>();
         */
         // returns first player that have playerPostion
-        public Player GetPlayer(PlayerPosition playerPostion)
-        {
-            //Contracts.First().Players
-
-            var selectedPlayers = Players.Where(player => player.Position.Location == playerPostion);
-            return selectedPlayers.FirstOrDefault();
-        }
-        public double AvgSpeed(PlayerPosition playerPostion = PlayerPosition.All)
-        {
-            return playerPostion == PlayerPosition.All
-                ? Players.Average(p => p.Speed)
-                : Players
-                    .Where(p => p.Position.Location == playerPostion)
-                    .Average(p => p.Speed);
-        }
-        public double AvgStrike(PlayerPosition playerPostion = PlayerPosition.All)
-        {
-            return playerPostion == PlayerPosition.All
-                ? Players.Average(p => p.Strike)
-                : Players
-                    .Where(p => p.Position.Location == playerPostion)
-                    .Average(p => p.Strike);
-        }
-        public double AvgDefense(PlayerPosition playerPostion = PlayerPosition.All)
-        {
-            return playerPostion == PlayerPosition.All
-                ? Players.Average(p => p.Defending)
-                : Players
-                    .Where(p => p.Position.Location == playerPostion)
-                    .Average(p => p.Defending);
-        }
-        public double AvgPhysicalTraining(PlayerPosition playerPostion = PlayerPosition.All)
-        {
-            return playerPostion == PlayerPosition.All
-                ? Players.Average(p => p.Physics)
-                : Players
-                    .Where(p => p.Position.Location == playerPostion)
-                    .Average(p => p.Physics);
-        }
-        public double AvgTechnique(PlayerPosition playerPostion = PlayerPosition.All)
-        {
-            return playerPostion == PlayerPosition.All
-                ? Players.Average(p => p.Dribbling)
-                : Players
-                    .Where(p => p.Position.Location == playerPostion)
-                    .Average(p => p.Dribbling);
-        }
-        public double AvgPassing(PlayerPosition playerPostion = PlayerPosition.All)
-        {
-            return playerPostion == PlayerPosition.All
-                ? Players.Average(p => p.Passing)
-                : Players
-                    .Where(p => p.Position.Location == playerPostion)
-                    .Average(p => p.Passing);
-        }
+       
     }
 }

@@ -13,25 +13,6 @@ namespace DatabaseLayer.Repositories
     {
         public List<Player> Retrive()
         {
-            /*using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
-            {
-                var query = @"SELECT Player.*, Person.*, Position.*
-                    FROM Player
-                    INNER JOIN Person ON Player.PersonID = Person.ID
-                    LEFT JOIN Position ON Player.PositionCode = Position.Code";
-                var results = connection.Query<Player, Person, Position, Player>(
-                    query,
-                    (player, person, position) =>
-                    {
-                        player.Person = person;
-                        player.Position = position;
-                        return player;
-                    },
-                    splitOn: "PersonID, PositionCode");
-
-                return results.AsList();
-            }*/
-
             return retrieve("1=1");
         }
 
@@ -39,27 +20,8 @@ namespace DatabaseLayer.Repositories
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
-                /*var query = @"SELECT Player.*, Person.*, Position.*
-                    FROM Player
-                    INNER JOIN Person ON Player.PersonID = Person.ID
-                    LEFT JOIN Position ON Player.PositionCode = Position.Code
-                    INNER JOIN Contract ON Contract.PersonID = Person.ID
-                    WHERE Contract.TeamID = @teamId";
-                var results = connection.Query<Player, Person, Position, Player>(
-                    query,
-                    (player, person, position) =>
-                    {
-                        player.Person = person;
-                        player.Position = position;
-                        return player;
-                    },
-                    param: new { teamId },
-                    splitOn: "PersonID, PositionCode");*/
-
                 return retrieve("Contract.TeamID = @teamId", new { teamId });
-
             }
-
         }
 
         private List<Player> retrieve(string condition, object queryParams = null)
@@ -85,6 +47,8 @@ namespace DatabaseLayer.Repositories
                 {
                     player.Position = potitions.Where(item => item.Code == player.PositionCode).FirstOrDefault();
                     player.Person = persons.Where(item => item.Id == player.PersonID).FirstOrDefault();
+
+                    player.CurentRating = player.Rating;
                 }
                 return players.AsList();
             }

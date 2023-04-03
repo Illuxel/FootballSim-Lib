@@ -11,6 +11,9 @@
         public int Kick { get; set; }
         public int Rating { get; set; }
 
+        //real rating with another position
+        public int CurentRating { get; internal set; }
+
         //відповідає за рівень "свіжості гравця"
         public int Endurance { get; set; }
 
@@ -27,5 +30,11 @@
 
         public Person Person { get; internal set; }
         public Position Position { get; set; }
+
+        public void UpdateCurrentRating(int value)
+        {
+            CurentRating = Rating + value;
+        }
+
     }
 }

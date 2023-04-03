@@ -1,6 +1,6 @@
 ﻿namespace DatabaseLayer
 {
-    public enum PlayerPosition
+    public enum PlayerFieldPartPosition
     {
         All,
         Goalkeeper,

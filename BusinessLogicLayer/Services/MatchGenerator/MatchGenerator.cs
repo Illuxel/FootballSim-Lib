@@ -48,7 +48,7 @@ namespace BusinessLogicLayer.Services
         public delegate void GameEventHandler(IMatchGameEvent gameEvent);
         public event GameEventHandler? OnMatchEventHappend;
 
-        public MatchGenerator(Team homeTeam, Team guestTeam)
+        public MatchGenerator(ITeamForMatch homeTeam, ITeamForMatch guestTeam)
         {
             _matchData = new MatchResult();
 
@@ -69,7 +69,7 @@ namespace BusinessLogicLayer.Services
 
             while (!_isMatcFinished)
             {
-                var currentEvent = BusinessLogicLayer.Services.MatchEventFactory.CreateStrategyEvent(strategyEventName, HomeTeamStrategy, EventLocation.Center) as MatchEventProcess;
+                var currentEvent = MatchEventFactory.CreateStrategyEvent(strategyEventName, HomeTeamStrategy, EventLocation.Center) as MatchEventProcess;
 
                 if (currentEvent == null)
                 {

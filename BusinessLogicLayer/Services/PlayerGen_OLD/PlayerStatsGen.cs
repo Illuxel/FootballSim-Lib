@@ -27,11 +27,11 @@ namespace BusinessLogicLayer.Services
             _players.Clear();
 
             var rand = new Random();
-            List<PlayerPosition> pos = new List<PlayerPosition>();
-            pos.Add(PlayerPosition.Goalkeeper);
-            pos.Add(PlayerPosition.Attack);
-            pos.Add(PlayerPosition.Defence);
-            pos.Add(PlayerPosition.Midfield);
+            List<PlayerFieldPartPosition> pos = new List<PlayerFieldPartPosition>();
+            pos.Add(PlayerFieldPartPosition.Goalkeeper);
+            pos.Add(PlayerFieldPartPosition.Attack);
+            pos.Add(PlayerFieldPartPosition.Defence);
+            pos.Add(PlayerFieldPartPosition.Midfield);
             for (int i = 0; i < _playersCount; ++i)
             {
 
@@ -53,11 +53,11 @@ namespace BusinessLogicLayer.Services
                 _players.Add(player);
             }
 
-            _players[0].Position.Location = PlayerPosition.Goalkeeper;
+            _players[0].Position.Location = PlayerFieldPartPosition.Goalkeeper;
 
-            Console.WriteLine("Attackers: " + _players.Where(p => p.Position.Location == PlayerPosition.Attack).Count());
-            Console.WriteLine("Def: " + _players.Where(p => p.Position.Location == PlayerPosition.Defence).Count());
-            Console.WriteLine("Mid: " + _players.Where(p => p.Position.Location == PlayerPosition.Midfield).Count());
+            Console.WriteLine("Attackers: " + _players.Where(p => p.Position.Location == PlayerFieldPartPosition.Attack).Count());
+            Console.WriteLine("Def: " + _players.Where(p => p.Position.Location == PlayerFieldPartPosition.Defence).Count());
+            Console.WriteLine("Mid: " + _players.Where(p => p.Position.Location == PlayerFieldPartPosition.Midfield).Count());
         }
         public List<Player> GetPlayers()
         {

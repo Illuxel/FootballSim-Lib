@@ -20,8 +20,8 @@ namespace BusinessLogicLayer.Services
 
         bool IsBallIntercepted { get; set; }
 
-        Team HomeTeam { get; set; }
-        Team GuestTeam { get; set; }
+        ITeamForMatch HomeTeam { get; set; }
+        ITeamForMatch GuestTeam { get; set; }
 
         Guid? InjuredPlayer { get; set; }
         Guid? YellowCardPlayer { get; set; }

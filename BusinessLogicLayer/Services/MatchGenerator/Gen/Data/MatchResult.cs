@@ -8,8 +8,8 @@ namespace BusinessLogicLayer.Services
     {
         public Guid MatchID;
 
-        public Team HomeTeam { get; internal set; }
-        public Team GuestTeam { get; internal set; }
+        public ITeamForMatch HomeTeam { get; internal set; }
+        public ITeamForMatch GuestTeam { get; internal set; }
 
         public List<Goal> Goals;
 

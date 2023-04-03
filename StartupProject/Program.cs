@@ -12,14 +12,8 @@ namespace StartupProject
        
         public static void Main(string[] args)
         {
-            var z = 1;
-            var leagueR = new LeagueRepository();
-            var leagues = leagueR.Retrive();
-
-            //var te = 2;
-            var teamsR = new TeamRepository();
-            var teams = teamsR.Retrive(1);
-            var t = 1;
+            var mge = new MatchGeneratingExampleUsing();
+            mge.GenerateMatch();
         }
     }
 }

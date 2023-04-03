@@ -2,7 +2,7 @@
 
 namespace DatabaseLayer.Repositories
 {
-    public class NRTRepository
+    public class NationalResTabRepository
     {/*
         public List<NationalResultTable> Retrive()
         {

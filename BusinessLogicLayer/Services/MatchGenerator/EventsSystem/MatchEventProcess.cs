@@ -17,8 +17,8 @@ namespace BusinessLogicLayer.Services
         public Dictionary<string, double> NextEventsChances { get; set; }
         public List<IMatchGameEvent>? AdditonalEvents { get; set; }
 
-        public Team HomeTeam { get; set; }
-        public Team GuestTeam { get; set; }
+        public ITeamForMatch HomeTeam { get; set; }
+        public ITeamForMatch GuestTeam { get; set; }
 
         public bool IsBallIntercepted { get; set; }
 

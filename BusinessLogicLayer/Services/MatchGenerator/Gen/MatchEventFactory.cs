@@ -92,7 +92,7 @@ namespace BusinessLogicLayer.Services
             return nextEvent;
         }
 
-        public static double GetNextEventValueChance(string eventName, double baseValue, Team homeTeam, Team guestTeam)
+        public static double GetNextEventValueChance(string eventName, double baseValue, ITeamForMatch homeTeam, ITeamForMatch guestTeam)
         {
             double nextChance = baseValue;
 
@@ -101,32 +101,32 @@ namespace BusinessLogicLayer.Services
                 case "BallStrike":
                     //avg(техніка)/avg(техніка_суперника) * avg(удар)/avg(фізика_суперника)
                     nextChance = baseValue * (homeTeam.AvgTechnique() / guestTeam.AvgTechnique())
-                        * (homeTeam.AvgStrike(PlayerPosition.Attack) / homeTeam.AvgPhysicalTraining());
+                        * (homeTeam.AvgStrike(PlayerFieldPartPosition.Attack) / homeTeam.AvgPhysicalTraining());
                     break; 
                 case "BallStrikeMissed":
                     // (60/техніка_гравця)*(60/удар_гравця)
-                    nextChance = baseValue * (60 / homeTeam.GetPlayer(PlayerPosition.Attack).Dribbling)
-                        * (60 / homeTeam.GetPlayer(PlayerPosition.Attack).Strike);
+                    nextChance = baseValue * (60 / homeTeam.GetPlayer(PlayerFieldPartPosition.Attack).Dribbling)
+                        * (60 / homeTeam.GetPlayer(PlayerFieldPartPosition.Attack).Strike);
                     break;
                 case "BallStrikeGoal":
                     // (техніка_гравця/позиція_голкіпера)*(удар_гравця/реакція_голкіпера)
-                    nextChance = baseValue * (homeTeam.GetPlayer(PlayerPosition.Attack).Dribbling / guestTeam.GetPlayer(PlayerPosition.Goalkeeper).Physics)
-                        * (homeTeam.GetPlayer(PlayerPosition.Attack).Strike / homeTeam.GetPlayer(PlayerPosition.Goalkeeper).Defending);
+                    nextChance = baseValue * (homeTeam.GetPlayer(PlayerFieldPartPosition.Attack).Dribbling / guestTeam.GetPlayer(PlayerFieldPartPosition.Goalkeeper).Physics)
+                        * (homeTeam.GetPlayer(PlayerFieldPartPosition.Attack).Strike / homeTeam.GetPlayer(PlayerFieldPartPosition.Goalkeeper).Defending);
                     break;
                 case "BallStrikeSave":
                     // (позиція_голкіпера/техніка_гравця)*(реакція_голкіпера/удар_гравця)
-                    nextChance = baseValue * (guestTeam.GetPlayer(PlayerPosition.Goalkeeper).Physics / homeTeam.GetPlayer(PlayerPosition.Attack).Dribbling)
-                        * (guestTeam.GetPlayer(PlayerPosition.Goalkeeper).Defending / homeTeam.GetPlayer(PlayerPosition.Attack).Strike);
+                    nextChance = baseValue * (guestTeam.GetPlayer(PlayerFieldPartPosition.Goalkeeper).Physics / homeTeam.GetPlayer(PlayerFieldPartPosition.Attack).Dribbling)
+                        * (guestTeam.GetPlayer(PlayerFieldPartPosition.Goalkeeper).Defending / homeTeam.GetPlayer(PlayerFieldPartPosition.Attack).Strike);
                     break;
                 case "BallControl.HomePart":
                 case "BallControl.Center":
                 case "BallControl.GuestPart":
                     // avg(передача)/avg(захист_суперника)
-                    nextChance = baseValue * homeTeam.AvgPassing() / guestTeam.AvgDefense(PlayerPosition.Defence);
+                    nextChance = baseValue * homeTeam.AvgPassing() / guestTeam.AvgDefense(PlayerFieldPartPosition.Defence);
                     break;
                 case "BallInterception":
                     // avg(захист_суперника)/avg(передача)
-                    nextChance = baseValue * guestTeam.AvgDefense(PlayerPosition.Defence) / homeTeam.AvgPassing();
+                    nextChance = baseValue * guestTeam.AvgDefense(PlayerFieldPartPosition.Defence) / homeTeam.AvgPassing();
                     break;
                 case "FreeKick":
                     // avg(техніка)/avg(техніка_суперника)
@@ -139,7 +139,7 @@ namespace BusinessLogicLayer.Services
                     break;
                 case "BallOut":
                     // avg(захист_суперника)/avg(передача) * avg(фізика_суперника)/avg(фізика)
-                    nextChance = baseValue * (guestTeam.AvgDefense(PlayerPosition.Defence) / homeTeam.AvgPassing())
+                    nextChance = baseValue * (guestTeam.AvgDefense(PlayerFieldPartPosition.Defence) / homeTeam.AvgPassing())
                         * (guestTeam.AvgPhysicalTraining() / homeTeam.AvgPhysicalTraining());
                     break;
             }

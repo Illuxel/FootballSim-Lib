@@ -2,10 +2,6 @@
 using DatabaseLayer.Repositories;
 using DatabaseLayer;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace StartupProject
 {
@@ -37,7 +33,24 @@ namespace StartupProject
             Console.WriteLine($"\nTeam {homeTeam.Name} with: {homeTeam.Id}");
             Console.WriteLine($"Team {guestTeam.Name} with: {guestTeam.Id}\n");
 
-            var match = new MatchGenerator(homeTeam, guestTeam);
+            var teamCreator = new TeamForMatchCreator();
+            var homeTeamForMatch = teamCreator.Create(homeTeam);
+            var guestTeamForMatch = teamCreator.Create(guestTeam);
+
+            Console.WriteLine("\n-----" + homeTeamForMatch.Name + "-----/n");
+            foreach (var player in homeTeamForMatch.MainPlayers)
+            {
+                Console.WriteLine(player.Value.RealPosition + " : " + player.Value.CurrentPlayer.Person.Surname + "("+ player.Value.CurrentPlayer.CurentRating + ")");
+            }
+
+            Console.WriteLine("\n-----" + guestTeamForMatch.Name + "-----/n");
+            foreach (var player in guestTeamForMatch.MainPlayers)
+            {
+                Console.WriteLine(player.Value.RealPosition + " : " + player.Value.CurrentPlayer.Person.Surname + "(" + player.Value.CurrentPlayer.CurentRating + ")");
+            }
+
+            Console.ReadKey();
+            var match = new MatchGenerator(homeTeamForMatch, guestTeamForMatch);
 
             match.OnMatchGoal += OnMatchGoal;
 

@@ -78,9 +78,9 @@ namespace DatabaseLayer.Repositories
                 {
                     var rowsAffected = connection.Execute(
                         @"INSERT INTO Team (ID, Name, LeagueID, Budget, SportDirectorID, CoachId, ScoutId, 
-                            IsNationalTeam, Strategy, BaseColor, ExtId, ExtName) 
+                            IsNationalTeam, Strategy, BaseColor, ExtId, ExtName, TacticSchema) 
                           VALUES (@Id, @Name, @LeagueId, @Budget, @SportDirectorId, @CoachId, @ScoutId, 
-                            @IsNationalTeam, @Strategy, @BaseColor, @ExtId, @ExtName)", team);
+                            @IsNationalTeam, @Strategy, @BaseColor, @ExtId, @ExtName, @TacticSchema)", team);
                     result = rowsAffected == 1;
                 }
                 return result;
@@ -109,6 +109,7 @@ namespace DatabaseLayer.Repositories
                             ScoutId = @ScoutId, 
                             IsNationalTeam = @IsNationalTeam,
                             Strategy = @Strategy,
+                            TacticSchema = @TacticSchema,
                             BaseColor = @BaseColor,
                             ExtId = @ExtId,
                             ExtName = @ExtName 

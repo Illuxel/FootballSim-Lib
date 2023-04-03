@@ -11,7 +11,7 @@ namespace BusinessLogicLayer.Services
         }
         public override void ProcessEvent()
         {
-            ScoredPlayer = new Guid(HomeTeam.GetPlayer(PlayerPosition.Attack).PersonID);
+            ScoredPlayer = new Guid(HomeTeam.GetPlayer(PlayerFieldPartPosition.Attack).PersonID);
 
             base.ProcessEvent();
         }
