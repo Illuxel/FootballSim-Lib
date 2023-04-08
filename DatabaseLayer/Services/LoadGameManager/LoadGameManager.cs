@@ -30,10 +30,19 @@ namespace DatabaseLayer.Services
 
     public class LoadGameManager
     {
+
+        private static string _savesFolderName = "gameSaves";
         public static LoadGameManager instance;
         private LoadGameManager(string pathToSave)
         {
-            DatabaseManager.PathToSave = pathToSave;
+            if (!pathToSave.Contains(_savesFolderName))
+            {
+                DatabaseManager.PathToSave = Path.Combine(pathToSave, _savesFolderName);
+            }
+            else
+            {
+                DatabaseManager.PathToSave = pathToSave;
+            }
             DatabaseManager.SavePathInfo = Path.Combine(pathToSave, "SavesInfo.json");
         }
 
@@ -41,6 +50,10 @@ namespace DatabaseLayer.Services
         {
             if (instance == null)
             {
+                if(string.IsNullOrEmpty(pathToSave))
+                {
+                    pathToSave = Directory.GetCurrentDirectory();
+                }
                 instance = new LoadGameManager(pathToSave);
 
             }
