@@ -9,7 +9,9 @@ namespace StartupProject
     {
         public static void OnMatchGoal(Goal goal)
         {
-            Console.WriteLine($"Goal from {goal.TeamId} current time: {goal.MatchMinute}");
+            Console.BackgroundColor = ConsoleColor.Green;
+            Console.WriteLine($"-----GOAL------ from {goal.TeamId} current time: {goal.MatchMinute}");
+            Console.ResetColor();
         }
         public static void OnTeamChanged()
         {
@@ -49,7 +51,7 @@ namespace StartupProject
                 Console.WriteLine(player.Value.RealPosition + " : " + player.Value.CurrentPlayer.Person.Surname + "(" + player.Value.CurrentPlayer.CurentRating + ")");
             }
 
-            Console.ReadKey();
+            Console.WriteLine();
             var match = new MatchGenerator(homeTeamForMatch, guestTeamForMatch);
 
             match.OnMatchGoal += OnMatchGoal;

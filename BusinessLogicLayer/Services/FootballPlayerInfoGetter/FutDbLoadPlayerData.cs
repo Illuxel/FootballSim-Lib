@@ -1,10 +1,10 @@
 ﻿using DatabaseLayer;
 using DatabaseLayer.Repositories;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text.Json;
 
 namespace BusinessLogicLayer.Services
 {
@@ -237,7 +237,7 @@ namespace BusinessLogicLayer.Services
 
             var body = new Dictionary<string, object>();
             body.Add("club", fifaTeamId);
-            var jsonBody = JsonSerializer.Serialize(body);
+            var jsonBody = JsonConvert.SerializeObject(body);
             using (var streamWriter = new StreamWriter(request.GetRequestStream()))
             {
                 streamWriter.Write(jsonBody);
@@ -252,11 +252,11 @@ namespace BusinessLogicLayer.Services
             if(data != null)
             {
 
-                var responseResult = JsonSerializer.Deserialize<FutDbResponseResult>(data);
+                var responseResult = JsonConvert.DeserializeObject<FutDbResponseResult>(data);
 
                 foreach (var item in responseResult.Items)
                 {
-                    var jsonData = JsonSerializer.Serialize(item);
+                    var jsonData = JsonConvert.SerializeObject(item);
                     players.Add(getExternalPlayer(jsonData));
                 }
             }
@@ -268,7 +268,7 @@ namespace BusinessLogicLayer.Services
 
         private ExternalPlayer getExternalPlayer(string json)
         {
-            var player = JsonSerializer.Deserialize<ExternalPlayer>(json);
+            var player = JsonConvert.DeserializeObject<ExternalPlayer>(json);
             return player;
         }
 

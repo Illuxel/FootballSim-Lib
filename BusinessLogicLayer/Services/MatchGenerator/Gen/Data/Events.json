@@ -1,9 +1,8 @@
-{
-  "Events": [
+[
     {
       "EventCode": "BallControl",
       "EventDescription": "",
-      "Duration": 4,
+      "Duration": 1,
       "BaseEventLocation": "Center",
       "IsBallIntercepted": false,
       "NextEvents": [
@@ -17,21 +16,21 @@
             { "BallOut": 8 }
           ],
           "Center": [
-            { "BallControl.GuestPart": 35 },
-            { "BallControl.HomePart": 9 },
+            { "BallControl.GuestPart": 34 },
+            { "BallControl.HomePart": 8 },
             { "BallInterception": 17 },
-            { "BallStrike": 4 },
+            { "BallStrike": 5 },
             { "FreeKick": 19 },
-            { "BallOut": 8 }
+            { "BallOut": 9 }
           ],
           "GuestPart": [
-            { "BallControl.HomePart": 6 },
-            { "BallControl.Center": 19 },
-            { "BallInterception": 24 },
-            { "BallStrike": 18 },
-            { "FreeKick": 15 },
+            { "BallControl.HomePart": 3 },
+            { "BallControl.Center": 15 },
+            { "BallInterception": 26 },
+            { "BallStrike": 21 },
+            { "FreeKick": 16 },
             { "Penalty": 10 },
-            { "BallOut": 4 }
+            { "BallOut": 5 }
           ]
         },
         {
@@ -52,9 +51,9 @@
             { "BallOut": 8 }
           ],
           "GuestPart": [
-            { "BallControl.GuestPart": 10 },
+            { "BallControl.Center": 8 },
             { "BallInterception": 24 },
-            { "BallStrike": 30 },
+            { "BallStrike": 32 },
             { "FreeKick": 16 },
             { "Penalty": 12 },
             { "BallOut": 4 }
@@ -70,18 +69,18 @@
             { "BallOut": 9 }
           ],
           "Center": [
-            { "BallControl.HomePart": 9 },
-            { "BallControl.GuestPart": 35 },
+            { "BallControl.HomePart": 8 },
+            { "BallControl.GuestPart": 36 },
             { "BallInterception": 17 },
             { "BallStrike": 4 },
             { "FreeKick": 19 },
             { "BallOut": 8 }
           ],
           "GuestPart": [
-            { "BallControl.HomePart": 6 },
-            { "BallControl.Center": 19 },
+            { "BallControl.HomePart": 3 },
+            { "BallControl.Center": 20 },
             { "BallInterception": 24 },
-            { "BallStrike": 18 },
+            { "BallStrike": 20 },
             { "FreeKick": 15 },
             { "Penalty": 10 },
             { "BallOut": 4 }
@@ -124,9 +123,9 @@
       "NextEvents": [
         {
           "GuestPart": [
-            { "BallStrikeMissed": 30 },
-            { "BallStrikeGoal": 30 },
-            { "BallStrikeSafe": 40 }
+            { "BallStrikeMissed": 18 },
+            { "BallStrikeGoal": 50 },
+            { "BallStrikeSafe": 32 }
           ]
         }
       ]
@@ -253,25 +252,25 @@
     {
       "EventCode": "FreeKick",
       "EventDescription": "",
-      "Duration": 2,
+      "Duration": 1,
       "BaseEventLocation": "None",
       "IsBallIntercepted": false,
       "NextEvents": [
         {
           "HomePart": [
             { "BallStrike": 2 },
-            { "BallControl.HomePart": 51 },
-            { "BallControl.Center": 22 },
-            { "BallControl.GuestPart": 10 },
+            { "BallControl.HomePart": 31 },
+            { "BallControl.Center": 32 },
+            { "BallControl.GuestPart": 20 },
             { "BallInterception": 15 }
           ]
         },
         {
           "Center": [
-            { "BallStrike": 10 },
-            { "BallControl.HomePart": 19 },
-            { "BallControl.Center": 37 },
-            { "BallControl.GuestPart": 9 },
+            { "BallStrike": 11 },
+            { "BallControl.HomePart": 8 },
+            { "BallControl.Center": 41 },
+            { "BallControl.GuestPart": 15 },
             { "BallInterception": 25 }
           ]
         },
@@ -285,7 +284,7 @@
           ]
         }
       ],
-      "AdditionalEvent": [
+      "AdditionalEvents": [
         {
           "HomePart": [
             { "YellowCard": 10 },
@@ -331,4 +330,3 @@
       "IsBallIntercepted": false
     }
   ]
-}

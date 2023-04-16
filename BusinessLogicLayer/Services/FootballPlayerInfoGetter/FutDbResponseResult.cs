@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace BusinessLogicLayer.Services
 {
     internal class FutDbResponseResult
     {
-        [JsonPropertyName("pagination")]
+        [JsonProperty("pagination")]
         public Dictionary<string, object> Pagination { get; set; }
 
-        [JsonPropertyName("items")]
+        [JsonProperty("items")]
         public List<Dictionary<string, object>> Items { get; set; }
     }
 }

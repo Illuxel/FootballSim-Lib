@@ -10,6 +10,7 @@
     }
     public enum StrategyType
     {
+        None,
         BallСontrol,
         DefenseAttack,
         TotalPressing,

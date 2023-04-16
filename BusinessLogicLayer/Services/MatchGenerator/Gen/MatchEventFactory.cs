@@ -22,16 +22,17 @@ namespace BusinessLogicLayer.Services
                 return matchEvent;
             }
 
-            matchEvent.EventCode =          eventCode;
-            matchEvent.EventDescription =   MatchEventsJson.GetValue<string>(eventCode, "EventDescription");
-            matchEvent.Duration =           MatchEventsJson.GetValue<int>(eventCode, "Duration");
+            var baseMatchEvent = MatchEventsJsonParser.GetEvent(eventCode);
 
-            matchEvent.IsBallIntercepted =  MatchEventsJson.GetValue<bool>(eventCode, "IsBallIntercepted");
+            matchEvent.EventCode =          eventCode;
+            matchEvent.EventDescription = baseMatchEvent.EventDescription;
+            matchEvent.Duration = baseMatchEvent.Duration;
+
+            matchEvent.IsBallIntercepted = baseMatchEvent.IsBallIntercepted;
 
             if (!(matchEvent is BallControlEvent) || matchEvent is BallControlEvent && !eventArg.Any())
             {
-                var locationName = MatchEventsJson.GetValue<string>(eventCode, "BaseEventLocation");
-                matchEvent.Location = Enum.Parse<EventLocation>(locationName);
+                matchEvent.Location = baseMatchEvent.BaseEventLocation;
             }
             else
             {
@@ -51,7 +52,7 @@ namespace BusinessLogicLayer.Services
                 return matchEvent;
             }
 
-            matchEvent.NextEventsChances = MatchEventsJson.GetEventChances(eventName, location, strategyType);  
+            matchEvent.NextEventsChances = MatchEventsJsonParser.GetEventChances(eventName, location, strategyType);  
 
             return matchEvent;
         }
@@ -74,11 +75,11 @@ namespace BusinessLogicLayer.Services
                 nextEvent.Location = fromCurrent.Location;
             }
 
-            nextEvent.NextEventsChances = MatchEventsJson.GetEventChances(nextEvent.EventCode, nextEvent.Location);
+            nextEvent.NextEventsChances = MatchEventsJsonParser.GetEventChances(nextEvent.EventCode, nextEvent.Location, nextEvent.HomeTeam.Strategy);
 
-            var additionalChances = MatchEventsJson.GetEventAdditionalChances(fromCurrent.EventCode, fromCurrent.Location);
+            var additionalChances = MatchEventsJsonParser.GetEventAdditionalChances(fromCurrent.EventCode, fromCurrent.Location);
 
-            if (additionalChances != null)
+            if (additionalChances != null && additionalChances.Count > 0)
             {
                 var nextAdditionalEventName = ResultFromChances.Next(additionalChances);
                 var nextAdditionalEvent = CreateEvent(nextAdditionalEventName);
@@ -105,18 +106,18 @@ namespace BusinessLogicLayer.Services
                     break; 
                 case "BallStrikeMissed":
                     // (60/техніка_гравця)*(60/удар_гравця)
-                    nextChance = baseValue * (60 / homeTeam.GetPlayer(PlayerFieldPartPosition.Attack).Dribbling)
-                        * (60 / homeTeam.GetPlayer(PlayerFieldPartPosition.Attack).Strike);
+                    nextChance = baseValue * (60.0 / (double)homeTeam.GetPlayer(PlayerFieldPartPosition.Attack).Dribbling)
+                        * (60.0 / (double)homeTeam.GetPlayer(PlayerFieldPartPosition.Attack).Strike);
                     break;
                 case "BallStrikeGoal":
                     // (техніка_гравця/позиція_голкіпера)*(удар_гравця/реакція_голкіпера)
-                    nextChance = baseValue * (homeTeam.GetPlayer(PlayerFieldPartPosition.Attack).Dribbling / guestTeam.GetPlayer(PlayerFieldPartPosition.Goalkeeper).Physics)
-                        * (homeTeam.GetPlayer(PlayerFieldPartPosition.Attack).Strike / homeTeam.GetPlayer(PlayerFieldPartPosition.Goalkeeper).Defending);
+                    nextChance = baseValue * ((double)homeTeam.GetPlayer(PlayerFieldPartPosition.Attack).Dribbling / (double)guestTeam.GetPlayer(PlayerFieldPartPosition.Goalkeeper).Physics)
+                        * ((double)homeTeam.GetPlayer(PlayerFieldPartPosition.Attack).Strike / (double)homeTeam.GetPlayer(PlayerFieldPartPosition.Goalkeeper).Defending);
                     break;
                 case "BallStrikeSave":
                     // (позиція_голкіпера/техніка_гравця)*(реакція_голкіпера/удар_гравця)
-                    nextChance = baseValue * (guestTeam.GetPlayer(PlayerFieldPartPosition.Goalkeeper).Physics / homeTeam.GetPlayer(PlayerFieldPartPosition.Attack).Dribbling)
-                        * (guestTeam.GetPlayer(PlayerFieldPartPosition.Goalkeeper).Defending / homeTeam.GetPlayer(PlayerFieldPartPosition.Attack).Strike);
+                    nextChance = baseValue * ((double)guestTeam.GetPlayer(PlayerFieldPartPosition.Goalkeeper).Physics / (double)homeTeam.GetPlayer(PlayerFieldPartPosition.Attack).Dribbling)
+                        * ((double)guestTeam.GetPlayer(PlayerFieldPartPosition.Goalkeeper).Defending / (double)homeTeam.GetPlayer(PlayerFieldPartPosition.Attack).Strike);
                     break;
                 case "BallControl.HomePart":
                 case "BallControl.Center":

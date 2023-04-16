@@ -1,60 +1,60 @@
-﻿using System;
-using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace BusinessLogicLayer.Services
 {
     internal class ExternalPlayer
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public int ExtIdPlayer { get; set; }
 
-        [JsonPropertyName("birthDate")]
+        [JsonProperty("birthDate")]
         public string BirthDate { get; set; }
 
-        [JsonPropertyName("name")]
+        [JsonProperty("name")]
         public string Name { get; set; }
 
-        [JsonPropertyName("commonName")]
+        [JsonProperty("commonName")]
         public string LastName { get; set; }
 
-        [JsonPropertyName("league")]
+        [JsonProperty("league")]
         public int ExtLeagueId { get; set; }
 
-        [JsonPropertyName("nation")]
+        [JsonProperty("nation")]
         public int CountryId { get; set;}
 
-        [JsonPropertyName("club")]
+        [JsonProperty("club")]
         public int ExtClubId { get; set; }
 
-        [JsonPropertyName("ratingAverage")]
+        [JsonProperty("ratingAverage")]
         public int Rating { get; set; }
 
-        [JsonPropertyName("position")]
+        [JsonProperty("position")]
         public string Position { get; set; }
 
-        [JsonPropertyName("pace")]
+        [JsonProperty("pace")]
         public int Pace { get; set; }
 
-        [JsonPropertyName("shooting")]
+        [JsonProperty("shooting")]
         public int Shooting { get; set; }
 
-        [JsonPropertyName("defending")]
+        [JsonProperty("defending")]
         public int Defending { get; set; }
 
-        [JsonPropertyName("physicality")]
+        [JsonProperty("physicality")]
         public int Physicality { get; set; }
 
-        [JsonPropertyName("dribbling")]
+        [JsonProperty("dribbling")]
         public int Dribbling { get; set; }
 
-        [JsonPropertyName("passing")]
+        [JsonProperty("passing")]
         public int Passing { get; set; }
 
         //Для воротаря
-        [JsonPropertyName("goalkeeperAttributes.reflexes")]
+        [JsonProperty("goalkeeperAttributes.reflexes")]
         public int Reflexes { get; set; }
 
-        [JsonPropertyName("goalkeeperAttributes.positioning")]
+        [JsonProperty("goalkeeperAttributes.positioning")]
         public int Positioning { get; set; }
         public DateTime GetBirthDate()
         {

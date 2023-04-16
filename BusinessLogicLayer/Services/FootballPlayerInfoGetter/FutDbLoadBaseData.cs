@@ -3,8 +3,8 @@ using System.Net.Http;
 using System.Collections.Generic;
 using DatabaseLayer;
 using DatabaseLayer.Repositories;
-using System.Text.Json;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace BusinessLogicLayer.FetchPlayerData
 {
@@ -64,7 +64,7 @@ namespace BusinessLogicLayer.FetchPlayerData
         {
             string json = SaveDataFromAPI("https://futdb.app/api/nations?page=", 8);
 
-            List<RootCountry> root = JsonSerializer.Deserialize<List<RootCountry>>(json);
+            List<RootCountry> root = JsonConvert.DeserializeObject<List<RootCountry>>(json);
 
 
             CountryRepository countryRepository = new CountryRepository();
@@ -88,7 +88,7 @@ namespace BusinessLogicLayer.FetchPlayerData
         {
             string json = SaveDataFromAPI("https://futdb.app/api/clubs?page=", 35);
 
-            List<RootTeam> root = JsonSerializer.Deserialize<List<RootTeam>>(json);
+            List<RootTeam> root = JsonConvert.DeserializeObject<List<RootTeam>>(json);
 
 
             TeamRepository teamRepository = new TeamRepository();
