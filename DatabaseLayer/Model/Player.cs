@@ -1,4 +1,6 @@
-﻿namespace DatabaseLayer
+﻿using DatabaseLayer.Enums;
+
+namespace DatabaseLayer
 {
     public class Player
     {
@@ -12,7 +14,7 @@
         public int Rating { get; set; }
 
         //real rating with another position
-        public int CurentRating { get; internal set; }
+        public int CurrentPlayerRating { get; internal set; }
 
         //відповідає за рівень "свіжості гравця"
         public int Endurance { get; set; }
@@ -31,9 +33,13 @@
         public Person Person { get; internal set; }
         public Position Position { get; set; }
 
+
+        public int IndexPosition { get; set; }
+        public PlayerPositionGroup PlayerPositionGroup { get; set; }
+
         public void UpdateCurrentRating(int value)
         {
-            CurentRating = Rating + value;
+            CurrentPlayerRating = Rating + value;
         }
 
     }

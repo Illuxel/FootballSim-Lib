@@ -98,7 +98,7 @@ namespace BusinessLogicLayer.Services
 
                 if (selectedPlayers.Count > 0)
                 {
-                    var selectedPlayer = selectedPlayers.OrderByDescending(item => item.CurentRating).FirstOrDefault();
+                    var selectedPlayer = selectedPlayers.OrderByDescending(item => item.CurrentPlayerRating).FirstOrDefault();
                     playersWithPositions[emptyPosition] = new TacticPlayerPosition()
                     {
                         CurrentPlayer = selectedPlayer,
@@ -125,7 +125,7 @@ namespace BusinessLogicLayer.Services
                     return playersWithPositions;
                 }
 
-                var selectedPlayer = freePlayers.OrderBy(item => item.CurentRating).FirstOrDefault();
+                var selectedPlayer = freePlayers.OrderBy(item => item.CurrentPlayerRating).FirstOrDefault();
                 selectedPlayer.UpdateCurrentRating(-20);
                 playersWithPositions[stillEmptyPos] = new TacticPlayerPosition()
                 {

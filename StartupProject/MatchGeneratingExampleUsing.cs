@@ -42,13 +42,13 @@ namespace StartupProject
             Console.WriteLine("\n-----" + homeTeamForMatch.Name + "-----/n");
             foreach (var player in homeTeamForMatch.MainPlayers)
             {
-                Console.WriteLine(player.Value.RealPosition + " : " + player.Value.CurrentPlayer.Person.Surname + "("+ player.Value.CurrentPlayer.CurentRating + ")");
+                Console.WriteLine(player.Value.RealPosition + " : " + player.Value.CurrentPlayer.Person.Surname + "("+ player.Value.CurrentPlayer.CurrentPlayerRating + ")");
             }
 
             Console.WriteLine("\n-----" + guestTeamForMatch.Name + "-----/n");
             foreach (var player in guestTeamForMatch.MainPlayers)
             {
-                Console.WriteLine(player.Value.RealPosition + " : " + player.Value.CurrentPlayer.Person.Surname + "(" + player.Value.CurrentPlayer.CurentRating + ")");
+                Console.WriteLine(player.Value.RealPosition + " : " + player.Value.CurrentPlayer.Person.Surname + "(" + player.Value.CurrentPlayer.CurrentPlayerRating + ")");
             }
 
             Console.WriteLine();

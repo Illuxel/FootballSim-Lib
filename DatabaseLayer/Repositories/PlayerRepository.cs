@@ -48,7 +48,7 @@ namespace DatabaseLayer.Repositories
                     player.Position = potitions.Where(item => item.Code == player.PositionCode).FirstOrDefault();
                     player.Person = persons.Where(item => item.Id == player.PersonID).FirstOrDefault();
 
-                    player.CurentRating = player.Rating;
+                    player.CurrentPlayerRating = player.Rating;
                 }
                 return players.AsList();
             }
