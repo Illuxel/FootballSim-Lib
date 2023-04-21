@@ -89,9 +89,11 @@ namespace DatabaseLayer.Repositories
                 {
                     var rowsAffected = connection.Execute(
                         @"INSERT INTO Player (PersonID, PositionCode, ContractId, Speed, Kick, 
-                            Endurance, Strike, Physics, Defending, Passing, Dribbling, Rating) 
+                            Endurance, Strike, Physics, Defending, Passing, Dribbling, Rating, IndexPosition, 
+                            CurrentPlayerRating, PlayerPositionGroup) 
                         VALUES (@PersonID, @PositionCode, @ContractId, @Speed, @Kick, 
-                            @Endurance, @Strike, @Physics, @Defending, @Passing, @Dribbling, @Rating)",
+                            @Endurance, @Strike, @Physics, @Defending, @Passing, @Dribbling, @Rating, @IndexPosition, 
+                            @CurrentPlayerRating, @PlayerPositionGroup)",
                         player);
                     result = rowsAffected == 1;
                 }
@@ -110,9 +112,11 @@ namespace DatabaseLayer.Repositories
                     {
                         var rowsAffected = connection.Execute(
                         @"INSERT INTO Player (PersonID, PositionCode, ContractId, Speed, Kick, 
-                            Endurance, Strike, Physics, Defending, Passing, Dribbling, Rating) 
+                            Endurance, Strike, Physics, Defending, Passing, Dribbling, Rating,  
+                            IndexPosition, CurrentPlayerRating, PlayerPositionGroup) 
                         VALUES (@PersonID, @PositionCode, @ContractId, @Speed, @Kick, 
-                            @Endurance, @Strike, @Physics, @Defending, @Passing, @Dribbling, Rating)",
+                            @Endurance, @Strike, @Physics, @Defending, @Passing, @Dribbling, Rating,
+                            @IndexPosition, @CurrentPlayerRating, @PlayerPositionGroup)",
                         players, transaction);
                     }
                     catch (Exception ex)
@@ -144,7 +148,10 @@ namespace DatabaseLayer.Repositories
                             Defending = @Defending, 
                             Passing = @Passing,
                             Dribbling = @Dribbling,
-                            Rating = @Rating
+                            Rating = @Rating,
+                            IndexPosition = @IndexPosition, 
+                            CurrentPlayerRating = @CurrentPlayerRating, 
+                            PlayerPositionGroup = @PlayerPositionGroup
                         WHERE PersonID = @PersonID",
                         player);
                     result = rowsAffected == 1;
