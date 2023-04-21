@@ -12,9 +12,9 @@ namespace DatabaseLayer.Services
     {
         public string PathForDataBase { get; set; }
 
-        public SaveInfoJson(string PathForDataBase)
+        public SaveInfoJson(string pathForDataBase)
         {
-            this.PathForDataBase = PathForDataBase;
+            this.PathForDataBase = pathForDataBase;
         }
     }
 
@@ -24,20 +24,29 @@ namespace DatabaseLayer.Services
         public string DbLocalPath { get; set; }
         public string SaveName { get; set; }
 
-        public SaveInfo(PlayerGameData data, string connectionString) { PlayerData = data; DbLocalPath = connectionString; }
-        public SaveInfo() { }
+        internal string GetSavePath()
+        {
+            return Path.Combine(Directory.GetCurrentDirectory(), LoadGameManager.SavesFolderName, SaveName);
+        }
+        public SaveInfo(PlayerGameData data, string saveName)
+        {
+            PlayerData = data;
+            SaveName = saveName;
+            DbLocalPath = Path.Combine(GetSavePath(), DatabaseManager.OriginalDbFileName);
+        }
+        internal SaveInfo() { }
     }
 
     public class LoadGameManager
     {
 
-        private static string _savesFolderName = "gameSaves";
+        internal static string SavesFolderName = "gameSaves";
         public static LoadGameManager instance;
         private LoadGameManager(string pathToSave)
         {
-            if (!pathToSave.Contains(_savesFolderName))
+            if (!pathToSave.Contains(SavesFolderName))
             {
-                DatabaseManager.PathToSave = Path.Combine(pathToSave, _savesFolderName);
+                DatabaseManager.PathToSave = Path.Combine(pathToSave, SavesFolderName);
             }
             else
             {
@@ -104,6 +113,11 @@ namespace DatabaseLayer.Services
             return true;
         }
 
+        public void SaveGame(SaveInfo saveInfo)
+        {
+            updateUserData(saveInfo);
+        }
+
         public SaveInfo Continue()
         {
             //getting directory
@@ -128,10 +142,10 @@ namespace DatabaseLayer.Services
 
             return saveInfo;
         }
-        public SaveInfo Load(string SaveName)
+        public SaveInfo Load(string saveName)
         {
             //Validate of Exist directory
-            string savePath = Path.Combine(DatabaseManager.PathToSave, SaveName);
+            string savePath = Path.Combine(DatabaseManager.PathToSave, saveName);
             var saveInfo = new SaveInfo();
             if (!Directory.Exists(savePath))
             {
@@ -150,7 +164,7 @@ namespace DatabaseLayer.Services
             string json = File.ReadAllText(savePath);
             PlayerGameData someData = JsonConvert.DeserializeObject<PlayerGameData>(json);
 
-            saveInfo.SaveName = SaveName;
+            saveInfo.SaveName = saveName;
             saveInfo.PlayerData = someData;
             saveInfo.DbLocalPath = Path.Combine(savePath, DatabaseManager.OriginalDbFileName);
 
@@ -168,11 +182,11 @@ namespace DatabaseLayer.Services
             if (string.IsNullOrEmpty(saveName))
             {
                 var listSaves = GetFilesInfo();
-                path = getNewSavePath(listSaves, saveName);
+                path = getNewSavePath(listSaves, ref saveName);
             }
             else
             {
-                path = getNewSavePath(null, saveName);
+                path = getNewSavePath(null, ref saveName);
             }
 
             if (string.IsNullOrEmpty(path))
@@ -185,31 +199,34 @@ namespace DatabaseLayer.Services
             SaveInfoJson dataToJSON = new SaveInfoJson(path);
             File.WriteAllText(DatabaseManager.SavePathInfo, JsonConvert.SerializeObject(dataToJSON, Formatting.Indented));
 
-
-
-            //Filling the database with data
-            Directory.CreateDirectory(path);
-            File.Copy(DatabaseManager.OriginalDbFilePath, Path.Combine(path, DatabaseManager.OriginalDbFileName));
-            var json = JsonConvert.SerializeObject(data, Formatting.Indented);
-            var jsonpath = Path.Combine(path, DatabaseManager.UserDataFileName);
-            File.WriteAllText(jsonpath, json);
-
-            //Create connection to database
-            DatabaseManager.SetConnectionString(path);
-
             //Filling the class SaveInfo with data
             saveInfo.SaveName = saveName;
             saveInfo.PlayerData = data;
             saveInfo.DbLocalPath = Path.Combine(path, DatabaseManager.OriginalDbFileName);
+
+            //Filling the database with data
+            Directory.CreateDirectory(path);
+            File.Copy(DatabaseManager.OriginalDbFilePath, Path.Combine(path, DatabaseManager.OriginalDbFileName));
+            updateUserData(saveInfo);
+
+            //Create connection to database
+            DatabaseManager.SetConnectionString(path);
+
             return saveInfo;
         }
 
-
-        private string getNewSavePath(List<string> listSaves, string SaveName)
+        private void updateUserData(SaveInfo saveInfo )
         {
-            if (SaveName != "")
+            var json = JsonConvert.SerializeObject(saveInfo.PlayerData, Formatting.Indented);
+            var jsonpath = Path.Combine(saveInfo.GetSavePath(), DatabaseManager.UserDataFileName);
+            File.WriteAllText(jsonpath, json);
+        }
+
+        private string getNewSavePath(List<string> listSaves, ref string saveName)
+        {
+            if (!string.IsNullOrEmpty(saveName))
             {
-                string result = DatabaseManager.PathToSave + "\\" + SaveName;
+                string result = DatabaseManager.PathToSave + "\\" + saveName;
                 if (Directory.Exists(result))
                 {
                     throw new Exception("Save with this name is exist");
@@ -231,15 +248,19 @@ namespace DatabaseLayer.Services
                 }
                 ++saveNumber;
             }
-
-            return Path.Combine(DatabaseManager.PathToSave, "Save" + saveNumber);
+            saveName = "Save" + saveNumber;
+            return Path.Combine(DatabaseManager.PathToSave, saveName);
         }
 
         private List<string> GetFilesInfo()
         {
             var list = new List<string>();
+            if(!Directory.Exists(DatabaseManager.PathToSave))
+            {
+                Directory.CreateDirectory(DatabaseManager.PathToSave);
+            }
             DirectoryInfo dir = new DirectoryInfo(DatabaseManager.PathToSave);
-            DirectoryInfo[] info = dir.GetDirectories("*Save*.*");
+            var info = dir.GetDirectories("*Save*.*");
             foreach (DirectoryInfo file in info)
             {
                 list.Add(file.Name);
