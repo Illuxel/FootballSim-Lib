@@ -8,25 +8,25 @@ namespace BusinessLogicLayer.Services
     {
         //index by positions:
         //-----1-----
-        //--2-3-4-5--
-        //--6-7-8-9--
-        //----10-----
-        //----11-----
+        //--6-5-3-2--
+        //-16-15-13-12-
+        //----18-----
+        //----22-----
         public Dictionary<int, string> GetPositions()
         {
             return new Dictionary<int, string>()
             {
                 { 1, EnumDescription.GetEnumDescription(PlayerPosition.Goalkeeper) },
-                { 2, EnumDescription.GetEnumDescription(PlayerPosition.RightDefender) },
+                { 6, EnumDescription.GetEnumDescription(PlayerPosition.RightDefender) },
+                { 5, EnumDescription.GetEnumDescription(PlayerPosition.CentralDefender) },
                 { 3, EnumDescription.GetEnumDescription(PlayerPosition.CentralDefender) },
-                { 4, EnumDescription.GetEnumDescription(PlayerPosition.CentralDefender) },
-                { 5, EnumDescription.GetEnumDescription(PlayerPosition.LeftDefender) },
-                { 6, EnumDescription.GetEnumDescription(PlayerPosition.RightMidfielder) },
-                { 7, EnumDescription.GetEnumDescription(PlayerPosition.CentralMidfielder) },
-                { 8, EnumDescription.GetEnumDescription(PlayerPosition.CentralMidfielder) },
-                { 9, EnumDescription.GetEnumDescription(PlayerPosition.LeftMidfielder) },
-                { 10, EnumDescription.GetEnumDescription(PlayerPosition.CentralAttackingMidfielder) },
-                { 11, EnumDescription.GetEnumDescription(PlayerPosition.Forward) }
+                { 2, EnumDescription.GetEnumDescription(PlayerPosition.LeftDefender) },
+                { 16, EnumDescription.GetEnumDescription(PlayerPosition.RightMidfielder) },
+                { 15, EnumDescription.GetEnumDescription(PlayerPosition.CentralMidfielder) },
+                { 13, EnumDescription.GetEnumDescription(PlayerPosition.CentralMidfielder) },
+                { 12, EnumDescription.GetEnumDescription(PlayerPosition.LeftMidfielder) },
+                { 18, EnumDescription.GetEnumDescription(PlayerPosition.CentralAttackingMidfielder) },
+                { 22, EnumDescription.GetEnumDescription(PlayerPosition.Forward) }
             };
         }
        
