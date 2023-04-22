@@ -8,24 +8,24 @@ namespace BusinessLogicLayer.Services
     {
         //index by positions:
         //-----1-----
-        //--2-3-4-5--
-        //--6--7--8--
-        //--9-10-11--
+        //--6-5-3-2--
+        //--16-14-12-
+        //--24-22-20-
         public Dictionary<int, string> GetPositions()
         {
             return new Dictionary<int, string>()
             {
                 { 1, EnumDescription.GetEnumDescription(PlayerPosition.Goalkeeper) },
-                { 2, EnumDescription.GetEnumDescription(PlayerPosition.RightDefender) },
+                { 6, EnumDescription.GetEnumDescription(PlayerPosition.RightDefender) },
+                { 5, EnumDescription.GetEnumDescription(PlayerPosition.CentralDefender) },
                 { 3, EnumDescription.GetEnumDescription(PlayerPosition.CentralDefender) },
-                { 4, EnumDescription.GetEnumDescription(PlayerPosition.CentralDefender) },
-                { 5, EnumDescription.GetEnumDescription(PlayerPosition.LeftDefender) },
-                { 6, EnumDescription.GetEnumDescription(PlayerPosition.RightMidfielder) },
-                { 7, EnumDescription.GetEnumDescription(PlayerPosition.CentralMidfielder) },
-                { 8, EnumDescription.GetEnumDescription(PlayerPosition.LeftMidfielder) },
-                { 9, EnumDescription.GetEnumDescription(PlayerPosition.RightForward) },
-                { 10, EnumDescription.GetEnumDescription(PlayerPosition.CentralForward) },
-                { 11, EnumDescription.GetEnumDescription(PlayerPosition.LeftForward) }
+                { 2, EnumDescription.GetEnumDescription(PlayerPosition.LeftDefender) },
+                { 16, EnumDescription.GetEnumDescription(PlayerPosition.RightMidfielder) },
+                { 14, EnumDescription.GetEnumDescription(PlayerPosition.CentralMidfielder) },
+                { 12, EnumDescription.GetEnumDescription(PlayerPosition.LeftMidfielder) },
+                { 24, EnumDescription.GetEnumDescription(PlayerPosition.RightForward) },
+                { 22, EnumDescription.GetEnumDescription(PlayerPosition.CentralForward) },
+                { 20, EnumDescription.GetEnumDescription(PlayerPosition.LeftForward) }
             };
         }
        
