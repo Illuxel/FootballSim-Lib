@@ -23,9 +23,9 @@ namespace BusinessLogicLayer.Services
                 { 16, EnumDescription.GetEnumDescription(PlayerPosition.RightMidfielder) },
                 { 14, EnumDescription.GetEnumDescription(PlayerPosition.CentralMidfielder) },
                 { 12, EnumDescription.GetEnumDescription(PlayerPosition.LeftMidfielder) },
-                { 24, EnumDescription.GetEnumDescription(PlayerPosition.RightForward) },
+                { 24, EnumDescription.GetEnumDescription(PlayerPosition.RightOffensive) },
                 { 22, EnumDescription.GetEnumDescription(PlayerPosition.CentralForward) },
-                { 20, EnumDescription.GetEnumDescription(PlayerPosition.LeftForward) }
+                { 20, EnumDescription.GetEnumDescription(PlayerPosition.LeftOffensive) }
             };
         }
        

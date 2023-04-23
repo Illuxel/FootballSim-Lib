@@ -23,7 +23,7 @@ namespace BusinessLogicLayer.Services
                 { 16, EnumDescription.GetEnumDescription(PlayerPosition.RightMidfielder) },
                 { 15, EnumDescription.GetEnumDescription(PlayerPosition.CentralMidfielder) },
                 { 14, EnumDescription.GetEnumDescription(PlayerPosition.CentralMidfielder) },
-                { 13, EnumDescription.GetEnumDescription(PlayerPosition.CentralMidfielder },
+                { 13, EnumDescription.GetEnumDescription(PlayerPosition.CentralMidfielder) },
                 { 12, EnumDescription.GetEnumDescription(PlayerPosition.LeftMidfielder) },
                 { 22, EnumDescription.GetEnumDescription(PlayerPosition.Forward) }
             };
