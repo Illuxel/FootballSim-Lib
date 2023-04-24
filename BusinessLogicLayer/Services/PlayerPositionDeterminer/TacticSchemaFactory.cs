@@ -12,8 +12,18 @@ namespace BusinessLogicLayer.Services
             switch (tacticSchema)
             {
                 case TacticSchema.FourFourTwo:
-                default:
                     strategy = new FourFourTwoSchemeDefenition();
+                case tacticSchema.FourThreeThree:
+                    strategy = new FourThreeThreeSchemeDefinition();
+                case tacticSchema.FourFiveOne:
+                    strategy = new FourFiveOneSchemeDefinition();
+                case tacticSchema.ThreeFiveTwo:
+                    strategy = new ThreeFiveTwoSchemeDefinition();
+                case tacticSchema.FourOneFourOne:
+                    strategy = new FourOneFourOneSchemeDefinition();
+                case tacticSchema.FourFourOneOne:
+                    strategy = new FourFourOneOneSchemeDefinition();
+                default:
                     return strategy.GetPositions();
             }
             return null;
