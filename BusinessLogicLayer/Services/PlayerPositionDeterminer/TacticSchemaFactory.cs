@@ -13,17 +13,24 @@ namespace BusinessLogicLayer.Services
             {
                 case TacticSchema.FourFourTwo:
                     strategy = new FourFourTwoSchemeDefenition();
-                case tacticSchema.FourThreeThree:
-                    strategy = new FourThreeThreeSchemeDefinition();
-                case tacticSchema.FourFiveOne:
-                    strategy = new FourFiveOneSchemeDefinition();
-                case tacticSchema.ThreeFiveTwo:
-                    strategy = new ThreeFiveTwoSchemeDefinition();
-                case tacticSchema.FourOneFourOne:
-                    strategy = new FourOneFourOneSchemeDefinition();
-                case tacticSchema.FourFourOneOne:
-                    strategy = new FourFourOneOneSchemeDefinition();
+                    break;
+                case TacticSchema.FourThreeThree:
+                    strategy = new FourThreeThreeSchemeDefenition();
+                    break;
+                case TacticSchema.FourFiveOne:
+                    strategy = new FourFiveOneSchemeDefenition();
+                    break;
+                case TacticSchema.ThreeFiveTwo:
+                    strategy = new ThreeFiveTwoSchemeDefenition(); 
+                    break;
+                case TacticSchema.FourOneFourOne:
+                    strategy = new FourOneFourOneSchemeDefenition();   
+                    break;
+                case TacticSchema.FourFourOneOne:
+                    strategy = new FourFourOneOneSchemeDefenition();
+                    break;
                 default:
+                    strategy = new FourFourTwoSchemeDefenition();
                     return strategy.GetPositions();
             }
             return null;
