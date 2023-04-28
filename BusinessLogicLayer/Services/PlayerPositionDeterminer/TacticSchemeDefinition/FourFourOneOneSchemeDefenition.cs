@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace BusinessLogicLayer.Services
 {
-    internal class FourFourOneOneDefenition : ISchemeDefinition
+    internal class FourFourOneOneSchemeDefenition : ISchemeDefinition
     {
         //index by positions:
         //-----1-----

@@ -8,15 +8,33 @@ namespace BusinessLogicLayer.Services
         //TODO: add another scheme defenition
         public Dictionary<int, string> GetPlayersPosition(TacticSchema tacticSchema)
         {
-            ISchemeDefinition strategy;
+            ISchemeDefinition strategy = null;
             switch (tacticSchema)
             {
                 case TacticSchema.FourFourTwo:
-                default:
                     strategy = new FourFourTwoSchemeDefenition();
-                    return strategy.GetPositions();
+                    break;
+                case TacticSchema.FourThreeThree:
+                    strategy = new FourThreeThreeSchemeDefenition();
+                    break;
+                case TacticSchema.FourFiveOne:
+                    strategy = new FourFiveOneSchemeDefenition();
+                    break;
+                case TacticSchema.ThreeFiveTwo:
+                    strategy = new ThreeFiveTwoSchemeDefenition();
+                    break;
+                case TacticSchema.FourOneFourOne:
+                    strategy = new FourOneFourOneSchemeDefenition();
+                    break;
+                case TacticSchema.FourFourOneOne:
+                    strategy = new FourFourOneOneSchemeDefenition();
+                    break;
             }
-            return null;
+            if (strategy == null)
+            {
+                return new Dictionary<int, string>();
+            }
+            return strategy.GetPositions();
         }
 
     }
