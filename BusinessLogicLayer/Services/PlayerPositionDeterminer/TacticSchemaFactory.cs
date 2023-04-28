@@ -33,7 +33,7 @@ namespace BusinessLogicLayer.Services
                     strategy = new FourFourTwoSchemeDefenition();
                     return strategy.GetPositions();
             }
-            return null;
+            return strategy.GetPositions();
         }
 
     }
