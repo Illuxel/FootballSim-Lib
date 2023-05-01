@@ -13,7 +13,7 @@ namespace DatabaseLayer.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
-                var goals = connection.Query<Goal>("SELECT * FROM Goal").AsList();
+                var goals = connection.Query<Goal>("SELECT * FROM Goal WHERE MatchId = @matchId", matchId).AsList();
 
                 return goals;
             }
