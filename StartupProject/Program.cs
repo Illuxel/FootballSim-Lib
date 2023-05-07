@@ -19,7 +19,7 @@ namespace StartupProject
 
             SaveInfo saveInfo = new SaveInfo(new PlayerGameData()
             {
-                Date = DateTime.Now.ToString(),
+                //Date = DateTime.Now.ToString(),
                 PlayerName = "pl1",
                 Money = 50,
 
