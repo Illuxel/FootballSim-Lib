@@ -1,4 +1,4 @@
-﻿namespace DatabaseLayer
+﻿namespace DatabaseLayer.Model
 {
     public class TransferMarket
     {

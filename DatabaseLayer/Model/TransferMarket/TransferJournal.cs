@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DatabaseLayer
+namespace DatabaseLayer.Model
 {
     public class TransferJournal
     {

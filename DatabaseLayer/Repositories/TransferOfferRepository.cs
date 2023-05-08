@@ -1,9 +1,8 @@
 ﻿using Dapper;
 using DatabaseLayer.DBSettings;
-using System;
+using DatabaseLayer.Model;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Text;
 
 namespace DatabaseLayer.Repositories
 {

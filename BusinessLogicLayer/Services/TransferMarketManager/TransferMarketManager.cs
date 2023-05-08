@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using DatabaseLayer;
 using BusinessLogicLayer.Rules;
 using System.Linq;
+using DatabaseLayer.Model;
 
 namespace BusinessLogicLayer.Services.TransferMarketManager
 {
@@ -112,10 +113,9 @@ namespace BusinessLogicLayer.Services.TransferMarketManager
         /// <param name="sumLowerBound">The lower limit of the amount</param>
         /// <param name="sumUpperBound">The upper limit of the amount</param>
         /// <returns></returns>
-        public List<TransferMarket> SearchPlayerOnMarket(int? byRatting = null, string? byPosition = null, int? ageLowerBound = null, 
-            int? ageUpperBound = null, decimal? sumLowerBound = null, decimal? sumUpperBound = null)
+        public List<TransferMarket> SearchPlayerOnMarket(TransferMarketSearchParams transfer)
         {
-            return _transferMarketRepository.RetrieveByParameters(byRatting, byPosition, ageLowerBound, ageUpperBound, sumLowerBound, sumUpperBound);
+            return _transferMarketRepository.RetrieveByParameters(transfer);
         }
 
         /// <summary>

@@ -1,10 +1,8 @@
 ﻿using Dapper;
 using DatabaseLayer.DBSettings;
-using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Linq;
-using System.Text;
+using DatabaseLayer.Model;
 
 namespace DatabaseLayer.Repositories
 {
@@ -28,25 +26,21 @@ namespace DatabaseLayer.Repositories
             }
         }
 
-        public List<TransferMarket> RetrieveByParameters(int? byRatting = null, string? byPosition = null, int? ageLowerBound = null,
-            int? ageUpperBound = null, decimal? sumLowerBound = null, decimal? sumUpperBound = null)
+        public List<TransferMarket> RetrieveByParameters(TransferMarketSearchParams transfer)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
 
-                var pos = new PositionRepository();
-                var position = byPosition == null ? pos.Retrive() : new List<Position> { pos.Retrive(byPosition) };
+
 
                 var query = @"SELECT TM.* FROM TransferMarket TM 
                     LEFT JOIN Player P ON P.PersonId = TM.IDPlayer 
                     LEFT JOIN Person Pers ON Pers.ID = TM.IDPlayer 
-                    Where P.Rating >= @byRatting AND (((julianday('now') - julianday(Pers.Birthday))/365.25) BETWEEN @ageLow AND @ageUpper) 
-                    AND (TM.DesireAmount BETWEEN @sumLow AND @sumUpper) AND P.PositionCode in @pos";
+                    Where P.Rating >= @Ratting  AND (((julianday('now') - julianday(Pers.Birthday))/365.25) BETWEEN @AgeLowerBound  AND @AgeUpperBound ) 
+                    AND (TM.DesireAmount BETWEEN @SumLowerBound  AND @SumUpperBound ) AND P.PositionCode in @PositionParams ";
 
-                return connection.Query<TransferMarket>(query, new { byRatting = (byRatting == null ? 0 : byRatting), ageLow = (ageLowerBound == null ? 0 : ageLowerBound),
-                    ageUpper = (ageUpperBound == null ? 100 : ageUpperBound),sumLow = (sumLowerBound == null ? 0 : sumLowerBound),
-                    sumUpper = (sumUpperBound == null ? decimal.MaxValue : sumUpperBound), pos = position.Select(s => s.Code).ToList() }).AsList();
+                return connection.Query<TransferMarket>(query, transfer).AsList();
             }
         }
         public TransferMarket Retrieve(string id)
