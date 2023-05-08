@@ -18,6 +18,12 @@ namespace BusinessLogicLayer.Services
 
         List<Player> SparePlayers { get; set; }
 
+        //Created list for spared players
+        List<Player> SparedPlayers { get; set; }
+
+        //Inserted method into interface contract
+        void SubstitutePlayer(int indexMainPlayer, Player sparePlayer);
+
         void ChangeTacticScheme(TacticSchema newTacticSchema);
 
         Player GetPlayer(PlayerFieldPartPosition playerPostion);
