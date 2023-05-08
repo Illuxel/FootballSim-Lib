@@ -45,17 +45,15 @@ namespace BusinessLogicLayer.Services
         //Implemented SubstitutePlayer method
         public void SubstitutePlayer(int indexMainPlayer, Player sparePlayer)
         {
-            if(AllPlayers.Contains(sparePlayer) && MainPlayers.Count <= indexMainPlayer)
+            if(MainPlayers.TryGetValue(indexMainPlayer,out var playerPosition))
             {
-                SparedPlayers.Add(MainPlayers[indexMainPlayer].CurrentPlayer);
+                SparedPlayers.Add(playerPosition.CurrentPlayer);
                 MainPlayers[indexMainPlayer].CurrentPlayer = sparePlayer;
             }
-            /*
             else
             {
-            
+                throw new System.Exception("Index doesn`t belong to that team");
             }
-            */
         }
 
         public Player GetPlayer(PlayerFieldPartPosition playerPostion)
