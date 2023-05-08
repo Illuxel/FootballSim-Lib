@@ -112,7 +112,7 @@ namespace BusinessLogicLayer.Services
                 case "BallStrikeGoal":
                     // (техніка_гравця/позиція_голкіпера)*(удар_гравця/реакція_голкіпера)
                     nextChance = baseValue * ((double)homeTeam.GetPlayer(PlayerFieldPartPosition.Attack).Dribbling / (double)guestTeam.GetPlayer(PlayerFieldPartPosition.Goalkeeper).Physics)
-                        * ((double)homeTeam.GetPlayer(PlayerFieldPartPosition.Attack).Strike / (double)homeTeam.GetPlayer(PlayerFieldPartPosition.Goalkeeper).Defending);
+                        * ((double)homeTeam.GetPlayer(PlayerFieldPartPosition.Attack).Strike / (double)guestTeam.GetPlayer(PlayerFieldPartPosition.Goalkeeper).Defending);
                     break;
                 case "BallStrikeSave":
                     // (позиція_голкіпера/техніка_гравця)*(реакція_голкіпера/удар_гравця)
