@@ -1,5 +1,7 @@
 ﻿using DatabaseLayer;
+using Newtonsoft.Json.Serialization;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 
 namespace BusinessLogicLayer.Services
@@ -16,14 +18,19 @@ namespace BusinessLogicLayer.Services
 
         public List<Player> SparePlayers { get; set; }
 
+        //Instance for spared players list
+        public List<Player> SparedPlayers { get; set; }
+
+
         private PlayerPositionDeterminer _playerPositionDeterminer { get; set; }
-        
+
         internal TeamForMatch()
          {
 
             AllPlayers = new List<Player>();
             MainPlayers = new Dictionary<int, TacticPlayerPosition>();
             SparePlayers = new List<Player>();
+            SparedPlayers = new List<Player>();
 
             _playerPositionDeterminer = new PlayerPositionDeterminer();
             MainPlayers = _playerPositionDeterminer.GetPlayersWithPosition(TacticSchema, AllPlayers);
@@ -35,6 +42,19 @@ namespace BusinessLogicLayer.Services
              MainPlayers = _playerPositionDeterminer.GetPlayersWithPosition(newTacticSchema,
                  MainPlayers.Values.Select(item => item.CurrentPlayer).ToList());
          }
+        //Implemented SubstitutePlayer method
+        public void SubstitutePlayer(int indexMainPlayer, Player sparePlayer)
+        {
+            if(MainPlayers.TryGetValue(indexMainPlayer,out var playerPosition))
+            {
+                SparedPlayers.Add(playerPosition.CurrentPlayer);
+                playerPosition.CurrentPlayer = sparePlayer;
+            }
+            else
+            {
+                throw new System.Exception("Index doesn`t belong to that team");
+            }
+        }
 
         public Player GetPlayer(PlayerFieldPartPosition playerPostion)
         {
