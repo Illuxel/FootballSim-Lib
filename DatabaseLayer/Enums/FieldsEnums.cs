@@ -4,9 +4,9 @@
     {
         All,
         Goalkeeper,
-        Attack,
         Defence,
-        Midfield
+        Midfield,
+        Attack
     }
     public enum StrategyType
     {

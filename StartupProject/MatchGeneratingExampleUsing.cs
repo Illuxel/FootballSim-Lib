@@ -2,6 +2,7 @@
 using DatabaseLayer.Repositories;
 using DatabaseLayer;
 using System;
+using System.Linq;
 
 namespace StartupProject
 {
@@ -10,7 +11,7 @@ namespace StartupProject
         public static void OnMatchGoal(Goal goal)
         {
             Console.BackgroundColor = ConsoleColor.Green;
-            Console.WriteLine($"-----GOAL------ from {goal.TeamId} current time: {goal.MatchMinute}");
+            Console.WriteLine($"{goal.MatchMinute} !!!GOAL!!! from {goal.TeamId} scored: {goal.PlayerId}");
             Console.ResetColor();
         }
         public static void OnTeamChanged()
@@ -19,7 +20,7 @@ namespace StartupProject
         }
         public static void OnEventHappend(IMatchGameEvent gameEvent)
         {
-            Console.WriteLine($"Event happened minute: {gameEvent.MatchMinute} name: {gameEvent.EventCode} team: {gameEvent.HomeTeam.Name}");
+            Console.WriteLine($"{gameEvent.MatchMinute} name: {gameEvent.EventCode} team: {gameEvent.HomeTeam.Name}");
         }
         public static void OnMatchPaused()
         {
@@ -63,7 +64,25 @@ namespace StartupProject
             match.StartGenerating();
             var result = match.MatchData;
 
-            Console.WriteLine(result.Winner.ToString());
+            var homeTeamGoals = result.Goals.Where(item => item.TeamId == homeTeamForMatch.Id).Count();
+
+            var guestTeamGoals = result.Goals.Where(item => item.TeamId == guestTeamForMatch.Id).Count();
+
+            //Console.WriteLine(result.Winner.ToString());
+            Console.WriteLine(homeTeamForMatch.Name + " " + homeTeamGoals + ":" + guestTeamGoals + " " + guestTeamForMatch.Name);
+
+
+            foreach (var goal in result.Goals)
+            {
+                var scoredPlayerName = string.Empty;
+                var goalPlayer = homeTeamForMatch.MainPlayers.Values.Where(item => item.CurrentPlayer.PersonID == goal.PlayerId).FirstOrDefault();
+                if (goalPlayer == null)
+                {
+                    goalPlayer = guestTeamForMatch.MainPlayers.Values.Where(item => item.CurrentPlayer.PersonID == goal.PlayerId).FirstOrDefault();
+
+                }
+                Console.WriteLine($"{goal.MatchMinute} Scored by: {goalPlayer.CurrentPlayer.Person.Surname}");
+            }
         }
     }
 }
