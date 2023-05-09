@@ -48,7 +48,7 @@ namespace BusinessLogicLayer.Services
             if(MainPlayers.TryGetValue(indexMainPlayer,out var playerPosition))
             {
                 SparedPlayers.Add(playerPosition.CurrentPlayer);
-                MainPlayers[indexMainPlayer].CurrentPlayer = sparePlayer;
+                playerPosition.CurrentPlayer = sparePlayer;
             }
             else
             {

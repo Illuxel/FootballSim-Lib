@@ -7,6 +7,7 @@ using DatabaseLayer.Repositories;
 using DatabaseLayer.Services;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace StartupProject
 {
@@ -30,13 +31,24 @@ namespace StartupProject
 
             /*var mge = new MatchGeneratingExampleUsing();
             mge.GenerateMatch();*/
-            TeamForMatchCreator TeamCreator = new TeamForMatchCreator();
+
+            /*TeamForMatchCreator TeamCreator = new TeamForMatchCreator();
+
             TeamRepository teamRepository = new TeamRepository();
+
             var team = teamRepository.Retrive("015834FD9556AAEC44DE54CDE350235B");
             var match = TeamCreator.Create(team);
-            match.SubstitutePlayer(0, match.SparePlayers[0]);
-            var spared = match.SparedPlayers[0];
-            var squad = match.MainPlayers;
+
+            Console.WriteLine(match.SparePlayers[1].Person.Surname + " on bench");
+            Console.WriteLine(match.MainPlayers[2].CurrentPlayer.Person.Surname + " on field");
+
+            match.SubstitutePlayer(2, match.SparePlayers[1]);
+
+            var spared = match.SparedPlayers[0].Person.Surname;
+            var squad = match.MainPlayers[2].CurrentPlayer.Person.Surname;
+
+            Console.WriteLine(spared + " spared");
+            Console.WriteLine(squad + " goes into field");*/
         }
     }
 }
