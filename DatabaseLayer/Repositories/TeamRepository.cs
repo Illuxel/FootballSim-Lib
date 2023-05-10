@@ -131,6 +131,31 @@ namespace DatabaseLayer.Repositories
                 return rowsAffected == 1;
             }
         }
+
+        
+        //Implemented UpdateRating method
+        public void UpdateRating(string teamId,int position)
+        {
+            if (!string.IsNullOrEmpty(teamId) && int.TryParse(position.ToString(), out position))
+            {
+                using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+                {
+                    connection.Open();
+                    var response = connection.QueryFirstOrDefault<Team>(
+                        @"SELECT * FROM Team 
+                            WHERE Id = @teamId", 
+                        new { teamId});
+                    if (response != null)
+                    {
+                        connection.Execute(
+                            @"UPDATE Team SET
+                                CurrentInterlRatingPosition = @position
+                                WHERE Id = @teamId",
+                            new { position,teamId });
+                    }
+                }
+            }
+        }
     }
 }
 
