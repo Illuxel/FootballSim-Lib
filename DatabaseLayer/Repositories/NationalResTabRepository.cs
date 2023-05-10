@@ -1,9 +1,8 @@
 ﻿using Dapper;
 using DatabaseLayer.DBSettings;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Data.SQLite;
-using System.Net.NetworkInformation;
+
 
 namespace DatabaseLayer.Repositories
 {
