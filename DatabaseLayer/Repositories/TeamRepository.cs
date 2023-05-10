@@ -134,25 +134,18 @@ namespace DatabaseLayer.Repositories
 
         
         //Implemented UpdateRating method
-        public void UpdateRating(string teamId,int position)
+        public void UpdateRating(string teamId,int ratingPosition)
         {
-            if (!string.IsNullOrEmpty(teamId) && int.TryParse(position.ToString(), out position))
+            if (!string.IsNullOrEmpty(teamId))
             {
                 using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
                 {
                     connection.Open();
-                    var response = connection.QueryFirstOrDefault<Team>(
-                        @"SELECT * FROM Team 
-                            WHERE Id = @teamId", 
-                        new { teamId});
-                    if (response != null)
-                    {
-                        connection.Execute(
-                            @"UPDATE Team SET
-                                CurrentInterlRatingPosition = @position
+                    connection.Execute(
+                        @"UPDATE Team SET
+                                CurrentInterlRatingPosition = @ratingPosition
                                 WHERE Id = @teamId",
-                            new { position,teamId });
-                    }
+                        new { ratingPosition,teamId });
                 }
             }
         }
