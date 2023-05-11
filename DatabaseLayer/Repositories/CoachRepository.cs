@@ -8,7 +8,7 @@ namespace DatabaseLayer.Repositories
 {
     public class CoachRepository
     {
-        public List<Coach> Retrive()
+        public List<Coach> Retrieve()
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -28,7 +28,7 @@ namespace DatabaseLayer.Repositories
                 return coaches;
             }
         }
-        public Coach Retrive(string personId)
+        public Coach Retrieve(string personId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {

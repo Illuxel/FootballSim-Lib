@@ -7,7 +7,7 @@ namespace DatabaseLayer.Repositories
 {
     public class PersonNameRepository
     {
-        public List<PersonName> RetriveNames()
+        public List<PersonName> RetrieveNames()
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -16,7 +16,7 @@ namespace DatabaseLayer.Repositories
             }
         }
 
-        public List<PersonSurname> RetriveSurnames()
+        public List<PersonSurname> RetrieveSurnames()
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -24,7 +24,7 @@ namespace DatabaseLayer.Repositories
                 return connection.Query<PersonSurname>("SELECT * FROM PersonSurname").AsList();
             }
         }
-        public List<PersonName> RetriveNames(int countryId)
+        public List<PersonName> RetrieveNames(int countryId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -33,7 +33,7 @@ namespace DatabaseLayer.Repositories
             }
         }
 
-        public List<PersonSurname> RetriveSurnames(int countryId)
+        public List<PersonSurname> RetrieveSurnames(int countryId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {

@@ -4,7 +4,7 @@ namespace DatabaseLayer.Repositories
 {
     public class NationalResTabRepository
     {/*
-        public List<NationalResultTable> Retrive()
+        public List<NationalResultTable> Retrieve()
         {
             List<NationalResultTable> result = new List<NationalResultTable>();
             var listData = context.NationalResultTables;
@@ -14,7 +14,7 @@ namespace DatabaseLayer.Repositories
             }
             return result;
         }
-        public NationalResultTable Retrive(string TeamID, string seasonID)
+        public NationalResultTable Retrieve(string TeamID, string seasonID)
         {
             NationalResultTable? league = context.NationalResultTables.Where(b => b.TeamID == TeamID && b.Season == seasonID).FirstOrDefault();
             if (league != null)

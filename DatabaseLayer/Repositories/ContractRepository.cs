@@ -9,7 +9,7 @@ namespace DatabaseLayer.Repositories
 {
     public class ContractRepository
     {
-        public List<Contract> Retrive()
+        public List<Contract> Retrieve()
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -30,7 +30,7 @@ namespace DatabaseLayer.Repositories
             }
         }
 
-        public List<Contract> RetriveByTeam(string teamId)
+        public List<Contract> RetrieveByTeam(string teamId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -53,7 +53,7 @@ namespace DatabaseLayer.Repositories
             }
         }
 
-        public List<Contract> Retrive(string personId)
+        public List<Contract> Retrieve(string personId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -76,7 +76,7 @@ namespace DatabaseLayer.Repositories
             }
         }
 
-        public Contract RetriveOne(string contractId)
+        public Contract RetrieveOne(string contractId)
         {
             var query = @"SELECT Contract.*, Team.*, Person.*
                     FROM Contract

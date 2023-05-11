@@ -36,7 +36,7 @@ namespace DatabaseLayer
                 {
                     _players = new List<Player>();
                     var playerRepos = new PlayerRepository();
-                    var players = playerRepos.Retrive(Id);
+                    var players = playerRepos.Retrieve(Id);
                     _players.AddRange(players);
                 }
                 return _players;

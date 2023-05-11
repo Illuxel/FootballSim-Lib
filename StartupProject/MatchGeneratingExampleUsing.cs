@@ -30,7 +30,7 @@ namespace StartupProject
         public void GenerateMatch()
         {
             var teamRepository = new TeamRepository();
-            var teams = teamRepository.Retrive(1);
+            var teams = teamRepository.Retrieve(1);
             var homeTeam = teams[0];
             var guestTeam = teams[1];
             Console.WriteLine($"\nTeam {homeTeam.Name} with: {homeTeam.Id}");

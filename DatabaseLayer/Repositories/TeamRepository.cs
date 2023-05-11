@@ -9,7 +9,7 @@ namespace DatabaseLayer.Repositories
 {
     public class TeamRepository
     {
-        public List<Team> Retrive()
+        public List<Team> Retrieve()
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -31,7 +31,7 @@ namespace DatabaseLayer.Repositories
             }
         }
 
-        public List<Team> Retrive(int leagueId)
+        public List<Team> Retrieve(int leagueId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -46,7 +46,7 @@ namespace DatabaseLayer.Repositories
             }
         }
 
-        public Team Retrive(string teamId)
+        public Team Retrieve(string teamId)
         {
             if (string.IsNullOrEmpty(teamId))
             {
@@ -134,7 +134,7 @@ namespace DatabaseLayer.Repositories
 
         
         //Implemented UpdateRating method
-        public void UpdateRating(string teamId,int ratingPosition)
+        public void UpdateRating(string teamId,double ratingPosition)
         {
             if (!string.IsNullOrEmpty(teamId))
             {

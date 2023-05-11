@@ -7,7 +7,7 @@ namespace DatabaseLayer.Repositories
 {
     public class RoleRepository
     {
-        public List<Role> Retrive()
+        public List<Role> Retrieve()
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -15,7 +15,7 @@ namespace DatabaseLayer.Repositories
                 return connection.Query<Role>("SELECT * FROM Role").AsList();
             }
         }
-        public Role Retrive(int roleId)
+        public Role Retrieve(int roleId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {

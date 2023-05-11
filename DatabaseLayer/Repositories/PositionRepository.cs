@@ -8,7 +8,7 @@ namespace DatabaseLayer.Repositories
 {
     public class PositionRepository
     {
-        public List<Position> Retrive()
+        public List<Position> Retrieve()
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -16,7 +16,7 @@ namespace DatabaseLayer.Repositories
                 return connection.Query<Position>("SELECT * FROM Position").AsList();
             }
         }
-        public Position Retrive(string positionCode)
+        public Position Retrieve(string positionCode)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {

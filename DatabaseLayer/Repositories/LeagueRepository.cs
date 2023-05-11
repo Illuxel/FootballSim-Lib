@@ -9,7 +9,7 @@ namespace DatabaseLayer.Repositories
 {
     public class LeagueRepository
     {
-        public List<League> Retrive()
+        public List<League> Retrieve()
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -30,7 +30,7 @@ namespace DatabaseLayer.Repositories
                 return results.AsList();
             }
         }
-        public League Retrive(long leagueId)
+        public League Retrieve(long leagueId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {

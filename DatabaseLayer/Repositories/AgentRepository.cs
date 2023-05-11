@@ -9,7 +9,7 @@ namespace DatabaseLayer.Repositories
     public class AgentRepository
     {
         //TODO: Чи потрібні всі агенти?
-        public List<Agent> Retrive()
+        public List<Agent> Retrieve()
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -28,7 +28,7 @@ namespace DatabaseLayer.Repositories
                 return agents;
             }
         }
-        public Agent Retrive(string personId)
+        public Agent Retrieve(string personId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {

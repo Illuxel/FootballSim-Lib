@@ -2,6 +2,7 @@
 using DatabaseLayer.DBSettings;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Linq;
 
 namespace DatabaseLayer.Repositories
 {
@@ -24,6 +25,33 @@ namespace DatabaseLayer.Repositories
                          WHERE TeamId = @teamId AND Season = @season",
                     new {teamId,season });
             }   
+        }
+
+        public List<string> RetrieveAllTeams()
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                return connection.Query<string>("SELECT TeamId FROM TeamRatingWinCoeff").AsList().Distinct().ToList();
+            }
+        }
+        public List<TeamRatingWinCoeff> RetrieveAllSeasonsByTeam(string teamId)
+        {
+            if (string.IsNullOrEmpty(teamId))
+            {
+                return null;
+            }
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                var response = connection.Query<TeamRatingWinCoeff>(
+                    @"SELECT * FROM TeamRatingWinCoeff
+                    WHERE TeamId = @teamId", new { teamId }).AsList();
+                if(response.Count>=5)
+                {
+                    return response.TakeLast(5).ToList();
+                }
+                return response;
+            }
         }
 
         public bool Insert(TeamRatingWinCoeff teamCoeff)
@@ -62,29 +90,16 @@ namespace DatabaseLayer.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
-                
-                var record = connection.QueryFirstOrDefault<TeamRatingWinCoeff>(
-                    @"SELECT * FROM TeamRatingWinCoeff 
-                         WHERE TeamId = @TeamId AND Season = @Season", 
-                    teamCoeff);
-                
-                bool result;
-                if (record != null)
-                {
-                    var rowsAffected = connection.Execute(
+
+                var rowsAffected = connection.Execute(
                         @"UPDATE TeamRatingWinCoeff SET 
                             WinCoeff = @WinCoeff
                             WHERE TeamId = @TeamId AND Season = @Season",
                         teamCoeff);
-                    result = rowsAffected == 1;
-                }
-                else
-                {
-                    Insert(teamCoeff);
-                    return false;
-                }
-                return result;
+                return rowsAffected == 1;
             }
         }
+        
+       
     }
 }

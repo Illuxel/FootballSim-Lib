@@ -10,7 +10,7 @@ namespace DatabaseLayer.Repositories
 {
     public class MatchRepository
     {
-        public List<Match> Retrive(string teamId)
+        public List<Match> Retrieve(string teamId)
         {
             List<Match> result = new List<Match>();
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
@@ -24,7 +24,7 @@ namespace DatabaseLayer.Repositories
             return result;
         }
 
-        public List<Match> Retrive(int leagueId, int tourNumber = 0)
+        public List<Match> Retrieve(int leagueId, int tourNumber = 0)
         {
             List<Match> result = new List<Match>();
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))

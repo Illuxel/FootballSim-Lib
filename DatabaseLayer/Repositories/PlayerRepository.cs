@@ -11,12 +11,12 @@ namespace DatabaseLayer.Repositories
 
     public class PlayerRepository
     {
-        public List<Player> Retrive()
+        public List<Player> Retrieve()
         {
             return retrieve("1=1");
         }
 
-        public List<Player> Retrive(string teamId)
+        public List<Player> Retrieve(string teamId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -54,7 +54,7 @@ namespace DatabaseLayer.Repositories
             }
         }
 
-        public Player RetriveOne(string personId)
+        public Player RetrieveOne(string personId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {

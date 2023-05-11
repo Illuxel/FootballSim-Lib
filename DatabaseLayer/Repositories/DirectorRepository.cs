@@ -10,7 +10,7 @@ namespace DatabaseLayer.Repositories
     {
 
         //TODO: Чи потрібні всі директори?
-        public List<Director> Retrive()
+        public List<Director> Retrieve()
         {
 
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
@@ -31,7 +31,7 @@ namespace DatabaseLayer.Repositories
                 return directors;
             }
         }
-        public Director Retrive(string personId)
+        public Director Retrieve(string personId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {

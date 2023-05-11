@@ -26,7 +26,7 @@ namespace BusinessLogicLayer.Services
 
         public Dictionary<int, TacticPlayerPosition> GetPlayersWithPosition(TacticSchema tacticSchema, string teamId)
         {
-            var team = _teamRepository.Retrive(teamId);
+            var team = _teamRepository.Retrieve(teamId);
             if(team != null)
             {
                 var teamTactic = GetPlayersWithPosition(tacticSchema, team.Players);

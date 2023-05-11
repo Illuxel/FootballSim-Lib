@@ -8,7 +8,7 @@ namespace DatabaseLayer.Repositories
 {
     public class ScoutRepository
     {
-        public List<Scout> Retrive()
+        public List<Scout> Retrieve()
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -27,7 +27,7 @@ namespace DatabaseLayer.Repositories
                 return scouts;
             }
         }
-        public Scout Retrive(string personId)
+        public Scout Retrieve(string personId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
