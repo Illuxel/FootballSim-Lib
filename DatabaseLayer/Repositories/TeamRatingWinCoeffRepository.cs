@@ -2,39 +2,32 @@
 using DatabaseLayer.DBSettings;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Linq;
 
 namespace DatabaseLayer.Repositories
 {
     public class TeamRatingWinCoeffRepository
     {
-        public List<TeamRatingWinCoeff> Retrieve()
-        {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
-            {  
-                return connection.Query<TeamRatingWinCoeff>("SELECT * FROM TeamRatingWinCoeff").AsList();
-            }
-        }
-
-        public TeamRatingWinCoeff RetrieveOne(string teamId,string season)
+        public Dictionary<string, List<TeamRatingWinCoeff>> Retrieve()
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
-                return connection.QueryFirstOrDefault<TeamRatingWinCoeff>(
-                    @"SELECT * FROM TeamRatingWinCoeff 
-                         WHERE TeamId = @teamId AND Season = @season",
-                    new {teamId,season });
-            }   
-        }
+                connection.Open();
 
-        public List<string> RetrieveAllTeams()
-        {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
-            {
-                return connection.Query<string>("SELECT TeamId FROM TeamRatingWinCoeff").AsList().Distinct().ToList();
+                var response = connection.Query<TeamRatingWinCoeff>("SELECT * FROM TeamRatingWinCoeff").AsList();
+
+                Dictionary<string, List<TeamRatingWinCoeff>> dict =new Dictionary<string, List<TeamRatingWinCoeff>>();
+                foreach (var ratingCoeff in response)
+                {
+                    if (!dict.TryGetValue(ratingCoeff.TeamId, out var list))
+                    {
+                        dict[ratingCoeff.TeamId] = new List<TeamRatingWinCoeff>();
+                    }
+                    list.Add(ratingCoeff);
+                }
+                return dict;
             }
         }
-        public List<TeamRatingWinCoeff> RetrieveAllSeasonsByTeam(string teamId)
+        public List<TeamRatingWinCoeff> Retrieve(string teamId)
         {
             if (string.IsNullOrEmpty(teamId))
             {
@@ -46,13 +39,55 @@ namespace DatabaseLayer.Repositories
                 var response = connection.Query<TeamRatingWinCoeff>(
                     @"SELECT * FROM TeamRatingWinCoeff
                     WHERE TeamId = @teamId", new { teamId }).AsList();
-                if(response.Count>=5)
-                {
-                    return response.TakeLast(5).ToList();
-                }
                 return response;
             }
         }
+        public TeamRatingWinCoeff Retrieve(string teamId, string season)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                return connection.QueryFirstOrDefault<TeamRatingWinCoeff>(
+                    @"SELECT * FROM TeamRatingWinCoeff 
+                         WHERE TeamId = @teamId AND Season = @season",
+                    new { teamId, season });
+            }
+        }
+        public List<TeamRatingWinCoeff> Retrieve(string teamId,List<string> seasons)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                return connection.Query<TeamRatingWinCoeff>(
+                    @"SELECT * FROM TeamRatingWinCoeff
+                    WHERE TeamId = @teamId AND Season in @seasons",
+                    new {teamId,seasons}).AsList();
+            }
+        }
+
+        public Dictionary<string, List<TeamRatingWinCoeff>> Retrieve(List<string> seasons)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                var response = connection.Query<TeamRatingWinCoeff>(
+                    @"SELECT * FROM TeamRatingWinCoeff
+                    WHERE Season in @seasons",
+                     new { Seasons = seasons.ToArray() }).AsList();
+                Dictionary<string, List<TeamRatingWinCoeff>> dict = new Dictionary<string, List<TeamRatingWinCoeff>>();
+                foreach (var ratingCoeff in response)
+                {
+                    if (!dict.TryGetValue(ratingCoeff.TeamId, out var list))
+                    {
+                        list = new List<TeamRatingWinCoeff>();
+                        dict[ratingCoeff.TeamId] = list;
+                    }
+                    list.Add(ratingCoeff);
+                }
+                return dict;
+            }
+        }
+        
 
         public bool Insert(TeamRatingWinCoeff teamCoeff)
         {

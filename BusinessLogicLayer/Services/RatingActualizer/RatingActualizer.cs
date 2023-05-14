@@ -1,55 +1,74 @@
 ﻿using DatabaseLayer;
-using DatabaseLayer.DBSettings;
 using DatabaseLayer.Repositories;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity.Core.Objects;
-using System.Data.SQLite;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace BusinessLogicLayer.Services
 {
     public class RatingActualizer
     {
+        TeamRepository _teamRepository;
+        TeamRatingWinCoeffRepository _teamRatingCoeff;
+        SeasonValueCreator _seasonValueCreator;
 
-        private Dictionary<string, double> _averageCoeff = new Dictionary<string, double>();
-        private void fillCoeffDictionary()
+
+        public RatingActualizer()
         {
-            var team = new TeamRepository();
-            var winCoeff = new TeamRatingWinCoeffRepository();
-
-            var teams = winCoeff.RetrieveAllTeams();
-
-            foreach(var t in teams)
-            {
-                var response = winCoeff.RetrieveAllSeasonsByTeam(t);
-                if (response != null)
-                {
-                    Console.WriteLine(string.Join(" ",response.Select(x=>x.WinCoeff)));
-                    _averageCoeff.Add(t, response.Average(x => x.WinCoeff));
-                }
-            }
-            
+            _teamRepository = new TeamRepository();
+            _teamRatingCoeff = new TeamRatingWinCoeffRepository();
+            _seasonValueCreator = new SeasonValueCreator();
         }
-        private void actualizeRating()
+        public void Actualize(DateTime gameDate)
         {
-            var team = new TeamRepository();
-            var list = _averageCoeff.OrderByDescending(x=>x.Value).ToList();
-            foreach ( var item in list)
+            actualizeRating(averageCoeff(gameDate));
+        }
+
+
+
+
+        private Dictionary<string, double> averageCoeff(DateTime gameDate)
+        {
+            var lastSeasons = new List<string>();
+
+            for(int i = gameDate.Year;i > gameDate.Year - 5;i--)
+            {
+                lastSeasons.Add(_seasonValueCreator.GetSeason(i));
+            }
+
+
+            var teamsRatingDict = new Dictionary<string, double>();
+
+            var teamsStatsDict = _teamRatingCoeff.Retrieve(lastSeasons);
+
+            
+            foreach (var stat in teamsStatsDict)
+            {
+
+                teamsRatingDict.Add(stat.Key, stat.Value.Average(x => x.WinCoeff));
+            }
+
+            return teamsRatingDict; 
+        }
+
+        private void actualizeRating(Dictionary<string, double> teamsRatingDict)
+        {
+            var actualRating = new List<Team>();
+            var list = teamsRatingDict.OrderByDescending(x => x.Value).ToList();
+
+            foreach (var item in list)
             {
                 var rating = list.IndexOf(item) + 1;
-                if(rating != 0)
+
+                if (rating != 0)
                 {
-                    team.UpdateRating(item.Key, rating);
+                    var team = _teamRepository.Retrieve(item.Key);
+                    team.CurrentInterlRatingPosition = rating;
+
+                    actualRating.Add(team);
                 }
             }
-        }
-        public void Actualize()
-        {
-            fillCoeffDictionary();
-            actualizeRating();
+            _teamRepository.UpdateRating(actualRating);
         }
     }
 }

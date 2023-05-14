@@ -4,6 +4,9 @@ using System.Data.SQLite;
 using Dapper;
 using System;
 using DatabaseLayer.Enums;
+using System.Data;
+using System.Linq;
+using System.Transactions;
 
 namespace DatabaseLayer.Repositories
 {
@@ -132,23 +135,50 @@ namespace DatabaseLayer.Repositories
             }
         }
 
-        
-        //Implemented UpdateRating method
-        public void UpdateRating(string teamId,double ratingPosition)
+
+        public void UpdateRating(string teamId, double rating)
         {
-            if (!string.IsNullOrEmpty(teamId))
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                connection.Execute(
+                                @"UPDATE Team 
+                                SET CurrentInterlRatingPosition = @rating
+                                WHERE Id = @teamId",
+                                new { rating, teamId });
+            }
+        }
+        
+
+
+        public void UpdateRating(List<Team> ratingPosition)
+        {
+            if (ratingPosition != null)
             {
                 using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
                 {
                     connection.Open();
-                    connection.Execute(
-                        @"UPDATE Team SET
-                                CurrentInterlRatingPosition = @ratingPosition
-                                WHERE Id = @teamId",
-                        new { ratingPosition,teamId });
+                    using (IDbTransaction transaction = connection.BeginTransaction())
+                    {
+                        try
+                        {
+                            var rowsAffected = connection.Execute(
+                            @"UPDATE Team 
+                                SET CurrentInterlRatingPosition = @CurrentInterlRatingPosition
+                                WHERE Id = @Id",
+                                ratingPosition, transaction);
+                            transaction.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback();
+                            throw ex;
+                        }
+                    }
                 }
             }
         }
+
     }
 }
 
