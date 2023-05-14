@@ -1,121 +1,106 @@
-﻿using System.Collections.Generic;
+﻿using Dapper;
+using DatabaseLayer.DBSettings;
+using System.Collections.Generic;
+using System.Data.SQLite;
+
 
 namespace DatabaseLayer.Repositories
 {
     public class NationalResTabRepository
-    {/*
-        public List<NationalResultTable> Retrieve()
+    {
+        public List<NationalResultTable> Retrieve(long leagueId, string season)
         {
-            List<NationalResultTable> result = new List<NationalResultTable>();
-            var listData = context.NationalResultTables;
-            foreach (NationalResultTable data in listData)
+            var result = new List<NationalResultTable>();
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
-                result.Add(mapping(data));
+                connection.Open();
+                result = connection.Query<NationalResultTable, Team, NationalResultTable>(
+                    "SELECT e.*, t.* " +
+                    "from NationalResultTable e " +
+                    "inner join Team t on e.TeamId = t.ID " +
+                    "WHERE t.LeagueId = @leagueId AND e.Season = @season;",
+                    (nationalTable, team) =>
+                    {
+                        nationalTable.Team = team;
+                        return nationalTable;
+                    },
+                    param: new { leagueId, season },
+                    splitOn: "ID").AsList();
             }
+
             return result;
         }
-        public NationalResultTable Retrieve(string TeamID, string seasonID)
-        {
-            NationalResultTable? league = context.NationalResultTables.Where(b => b.TeamID == TeamID && b.Season == seasonID).FirstOrDefault();
-            if (league != null)
-            {
-                return mapping(league);
-            }
-            return new NationalResultTable();
-        }
 
-        public bool Modify(NationalResultTable eData)
+        public bool Update(NationalResultTable model)
         {
             bool result = false;
-            NationalResultTable? data = context.NationalResultTables.Where(b => b.TeamID == eData.TeamID && b.Season == eData.Season).FirstOrDefault();
-
-            if (data == null)
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
-                data = mapping(eData, data);
-                context.NationalResultTables.Add(data);
-                context.SaveChanges();
-                result = true;
-            }
-            else
-            {
-                data = mapping(eData, data);
-                context.NationalResultTables.Update(data);
-                context.SaveChanges();
-                result = true;
-            }
-            return result;
+                connection.Open();
 
-        }
-        public bool Delete(string TeamID, string seasonID)
-        {
-            NationalResultTable? data = context.NationalResultTables.Where(b => b.TeamID == TeamID && b.Season == seasonID).FirstOrDefault();
-            if (data != null)
-            {
-                context.NationalResultTables.Remove(data);
-                context.SaveChanges();
-                return true;
-            }
-            return false;
-        }
-
-        internal static NationalResultTable mapping(string id)
-        {
-            if (string.IsNullOrEmpty(id))
-            {
-                return null;
-            }
-            NationalResultTable data = context.NationalResultTables.Find(id);
-            return mapping(data, true);
-        }
-        internal static NationalResultTable mapping(NationalResultTable data, bool noLoop = true)
-        {
-            if (data == null)
-            {
-                return null;
-            }
-
-            NationalResultTable result = new NationalResultTable();
-
-            result.Season = data.Season;
-            result.TeamID = data.TeamID;
-            result.Wins = data.Wins;
-            result.Draws = data.Draws;
-            result.Loses = data.Loses;
-            result.ScoredGoals = data.ScoredGoals;
-            result.MissedGoals = data.MissedGoals;
-            result.TotalPosition = data.TotalPosition;
-
-            if (!noLoop)
-            {
-                result.Team = TeamRepository.mapping(data.TeamID);
+                var rowAffected = connection.Execute(
+                     "UPDATE NationalResultTable SET "+
+                     "Wins = @wins, Draws = @draws,"+
+                     "Loses = @loses, ScoredGoals = @scoredGoals, MissedGoals = @missedGoals,"+
+                     "TotalPosition = @totalPosition WHERE TeamId = @teamId AND Season = @season", 
+                     param: new { model });
+                result = rowAffected == 1;
             }
 
             return result;
         }
-        internal static NationalResultTable mapping(NationalResultTable data, NationalResultTable result = null)
+
+        public List<NationalResultTable> Retrieve(string teamId, string season)
         {
-            if (data == null)
+            var result = new List<NationalResultTable>();
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
-                return null;
+                connection.Open();
+                result = connection.Query<NationalResultTable, Team, NationalResultTable>(
+                    "SELECT e.*, t.* " +
+                    "from NationalResultTable e " +
+                    "inner join Team t on e.TeamId = t.ID " +
+                    "WHERE t.ID = @teamId AND e.Season = @season;",
+                    (nationalTable, team) =>
+                    {
+                        nationalTable.Team = team;
+                        return nationalTable;
+                    },
+                    param: new { teamId, season },
+                    splitOn: "ID").AsList();
             }
-            if (result == null)
-            {
-                result = new NationalResultTable();
-            }
-
-            result.Season = data.Season;
-            result.TeamID = data.TeamID;
-            result.Wins = data.Wins;
-            result.Draws = data.Draws;
-            result.Loses = data.Loses;
-            result.ScoredGoals = data.ScoredGoals;
-            result.MissedGoals = data.MissedGoals;
-            result.TotalPosition = data.TotalPosition;
-
-            result.Team = TeamRepository.mapping(data.Team, result.Team);
 
             return result;
-        }*/
+        }
+
+        public bool Insert(NationalResultTable model)
+        {
+            bool result = false;
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+
+                var rowAffected = connection.Execute(
+                    @"INSERT INTO NationalResultTable (Season, TeamId, Wins, Draws, Loses, ScoredGoals, MissedGoals, TotalPosition)
+                    VALUES (@Season, @TeamId, @Wins, @Draws, @Loses, @ScoredGoals, @MissedGoals, @TotalPosition)", model
+                    );
+
+                result = rowAffected == 0;
+            }
+
+            return result;
+        }
+
+        public bool Delete(string teamId, string season)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                var rowAffected = connection.Execute("DELETE FROM NationalResultTable WHERE TeamID = @TeamId AND Season = @Season",
+                    param: new { TeamId = teamId, Season = season });
+
+                return rowAffected == 1;
+            }
+        }
     }
 }
-
