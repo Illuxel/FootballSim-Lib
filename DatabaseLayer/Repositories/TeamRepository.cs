@@ -4,12 +4,15 @@ using System.Data.SQLite;
 using Dapper;
 using System;
 using DatabaseLayer.Enums;
+using System.Data;
+using System.Linq;
+using System.Transactions;
 
 namespace DatabaseLayer.Repositories
 {
     public class TeamRepository
     {
-        public List<Team> Retrive()
+        public List<Team> Retrieve()
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -31,7 +34,7 @@ namespace DatabaseLayer.Repositories
             }
         }
 
-        public List<Team> Retrive(int leagueId)
+        public List<Team> Retrieve(int leagueId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -46,7 +49,7 @@ namespace DatabaseLayer.Repositories
             }
         }
 
-        public Team Retrive(string teamId)
+        public Team Retrieve(string teamId)
         {
             if (string.IsNullOrEmpty(teamId))
             {
@@ -131,6 +134,51 @@ namespace DatabaseLayer.Repositories
                 return rowsAffected == 1;
             }
         }
+
+
+        public void UpdateRating(string teamId, double rating)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                connection.Execute(
+                                @"UPDATE Team 
+                                SET CurrentInterlRatingPosition = @rating
+                                WHERE Id = @teamId",
+                                new { rating, teamId });
+            }
+        }
+        
+
+
+        public void UpdateRating(List<Team> ratingPosition)
+        {
+            if (ratingPosition != null)
+            {
+                using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+                {
+                    connection.Open();
+                    using (IDbTransaction transaction = connection.BeginTransaction())
+                    {
+                        try
+                        {
+                            var rowsAffected = connection.Execute(
+                            @"UPDATE Team 
+                                SET CurrentInterlRatingPosition = @CurrentInterlRatingPosition
+                                WHERE Id = @Id",
+                                ratingPosition, transaction);
+                            transaction.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback();
+                            throw ex;
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }
 

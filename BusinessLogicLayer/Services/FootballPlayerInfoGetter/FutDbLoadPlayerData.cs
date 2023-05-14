@@ -144,11 +144,11 @@ namespace BusinessLogicLayer.Services
 
         public void FillPlayerInfo(string currentSeason)
         {
-            var leagues = _leagueRepos.Retrive();
-            var countries = _countryRepository.Retrive();
+            var leagues = _leagueRepos.Retrieve();
+            var countries = _countryRepository.Retrieve();
             foreach (var league in leagues)
             {
-                var teams = _teamRepos.Retrive(league.Id);
+                var teams = _teamRepos.Retrieve(league.Id);
                 foreach(var team in teams)
                 {
                     var players = getPlayers(team.ExtId);

@@ -68,7 +68,7 @@ namespace BusinessLogicLayer.FetchPlayerData
 
 
             CountryRepository countryRepository = new CountryRepository();
-            List<Country> countries = countryRepository.Retrive();
+            List<Country> countries = countryRepository.Retrieve();
 
 
             foreach (RootCountry oneRoot in root)
@@ -92,7 +92,7 @@ namespace BusinessLogicLayer.FetchPlayerData
 
 
             TeamRepository teamRepository = new TeamRepository();
-            List<Team> teams = teamRepository.Retrive();
+            List<Team> teams = teamRepository.Retrieve();
 
             foreach (RootTeam oneRoot in root)
             {

@@ -25,11 +25,11 @@ namespace BusinessLogicLayer.Services
         public void Generate(int year)
         {
             var matches = new List<Match>();
-            var leagues = _leagueRepository.Retrive();
+            var leagues = _leagueRepository.Retrieve();
             var firstTourDate = _seasonCreator.GetSeasonStartDate(year);
             foreach (var league in leagues)
             {
-                var teams = _teamRepository.Retrive(league.Id);
+                var teams = _teamRepository.Retrieve(league.Id);
                 matches.AddRange(generateNationalCalendarMatch(firstTourDate, teams, league.Id));
             }
 

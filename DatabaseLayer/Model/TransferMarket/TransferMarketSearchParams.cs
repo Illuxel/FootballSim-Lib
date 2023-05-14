@@ -18,7 +18,7 @@ namespace DatabaseLayer.Model
         public TransferMarketSearchParams()
         {
             var pos = new PositionRepository();
-            var position = PositionParam == null ? pos.Retrive() : new List<Position> { pos.Retrive(PositionParam) };
+            var position = PositionParam == null ? pos.Retrieve() : new List<Position> { pos.Retrieve(PositionParam) };
 
             Ratting = (Ratting == null ? 0 : Ratting);
             AgeLowerBound = (AgeLowerBound == null ? 0 : AgeLowerBound);

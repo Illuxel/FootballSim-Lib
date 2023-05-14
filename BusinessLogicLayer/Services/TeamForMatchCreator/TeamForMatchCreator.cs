@@ -34,7 +34,7 @@ namespace BusinessLogicLayer.Services
 
         public ITeamForMatch Create(string teamId, int sparePlayersCount = 0)
         {
-            return Create(_teamRepository.Retrive(teamId), sparePlayersCount);
+            return Create(_teamRepository.Retrieve(teamId), sparePlayersCount);
         }
     }
 }

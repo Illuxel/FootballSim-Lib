@@ -11,7 +11,7 @@ namespace DatabaseLayer
         public string BaseColor { get; set; }
         public StrategyType Strategy { get; set; }
 
-        //введеться виключно в Євро
+        //ГўГўГҐГ¤ГҐГІГјГ±Гї ГўГЁГЄГ«ГѕГ·Г­Г® Гў ВЄГўГ°Г®
         public double Budget { get; set; }
         public int IsNationalTeam { get; set; }
 
@@ -24,6 +24,7 @@ namespace DatabaseLayer
         public string ExtName { get; set; }
         public string SportsDirectorId { get; set; }
         public TacticSchema TacticSchema { get; set; }
+        public int CurrentInterlRatingPosition { get; set; }
 
 
         private List<Player> _players;
@@ -35,7 +36,7 @@ namespace DatabaseLayer
                 {
                     _players = new List<Player>();
                     var playerRepos = new PlayerRepository();
-                    var players = playerRepos.Retrive(Id);
+                    var players = playerRepos.Retrieve(Id);
                     _players.AddRange(players);
                 }
                 return _players;

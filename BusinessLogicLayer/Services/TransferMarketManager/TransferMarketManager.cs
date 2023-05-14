@@ -38,7 +38,7 @@ namespace BusinessLogicLayer.Services.TransferMarketManager
         public bool SubmitForTransfer(string playerId, string teamId, TransferType typeTransfer, decimal sum, string ?newId = null)
         {
             // Checking the number of players in the team, must be more than 18
-            var teamInfo = _teamRepository.Retrive(teamId);
+            var teamInfo = _teamRepository.Retrieve(teamId);
             if (teamInfo == null)
             {
                 return false;

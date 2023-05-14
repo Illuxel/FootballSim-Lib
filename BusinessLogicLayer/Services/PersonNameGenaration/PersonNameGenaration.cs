@@ -19,7 +19,7 @@ namespace BusinessLogicLayer.Services
                 if (_names == null)
                 {
                     _names = new Dictionary<int, List<PersonName>>();
-                    var names = _personNameRepository.RetriveNames();
+                    var names = _personNameRepository.RetrieveNames();
                     foreach (var name in names)
                     {
                         if (!_names.TryGetValue(name.CountryId, out List<PersonName> data))
@@ -40,7 +40,7 @@ namespace BusinessLogicLayer.Services
                 if (_surnames == null)
                 {
                     _surnames = new Dictionary<int, List<PersonSurname>>();
-                    var surnames = _personNameRepository.RetriveSurnames();
+                    var surnames = _personNameRepository.RetrieveSurnames();
                     foreach (var surname in surnames)
                     {
                         if (!_surnames.TryGetValue(surname.CountryId, out List<PersonSurname> data))

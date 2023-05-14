@@ -8,7 +8,7 @@ namespace DatabaseLayer.Repositories
 {
     public class CountryRepository
     {
-        public List<Country> Retrive()
+        public List<Country> Retrieve()
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -16,7 +16,7 @@ namespace DatabaseLayer.Repositories
                 return connection.Query<Country>("SELECT * FROM Country").AsList();
             }
         }
-        public Country Retrive(int countryId)
+        public Country Retrieve(int countryId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
