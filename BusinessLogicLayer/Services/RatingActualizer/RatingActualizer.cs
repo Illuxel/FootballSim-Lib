@@ -11,7 +11,7 @@ namespace BusinessLogicLayer.Services
         TeamRepository _teamRepository;
         TeamRatingWinCoeffRepository _teamRatingCoeff;
         SeasonValueCreator _seasonValueCreator;
-
+        private static int _countYearsForRating = 5;
 
         public RatingActualizer()
         {
@@ -21,30 +21,25 @@ namespace BusinessLogicLayer.Services
         }
         public void Actualize(DateTime gameDate)
         {
-            actualizeRating(averageCoeff(gameDate));
+            var teamsWinCoef = getAverageCoeff(gameDate.Year);
+            actualizeRating(teamsWinCoef);
         }
 
-
-
-
-        private Dictionary<string, double> averageCoeff(DateTime gameDate)
+        private Dictionary<string, double> getAverageCoeff(int currentYear)
         {
             var lastSeasons = new List<string>();
 
-            for(int i = gameDate.Year;i > gameDate.Year - 5;i--)
+            for(int i = currentYear; i > currentYear - _countYearsForRating; i--)
             {
                 lastSeasons.Add(_seasonValueCreator.GetSeason(i));
             }
 
-
             var teamsRatingDict = new Dictionary<string, double>();
-
             var teamsStatsDict = _teamRatingCoeff.Retrieve(lastSeasons);
 
             
             foreach (var stat in teamsStatsDict)
             {
-
                 teamsRatingDict.Add(stat.Key, stat.Value.Average(x => x.WinCoeff));
             }
 

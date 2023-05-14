@@ -20,7 +20,8 @@ namespace DatabaseLayer.Repositories
                 {
                     if (!dict.TryGetValue(ratingCoeff.TeamId, out var list))
                     {
-                        dict[ratingCoeff.TeamId] = new List<TeamRatingWinCoeff>();
+                        list = new List<TeamRatingWinCoeff>();
+                        dict[ratingCoeff.TeamId] = list;
                     }
                     list.Add(ratingCoeff);
                 }
