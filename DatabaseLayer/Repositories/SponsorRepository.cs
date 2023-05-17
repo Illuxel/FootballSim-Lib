@@ -28,16 +28,10 @@ namespace DatabaseLayer.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
-                var record = connection.QuerySingleOrDefault<Team>("SELECT * FROM Sponsor WHERE Name = @Name", new { Name });
-                bool result = false;
-                if (record == null)
-                {
-                    var rowsAffected = connection.Execute(
-                        @"INSERT INTO Sponsor (ID, Name) 
-                          VALUES (@Name)", new { Name});
-                    result = rowsAffected == 1;
-                }
-                return result;
+                var rowsAffected = connection.Execute(
+                         @"INSERT INTO Sponsor (Name) 
+                          VALUES (@Name)", new { Name });
+                return rowsAffected == 1;
             }
         }
         public bool Delete(int ID)

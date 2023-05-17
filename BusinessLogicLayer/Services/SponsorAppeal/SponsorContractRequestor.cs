@@ -9,7 +9,7 @@ using System.Data.Entity.Core.Mapping;
 
 namespace BusinessLogicLayer.Services
 {
-    internal class SponsorAppeal
+    public class SponsorContractRequestor
     {
         string _teamID;
         int _gameYear;
@@ -25,7 +25,7 @@ namespace BusinessLogicLayer.Services
 
         Dictionary<string, int> _groupedTeams;
 
-        public SponsorAppeal(string teamId,int gameYear)
+        public SponsorContractRequestor(string teamId,int gameYear)
         {
             _teamID = teamId;
             _gameYear = gameYear;
@@ -35,11 +35,11 @@ namespace BusinessLogicLayer.Services
             _teamRepository = new TeamRepository();
             _activeSponsorContractRepository = new ActiveSponsorContractRepository();
 
-            _teams = _teamRepository.Retrieve();
-            _sponsors = _sponsorRepository.Retrieve();
-            _activeSponsorContrats = _activeSponsorContractRepository.Retrieve(teamId);
+            _teams = new List<Team>();
+            _sponsors = new List<Sponsor>();
+            _activeSponsorContrats = new List<ActiveSponsorContract>();
 
-            _groupedTeams = groupTeamsByRating();
+            _groupedTeams = new Dictionary<string, int>();
         }
         private Dictionary<string, int> groupTeamsByRating()
         {
@@ -70,6 +70,8 @@ namespace BusinessLogicLayer.Services
         private double getContractAmount(string teamId)
         {
             Random random = new Random();
+            _teams = _teamRepository.Retrieve();
+            _groupedTeams = groupTeamsByRating();
 
             if (_groupedTeams.TryGetValue(teamId, out var value))
             {
@@ -92,7 +94,8 @@ namespace BusinessLogicLayer.Services
 
         public void AppealContract()
         {
-            if(_activeSponsorContrats.Count > 3)
+            _activeSponsorContrats = _activeSponsorContractRepository.Retrieve(_teamID);
+            if (_activeSponsorContrats.Count > 3)
             {
                 return;
             }
@@ -115,6 +118,8 @@ namespace BusinessLogicLayer.Services
         }
         int FindRandomUniqueSponsor()
         {
+            _sponsors = _sponsorRepository.Retrieve();
+
             var random = new Random();
             int randomIndex = random.Next(0, _sponsors.Count() - 1);
             var sponsor = _sponsors[randomIndex].ID;

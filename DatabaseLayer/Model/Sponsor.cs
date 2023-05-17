@@ -2,7 +2,7 @@
 {
     public class Sponsor
     {
-        public int ID { get; set; }
+        public int ID;
         public string Name { get; set; }
     }
 }

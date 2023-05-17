@@ -19,7 +19,9 @@ namespace StartupProject
        
         public static void Main(string[] args)
         {
-           
+           var sponsorRep = new SponsorRepository();
+            var sponsor = new Sponsor();
+            sponsorRep.Insert("aboba");
         }
     }
 }

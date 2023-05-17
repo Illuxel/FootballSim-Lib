@@ -49,7 +49,6 @@ namespace DatabaseLayer.Repositories
                     WHERE TeamID = @TeamID 
                     AND SeasonFrom = @SeasonFrom 
                     AND SeasonTo = @SeasonTo 
-                    AND Value = @Value 
                     AND SponsorID = @SponsorID",
                     contract);
 
@@ -68,17 +67,8 @@ namespace DatabaseLayer.Repositories
             }
         }
 
-
-        private string ConvertToSeason(int year)
+        public bool DeleteExpired(string gameYear)
         {
-            return string.Format("{0}/{1}", year, year + 1);
-        }
-
-
-
-        public bool DeleteExpired(int gameYear)
-        {
-            var season = ConvertToSeason(gameYear);
             var contracts = Retrieve().OrderBy(x=>x.SeasonTo).ToList();
 
             if(contracts == null)
@@ -86,7 +76,8 @@ namespace DatabaseLayer.Repositories
                 return false;
             }
 
-            _contract = contracts.Where(x => x.SeasonTo == season).FirstOrDefault();
+            _contract = contracts.Where(x => x.SeasonTo == gameYear).FirstOrDefault();
+
             if(_contract == null)
             {
                 return false;
