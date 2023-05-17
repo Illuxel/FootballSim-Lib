@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DatabaseLayer
+﻿namespace DatabaseLayer
 {
-    internal class Sponsor
+    public class Sponsor
     {
         public int ID { get; set; }
         public string Name { get; set; }

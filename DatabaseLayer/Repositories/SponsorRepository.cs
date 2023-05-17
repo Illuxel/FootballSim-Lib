@@ -1,16 +1,11 @@
 ﻿using Dapper;
 using DatabaseLayer.DBSettings;
-using DatabaseLayer.Enums;
-using DatabaseLayer.Model;
-using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Text;
-using System.Xml.Linq;
 
 namespace DatabaseLayer.Repositories
 {
-    internal class SponsorRepository
+    public class SponsorRepository
     {
         public List<Sponsor> Retrieve()
         {
