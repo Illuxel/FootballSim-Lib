@@ -29,14 +29,14 @@ namespace DatabaseLayer.Repositories
                 return connection.Query<ActiveSponsorContract>("SELECT * FROM ActiveSponsorContract").AsList();
             }
         }
-        public ActiveSponsorContract Retrieve(string TeamID) 
+        public List<ActiveSponsorContract> Retrieve(string TeamID) 
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
-                return connection.QueryFirstOrDefault<ActiveSponsorContract>(
+                return connection.Query<ActiveSponsorContract>(
                     @"SELECT * FROM ActiveSponsorContract
-                      WHERE TeamID = @TeamID", new { TeamID });
+                      WHERE TeamID = @TeamID", new { TeamID }).AsList();
             }
         }
         public bool Insert(ActiveSponsorContract contract)
