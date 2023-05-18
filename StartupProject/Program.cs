@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using BusinessLogicLayer.Services.TransferMarketManager;
 using System.Security.Cryptography.X509Certificates;
 using System.Net;
+using BusinessLogicLayer.Services.PlayerGeneration;
 
 namespace StartupProject
 {
@@ -19,7 +20,7 @@ namespace StartupProject
       
         public static void Main(string[] args)
         {         
-            
+           
         }
     }
 }

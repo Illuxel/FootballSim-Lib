@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using DatabaseLayer.Enums;
+﻿using DatabaseLayer.Enums;
 namespace BusinessLogicLayer.Services.PlayerGeneration
 {
     public class PlayerCoefImportanceProperty
