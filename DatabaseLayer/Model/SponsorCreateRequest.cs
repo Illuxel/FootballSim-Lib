@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Principal;
-using System.Text;
+﻿using DatabaseLayer.Enums;
+using System;
+
 
 namespace DatabaseLayer.Model
 {
-    public class ActiveSponsorContract
+    public class SponsorCreateRequest
     {
-        public string ID { get; set; }
+        public string ID { get; internal set; }
         public string TeamID { get; set; }
         public string SeasonFrom { get; set; }
         public string SeasonTo { get; set; }
         public double Value { get; set; }
         public int SponsorID { get; set; }
-        public ActiveSponsorContract()
+        public SponsorRequestStatus State { get; set; }
+        public SponsorCreateRequest()
         {
             ID = Guid.NewGuid().ToString();
         }
