@@ -1,7 +1,7 @@
 ﻿using DatabaseLayer;
 using System;
 
-namespace BusinessLogicLayer.Services.PlayerPriceCalculator
+namespace BusinessLogicLayer.Services
 {
     public class PlayerPriceCalculator
     {

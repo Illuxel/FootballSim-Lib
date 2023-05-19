@@ -1,4 +1,4 @@
-﻿using BusinessLogicLayer.Services.PlayerPriceCalculator;
+﻿using BusinessLogicLayer.Services;
 using DatabaseLayer;
 using DatabaseLayer.Repositories;
 using System;
