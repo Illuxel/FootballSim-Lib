@@ -13,6 +13,6 @@
         public string SeasonTo { get; set; }
         public string SeasonFrom { get; set; }
 
-        public double Price { get; set; }
+        public double Salary { get; set; }
     }
 }
