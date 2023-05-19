@@ -4,6 +4,7 @@ using System.Data.SQLite;
 using DatabaseLayer.DBSettings;
 using Dapper;
 using System;
+using DatabaseLayer.Enums;
 
 namespace DatabaseLayer.Repositories
 {
@@ -29,17 +30,22 @@ namespace DatabaseLayer.Repositories
             }
         }
 
-        public bool IsUnique(string teamId,int sponsorId)
+        public List<Sponsor> RetrieveFreeSponsor(string teamId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
-                return connection.QueryFirstOrDefault(
-                            @"SELECT * FROM ActiveSponsorContract 
-                            WHERE TeamID = @teamId AND SponsorID = @sponsorId",
-                            new { teamId,sponsorId}) == null;
+                return connection.Query<Sponsor>(@"SELECT sponsor.* 
+                FROM Sponsor sponsor
+                WHERE sponsor.ID 
+                NOT IN 
+                (SELECT SponsorID 
+                FROM ActiveSponsorContract 
+                WHERE TeamID = @TeamId)", new { TeamId = teamId }).AsList();
             }
         }
+            
+
 
         public bool Insert(SponsorCreateRequest contract)
         {
@@ -84,7 +90,7 @@ namespace DatabaseLayer.Repositories
             }
         }
 
-        public bool Delete(SponsorCreateRequest contract)
+        public bool Delete(string ID)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -92,7 +98,7 @@ namespace DatabaseLayer.Repositories
                 var rowsAffected = connection.Execute(
                             @"DELETE FROM ActiveSponsorContract 
                             WHERE ID = @id",
-                            new { id = contract.ID });
+                            new { id = ID });
 
                 return rowsAffected == 1;
             }
@@ -121,8 +127,8 @@ namespace DatabaseLayer.Repositories
                 var rowsAffected = connection.Execute(
                             @"DELETE FROM ActiveSponsorContract 
                             WHERE TeamID = @teamId 
-                            AND State = 0",
-                            new {teamId});
+                            AND State = @status",
+                            new {TeamID = @teamId,status = SponsorRequestStatus.Waiting});
 
                 return rowsAffected == 1;
             }

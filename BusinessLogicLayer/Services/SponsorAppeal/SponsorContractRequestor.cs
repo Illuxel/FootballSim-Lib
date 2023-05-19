@@ -10,39 +10,74 @@ namespace BusinessLogicLayer.Services
 {
     public class SponsorContractRequestor
     {
-        Random _random;
-
         TeamRepository _teamRepository;
         SponsorCreateRequestRepository _sponsorCreateRequestRepository;
-        SponsorRepository _sponsorRepository;
-
-        List<Team> _teams;
-        List<Sponsor> _sponsors;
-
-        Dictionary<string, int> _groupedTeams;
-
         SeasonValueCreator _seasonValueCreator;
+
 
         public SponsorContractRequestor()
         {
-            _random = new Random();
-            var seasonValueCreator = new SeasonValueCreator();
             _teamRepository = new TeamRepository();
-            _sponsorCreateRequestRepository = new SponsorCreateRequestRepository();
+            _sponsorCreateRequestRepository = new SponsorCreateRequestRepository(); 
+            _seasonValueCreator = new SeasonValueCreator();
         }
 
-
-        private Dictionary<string, int> groupTeamsByRating()
+        public List<SponsorCreateRequest> CreateContractRequests(string teamId, int gameYear)
         {
-            _groupedTeams = new Dictionary<string, int>();
+            Random random = new Random();
 
-            decimal maxPosition = _teams.Count();
+            int maxContractsCount = 3;
+            int maxContractsRequests = 3;
+
+            var teams = _teamRepository.Retrieve();
+
+            var groupedTeams = getGroupedTeamsByRating(teams);
+
+            var contractsRequestsCount = random.Next(0, maxContractsRequests);
+
+            var activeSponsorContrats = _sponsorCreateRequestRepository.Retrieve(teamId);
+
+            var sponsors = _sponsorCreateRequestRepository.RetrieveFreeSponsor(teamId);
+
+            var contractRequests = new List<SponsorCreateRequest>();
+
+            if (activeSponsorContrats.Count < maxContractsCount && contractsRequestsCount != 0)
+            {
+                for (int i = 0; i < contractsRequestsCount; i++)
+                {
+                    var contract = getRandomContract(teamId, gameYear, groupedTeams, sponsors);
+                    contractRequests.Add(contract);
+                    _sponsorCreateRequestRepository.Insert(contract);
+                }
+            }
+            return contractRequests;
+        }
+
+        public void DeleteExpiredContracts(int gameYear)
+        {
+            var expiredYear = gameYear - 1;
+            var season = _seasonValueCreator.GetSeason(expiredYear);
+            _sponsorCreateRequestRepository.DeleteExpired(season);
+        }
+
+        public void ClaimContract(string teamId, SponsorCreateRequest contract)
+        {
+            contract.State = SponsorRequestStatus.Active;
+            _sponsorCreateRequestRepository.UpdateState(contract);
+            _sponsorCreateRequestRepository.DeleteCanceled(teamId);
+        }
+        private Dictionary<string, int> getGroupedTeamsByRating(List<Team> teams)
+        {
+            var groupedTeams = new Dictionary<string, int>();
+
+
+            decimal maxPosition = teams.Count();
             decimal amount = Math.Floor(maxPosition / 5);
 
             int category = 1;
             int counter = 1;
 
-            foreach (var team in _teams)
+            foreach (var team in teams)
             {
                 if (counter <= amount)
                 {
@@ -54,25 +89,15 @@ namespace BusinessLogicLayer.Services
                     counter = 1;
 
                 }
-                _groupedTeams.Add(team.Id, category);
+                groupedTeams.Add(team.Id, category);
             }
-            return _groupedTeams;
+            return groupedTeams;
         }
 
-        private double getContractAmount(string teamId)
+        private double getContractAmount(Dictionary<string, int> groupedTeams, string teamId)
         {
             Random random = new Random();
-
-            if (_teams == null)
-            {
-                _teams = _teamRepository.Retrieve();
-            }
-            if (_groupedTeams == null)
-            {
-                _groupedTeams = groupTeamsByRating();
-
-            }
-            if (_groupedTeams.TryGetValue(teamId, out var value))
+            if (groupedTeams.TryGetValue(teamId, out var value))
             {
                 return value switch
                 {
@@ -90,74 +115,26 @@ namespace BusinessLogicLayer.Services
             }
         }
 
-        public List<SponsorCreateRequest> CreateContractRequests(string teamId, int gameYear)
+        private SponsorCreateRequest getRandomContract(string teamId,int gameYear,Dictionary<string,int> groupedTeams,List<Sponsor> sponsors)
         {
-            int maxContractsCount = 3;
-            int maxContractsRequests = 3;
-
-            var contractsRequestsCount = _random.Next(0, maxContractsRequests);
-
-            var activeSponsorContrats = _sponsorCreateRequestRepository.Retrieve(teamId);
-
-            if (activeSponsorContrats.Count >= maxContractsCount || contractsRequestsCount == 0)
+            Random random = new Random();
+            return new SponsorCreateRequest
             {
-                return new List<SponsorCreateRequest>();
-            }
-            else
-            {
-                var contractRequests = new List<SponsorCreateRequest>();
-                for(int i = 0;i < contractsRequestsCount;i++)
-                {
-                    var contract = getRandomContract(teamId, gameYear);
-                    contractRequests.Add(contract);
-                    _sponsorCreateRequestRepository.Insert(contract);
-                }
-                return contractRequests;
-            }
-        }
-
-        public void DeleteExpiredContracts(int gameYear)
-        {
-            var expiredYear = gameYear - 1;
-            var season = _seasonValueCreator.GetSeason(expiredYear);
-            _sponsorCreateRequestRepository.DeleteExpired(season);
-        }
-
-        public void ClaimContract(string teamId, SponsorCreateRequest contract)
-        {
-            contract.State = SponsorRequestStatus.Active;
-            _sponsorCreateRequestRepository.UpdateState(contract);
-            _sponsorCreateRequestRepository.DeleteCanceled(teamId);
-        }
-
-        private SponsorCreateRequest getRandomContract(string teamId,int gameYear)
-        {
-            var contract = new SponsorCreateRequest
-            {
-                Value = getContractAmount(teamId),
-                SponsorID = findRandomUniqueSponsor(teamId),
+                Value = getContractAmount(groupedTeams,teamId),
+                SponsorID = findRandomUniqueSponsor(teamId,sponsors),
                 SeasonFrom = _seasonValueCreator.GetSeason(gameYear),
-                SeasonTo = _seasonValueCreator.GetSeason(gameYear + _random.Next(1, 3)),
+                SeasonTo = _seasonValueCreator.GetSeason(gameYear + random.Next(1, 3)),
                 TeamID = teamId,
                 State = SponsorRequestStatus.Waiting,
             };
-            return contract;
-
         }
 
-        private int findRandomUniqueSponsor(string teamId)
+        private int findRandomUniqueSponsor(string teamId,List<Sponsor> sponsors)
         {
-            if(_sponsors == null)
-            {
-                _sponsors = _sponsorRepository.Retrieve();
-            }
-            int randomIndex = _random.Next(0, _sponsors.Count() - 1);
+            Random random = new Random();
+            int randomIndex = random.Next(0, sponsors.Count() - 1);
 
-            var sponsor = _sponsors[randomIndex];
-            while (_sponsorCreateRequestRepository.IsUnique(teamId, sponsor.ID) == false)
-            {
-                sponsor = _sponsors[_random.Next(0, _sponsors.Count() - 1)];
-            }
+            var sponsor = sponsors[randomIndex];
 
             return sponsor.ID;
         }
