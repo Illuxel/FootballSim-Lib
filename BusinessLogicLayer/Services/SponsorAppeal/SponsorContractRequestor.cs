@@ -46,8 +46,10 @@ namespace BusinessLogicLayer.Services
                 for (int i = 0; i < contractsRequestsCount; i++)
                 {
                     var contract = getRandomContract(teamId, gameYear, groupedTeams, sponsors);
-                    contractRequests.Add(contract);
-                    _sponsorCreateRequestRepository.Insert(contract);
+                    if(_sponsorCreateRequestRepository.Insert(contract))
+                    {
+                        contractRequests.Add(contract);
+                    }
                 }
             }
             return contractRequests;
