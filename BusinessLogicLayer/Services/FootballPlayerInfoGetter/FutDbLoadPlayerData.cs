@@ -168,7 +168,7 @@ namespace BusinessLogicLayer.Services
                         contract.SeasonTo = _seasonValueCreator.GetFutureSeason(currentSeason, 3);
                         contract.PersonId = person.Id;
                         contract.TeamId = team.Id;
-                        contract.Price = getContractPrice(extPlayer.Rating);
+                        contract.Salary = getContractPrice(extPlayer.Rating);
 
                         _contractRepos.Insert(contract);
 
