@@ -110,8 +110,8 @@ namespace DatabaseLayer.Repositories
                 if (record == null)
                 {
                     var rowsAffected = connection.Execute(
-                        @"INSERT INTO contract (ID, SeasonFrom, SeasonTo, TeamId, PersonId, Price) 
-                            VALUES (@Id, @SeasonFrom, @SeasonTo, @TeamId, @PersonId, @Price)",
+                        @"INSERT INTO contract (ID, SeasonFrom, SeasonTo, TeamId, PersonId, Salary) 
+                            VALUES (@Id, @SeasonFrom, @SeasonTo, @TeamId, @PersonId, @Salary)",
                         contract);
                     result = rowsAffected == 1;
                 }
