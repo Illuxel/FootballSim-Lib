@@ -2,9 +2,9 @@
 
 namespace BusinessLogicLayer.Services.PlayerGeneration
 {
-    public class PlayerCoefPropertyFactory
+    internal class PlayerCoefPropertyFactory
     {
-        public PlayerCoefImportanceProperty Create(PlayerPosition position)
+        internal PlayerCoefImportanceProperty Create(PlayerPosition position)
         {
             PlayerCoefImportanceProperty playerCoef = new PlayerCoefImportanceProperty();
             

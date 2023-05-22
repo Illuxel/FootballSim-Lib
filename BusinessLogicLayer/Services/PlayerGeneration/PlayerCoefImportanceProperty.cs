@@ -1,7 +1,8 @@
 ﻿using DatabaseLayer.Enums;
+
 namespace BusinessLogicLayer.Services.PlayerGeneration
 {
-    public class PlayerCoefImportanceProperty
+    internal class PlayerCoefImportanceProperty
     {
         public PlayerPosition Position { get; set; }
         public double StrikeCoef { get; set; }
@@ -10,7 +11,7 @@ namespace BusinessLogicLayer.Services.PlayerGeneration
         public double DefendingCoef { get; set; }
         public double PassingCoef { get; set; }
         public double DribblingCoef { get; set; }
-        public PlayerCoefImportanceProperty(PlayerPosition position, double strikeCoef, double speedCoef, double physicsCoef, double defendingCoef, double passingCoef, double driblingCoef)
+        internal PlayerCoefImportanceProperty(PlayerPosition position, double strikeCoef, double speedCoef, double physicsCoef, double defendingCoef, double passingCoef, double driblingCoef)
         {
             this.Position = position;
             this.StrikeCoef = strikeCoef;
@@ -20,11 +21,11 @@ namespace BusinessLogicLayer.Services.PlayerGeneration
             this.PassingCoef = passingCoef;
             this.DribblingCoef= driblingCoef;    
         }
-        public PlayerCoefImportanceProperty()
+        internal PlayerCoefImportanceProperty()
         {
 
         }
-        public PlayerCoefImportanceProperty(PlayerPosition position)
+        internal PlayerCoefImportanceProperty(PlayerPosition position)
         {
             this.Position = position;
         }
