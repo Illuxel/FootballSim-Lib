@@ -58,6 +58,7 @@ namespace DatabaseLayer.Repositories
                             VALUES (@Id, @HomeTeamId, @GuestTeamId, @MatchDate, @HomeTeamGoals, 
                             @GuestTeamGoals, @TourNumber, @LeagueId)",
                         matches, transaction);
+                        transaction.Commit();
                     }
                     catch (Exception ex)
                     {

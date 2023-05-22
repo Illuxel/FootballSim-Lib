@@ -1,4 +1,5 @@
-﻿using BusinessLogicLayer.Services;
+﻿using BusinessLogicLayer.Scenario;
+using BusinessLogicLayer.Services;
 using DatabaseLayer;
 using DatabaseLayer.Repositories;
 using System;
@@ -11,12 +12,8 @@ namespace StartupProject
        
         public static void Main(string[] args)
         {
-            var calc = new PlayerPriceCalculator();
-            var p = new PlayerRepository();
-            var pl = p.Retrieve("3809238CBB4AA8274B555A7B0750FCE5");
-            System.Console.WriteLine("Price = "+calc.GetPlayerPrice(pl.FirstOrDefault()));
-            System.Console.WriteLine("Salary = " + calc.GetPlayerSalary(pl.FirstOrDefault()));
-            Console.ReadKey();
+            var serv = new GenerateAllMatchesByTour(DateTime.Now);
+            serv.GenerateAllMatches();
         }
     }
 }
