@@ -1,56 +1,60 @@
 ﻿using DatabaseLayer;
 using DatabaseLayer.Enums;
 using System;
+using BusinessLogicLayer.Rules;
 
 namespace BusinessLogicLayer.Services.PlayerGeneration
 {
     public class PlayerGeneration
     {
-        private Player _Player = new Player();
         private PlayerCoefPropertyFactory _PlayerCoefPropertyFactory;
+        
         private int _error = 3, _maxValue = 100, _minValue = 1;
 
         public PlayerGeneration()
         {
             _PlayerCoefPropertyFactory = new PlayerCoefPropertyFactory();
-        }
-
-        public Player GeneratePlayer()
-        {          
-            return _Player;
-        }
+            
+        }       
 
         public Player GeneratePlayer(PlayerPosition position, int value)
         {
-            var playersCoef = _PlayerCoefPropertyFactory.Create(position);
-            var gaussianGenerator = new GaussianGeneration(value, _error, _minValue, _maxValue);
-            PlayerProperties(playersCoef, gaussianGenerator);
-
-            return _Player;
+            return generatePlayer(position, value);
         }
 
         public Player GeneratePlayer(int value)
-        {            
+        {
+            return generatePlayer(GetRandomPlayerPosition(), value);
+        }
+
+        private Player generatePlayer(PlayerPosition position, int value = 0)
+        {
+            Player player = new Player();
+            
+
+            PlayerPosition playerPosition = position;
+            var playersCoef = _PlayerCoefPropertyFactory.Create(position);
+            var gaussianGenerator = new GaussianGeneration(value, _error, _minValue, _maxValue);
+
+            player.Strike = Convert.ToInt32(gaussianGenerator.Next() * playersCoef.StrikeCoef);
+            player.Speed = Convert.ToInt32(gaussianGenerator.Next() * playersCoef.SpeedCoef);
+            player.Physics = Convert.ToInt32(gaussianGenerator.Next() * playersCoef.PhysicsCoef);
+            player.Defending = Convert.ToInt32(gaussianGenerator.Next() * playersCoef.DefendingCoef);
+            player.Passing = Convert.ToInt32(gaussianGenerator.Next() * playersCoef.PassingCoef);
+            player.Dribbling = Convert.ToInt32(gaussianGenerator.Next() * playersCoef.DribblingCoef);
+            player.Rating = CalculateRating(player, playersCoef);
+            player.PositionCode = EnumDescription.GetEnumDescription(position);
+
+            return player;
+        }
+
+        private PlayerPosition GetRandomPlayerPosition()
+        {
             Random random = new Random();
             PlayerPosition[] enumPositionValues = (PlayerPosition[])Enum.GetValues(typeof(PlayerPosition));
             int randomIndex = random.Next(0, enumPositionValues.Length);
             PlayerPosition randomPosition = enumPositionValues[randomIndex];
-            var playersCoef = _PlayerCoefPropertyFactory.Create(randomPosition);
-            var gaussianGenerator = new GaussianGeneration(value, _error, _minValue, _maxValue);
-            PlayerProperties(playersCoef, gaussianGenerator);
-
-            return _Player;
-        }
-
-        private void PlayerProperties(PlayerCoefImportanceProperty playersCoef, GaussianGeneration gaussianGenerator)
-        {
-            _Player.Strike = Convert.ToInt32(gaussianGenerator.Next() * playersCoef.StrikeCoef);
-            _Player.Speed = Convert.ToInt32(gaussianGenerator.Next() * playersCoef.SpeedCoef);
-            _Player.Physics = Convert.ToInt32(gaussianGenerator.Next() * playersCoef.PhysicsCoef);
-            _Player.Defending = Convert.ToInt32(gaussianGenerator.Next() * playersCoef.DefendingCoef);
-            _Player.Passing = Convert.ToInt32(gaussianGenerator.Next() * playersCoef.PassingCoef);
-            _Player.Dribbling = Convert.ToInt32(gaussianGenerator.Next() * playersCoef.DribblingCoef);
-            _Player.Rating = CalculateRating(_Player, playersCoef);
+            return randomPosition;
         }
 
         private int CalculateRating(Player player, PlayerCoefImportanceProperty playersCoef)
@@ -60,5 +64,4 @@ namespace BusinessLogicLayer.Services.PlayerGeneration
                 player.Passing / playersCoef.PassingCoef + player.Dribbling / playersCoef.DribblingCoef) / 6);
         }
     }
-
 }
