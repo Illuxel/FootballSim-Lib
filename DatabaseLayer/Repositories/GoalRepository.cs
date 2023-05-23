@@ -2,7 +2,9 @@
 using DatabaseLayer.DBSettings;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
+using System.Text.RegularExpressions;
 
 namespace DatabaseLayer.Repositories
 {
@@ -34,5 +36,32 @@ namespace DatabaseLayer.Repositories
                 return result;
             }
         }
+        public bool Insert(List<Goal> goals)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                using (IDbTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        var rowsAffected = connection.Execute(
+                            @"INSERT INTO Goal (Id, MatchId, PlayerId, TeamId, MatchMinute, AssistPlayerId)
+                        VALUES (@Id, @MatchId, @PlayerId, @TeamId, @MatchMinute, @AssistPlayerId)",
+                            goals);
+                        var result = rowsAffected == 1;
+
+                        return result;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw ex;
+                    }
+                }
+            }
+        }
+
     }
 }

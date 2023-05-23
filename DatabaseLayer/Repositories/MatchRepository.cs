@@ -10,6 +10,17 @@ namespace DatabaseLayer.Repositories
 {
     public class MatchRepository
     {
+        public Match RetrieveMatchById(string matchId)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                var result = connection.QueryFirstOrDefault<Match>(
+                    "SELECT * FROM Match WHERE Id = @matchId",
+                    new { matchId });
+                return result;
+            }
+        }
         public List<Match> Retrieve(string teamId)
         {
             List<Match> result = new List<Match>();
@@ -41,6 +52,19 @@ namespace DatabaseLayer.Repositories
             }
 
             return result;
+        }
+        
+        public List<Match> Retrieve(DateTime gameDate)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                var date = gameDate.ToString();
+                connection.Open();
+                var result = connection.Query<Match>(
+                    @"SELECT * FROM Match
+                    WHERE MatchDate = @gameDate", new { @gameDate = date}).AsList();
+                return result;
+            }
         }
 
         public void Insert(List<Match> matches)
@@ -126,7 +150,7 @@ namespace DatabaseLayer.Repositories
                                 GuestTeamGoals = @GuestTeamGoals,
                                 TourNumber = @TourNumber,
                                 LeagueId = @LeagueId
-                            WHERE d = @Id;",
+                            WHERE Id = @Id;",
                         match);
                     result = rowsAffected == 1;
                 }

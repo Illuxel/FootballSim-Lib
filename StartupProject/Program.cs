@@ -12,8 +12,8 @@ namespace StartupProject
        
         public static void Main(string[] args)
         {
-            var serv = new GenerateAllMatchesByTour(DateTime.Now);
-            serv.GenerateAllMatches();
+            var serv = new GenerateAllMatchesByTour(new DateTime(2023, 12, 30, 0, 0, 0));
+            serv.Generate();
         }
     }
 }

@@ -2,6 +2,7 @@
 using DatabaseLayer.DBSettings;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Text.RegularExpressions;
 
 
 namespace DatabaseLayer.Repositories
@@ -100,6 +101,30 @@ namespace DatabaseLayer.Repositories
                     param: new { TeamId = teamId, Season = season });
 
                 return rowAffected == 1;
+            }
+        }
+        public bool Update(NationalResultTable homeTeam,NationalResultTable guestTeam,string season)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                var rowAffected = connection.Execute(
+                     "UPDATE NationalResultTable SET " +
+                     "Wins = @wins, Draws = @draws," +
+                     "Loses = @loses, ScoredGoals = @scoredGoals, MissedGoals = @missedGoals," +
+                     "TotalPosition = @totalPosition WHERE TeamId = @teamId AND Season = @season",
+                     new { homeTeam,season});
+                if (rowAffected == 1)
+                {
+                    rowAffected = connection.Execute(
+                     "UPDATE NationalResultTable SET " +
+                     "Wins = @wins, Draws = @draws," +
+                     "Loses = @loses, ScoredGoals = @scoredGoals, MissedGoals = @missedGoals," +
+                     "TotalPosition = @totalPosition WHERE TeamId = @teamId AND Season = @season",
+                     new { guestTeam, season });
+                    return rowAffected == 1;
+                }
+                return false;
             }
         }
     }

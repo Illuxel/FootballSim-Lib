@@ -6,6 +6,7 @@ namespace BusinessLogicLayer.Services
     public class MatchGenerator
     {
         private MatchResult _matchData;
+        private TeamForMatchCreator _teamForMatchCreator;
         public MatchResult MatchData { get { return _matchData; } } 
 
         public StrategyType HomeTeamStrategy
@@ -52,7 +53,7 @@ namespace BusinessLogicLayer.Services
         {
             _matchData = new MatchResult();
 
-            _matchData.MatchID = Guid.NewGuid();
+            _matchData.MatchID = Guid.NewGuid().ToString();
 
             _matchData.HomeTeam = homeTeam;
             _matchData.GuestTeam = guestTeam;
@@ -60,9 +61,27 @@ namespace BusinessLogicLayer.Services
             _isMatcFinished = false;
             _isStrategyChanged = false;
         }
+        public MatchGenerator(Match match)
+        {
+            _matchData = new MatchResult();
+            _teamForMatchCreator = new TeamForMatchCreator();
 
+            _matchData.MatchID = match.Id;
+
+            _matchData.HomeTeam = _teamForMatchCreator.Create(match.HomeTeamId);
+            _matchData.GuestTeam = _teamForMatchCreator.Create(match.GuestTeamId);
+
+
+            _isMatcFinished = false;
+            _isStrategyChanged = false;
+        }
         public void StartGenerating()
         {
+            if(_matchData.Winner != null)
+            {
+                return;
+            }
+
             var currentMinute = 0;
             var firstTime = true;
             var strategyEventName = "BallControl";

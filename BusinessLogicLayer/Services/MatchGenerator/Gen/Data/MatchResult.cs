@@ -6,10 +6,14 @@ namespace BusinessLogicLayer.Services
 {
     public class MatchResult
     {
-        public Guid MatchID;
+        public string MatchID;
 
         public ITeamForMatch HomeTeam { get; internal set; }
         public ITeamForMatch GuestTeam { get; internal set; }
+
+        public int HomeTeamGoals = 0;
+        public int GuestTeamGoals = 0;
+        
 
         public List<Goal> Goals;
 
@@ -17,25 +21,32 @@ namespace BusinessLogicLayer.Services
         {
             get 
             {
-                int homeTeamGoals = 0, guestTeamGoals = 0;
+                if(HomeTeam.AllPlayers.Count < 18)
+                {
+                    return new Guid(GuestTeam.Id);
+                }
+                else if(GuestTeam.AllPlayers.Count < 18)
+                {
+                    return new Guid(HomeTeam.Id);
+                }
 
                 foreach (var goal in Goals) 
                 {
                     if (goal.TeamId == HomeTeam.Id.ToString())
                     {
-                        homeTeamGoals += 1;
+                        HomeTeamGoals += 1;
                     }
                     else 
                     {
-                        guestTeamGoals += 1;
+                        GuestTeamGoals += 1;
                     }
                 }
 
-                if (homeTeamGoals > guestTeamGoals)
+                if (HomeTeamGoals > GuestTeamGoals)
                 {
                      return new Guid(HomeTeam.Id);
                 } 
-                if (homeTeamGoals < guestTeamGoals)
+                if (HomeTeamGoals < GuestTeamGoals)
                 {
                      return new Guid(GuestTeam.Id);
                 }
