@@ -103,29 +103,54 @@ namespace DatabaseLayer.Repositories
                 return rowAffected == 1;
             }
         }
-        public bool Update(NationalResultTable homeTeam,NationalResultTable guestTeam,string season)
+        public bool Update(NationalResultTable homeTeam, NationalResultTable guestTeam, string season)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
+
                 var rowAffected = connection.Execute(
-                     "UPDATE NationalResultTable SET " +
-                     "Wins = @wins, Draws = @draws," +
-                     "Loses = @loses, ScoredGoals = @scoredGoals, MissedGoals = @missedGoals," +
-                     "TotalPosition = @totalPosition WHERE TeamId = @teamId AND Season = @season",
-                     new { homeTeam,season});
+                    "UPDATE NationalResultTable SET " +
+                    "Wins = @Wins, Draws = @Draws, Loses = @Loses, " +
+                    "ScoredGoals = @ScoredGoals, MissedGoals = @MissedGoals, " +
+                    "TotalPosition = @TotalPosition WHERE TeamId = @TeamId AND Season = @Season",
+                    new
+                    {
+                        homeTeam.Wins,
+                        homeTeam.Draws,
+                        homeTeam.Loses,
+                        homeTeam.ScoredGoals,
+                        homeTeam.MissedGoals,
+                        homeTeam.TotalPosition,
+                        homeTeam.TeamID,
+                        Season = season
+                    });
+
                 if (rowAffected == 1)
                 {
                     rowAffected = connection.Execute(
-                     "UPDATE NationalResultTable SET " +
-                     "Wins = @wins, Draws = @draws," +
-                     "Loses = @loses, ScoredGoals = @scoredGoals, MissedGoals = @missedGoals," +
-                     "TotalPosition = @totalPosition WHERE TeamId = @teamId AND Season = @season",
-                     new { guestTeam, season });
+                        "UPDATE NationalResultTable SET " +
+                        "Wins = @Wins, Draws = @Draws, Loses = @Loses, " +
+                        "ScoredGoals = @ScoredGoals, MissedGoals = @MissedGoals, " +
+                        "TotalPosition = @TotalPosition WHERE TeamId = @TeamId AND Season = @Season",
+                        new
+                        {
+                            guestTeam.Wins,
+                            guestTeam.Draws,
+                            guestTeam.Loses,
+                            guestTeam.ScoredGoals,
+                            guestTeam.MissedGoals,
+                            guestTeam.TotalPosition,
+                            guestTeam.TeamID,
+                            Season = season
+                        });
+
                     return rowAffected == 1;
                 }
+
                 return false;
             }
         }
+
     }
 }
