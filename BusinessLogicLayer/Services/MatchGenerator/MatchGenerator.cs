@@ -77,7 +77,7 @@ namespace BusinessLogicLayer.Services
         }
         public void StartGenerating()
         {
-            if(_matchData.Winner != null)
+            if(!_matchData.IsValidMatch())
             {
                 return;
             }
