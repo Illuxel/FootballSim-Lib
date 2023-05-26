@@ -17,6 +17,9 @@ namespace BusinessLogicLayer.Scenario
         GoalRepository _goalRepository;
         SeasonValueCreator _seasonValueCreator;
         NationalResTabRepository _nationalResTabRepository;
+        RatingActualizer _ratingActualizer;
+        TeamRatingWinCoeffRepository _teamRatingWinCoeffRepository;
+
 
         public GenerateAllMatchesByTour(DateTime gameDate)
         {
@@ -27,11 +30,14 @@ namespace BusinessLogicLayer.Scenario
             _goalRepository = new GoalRepository();
             _seasonValueCreator = new SeasonValueCreator();
             _nationalResTabRepository = new NationalResTabRepository();
+            _ratingActualizer = new RatingActualizer();
+            _teamRatingWinCoeffRepository = new TeamRatingWinCoeffRepository();
         }
 
         public void Generate()
         {
             var matches = _matchRepository.Retrieve(_gameDate);
+            var teamsId = getAllTeamsId(matches);
             if (matches.Count == 0)
             {
                 generateSchedule(_gameDate);
@@ -41,11 +47,14 @@ namespace BusinessLogicLayer.Scenario
                     throw new Exception("Error");
                 }
 
-                //WTF
+                teamsId = getAllTeamsId(matches);
                 insertNewRows(matches);
             }
+
             var allMatches = getAllMatches();
             generateAllMatches(allMatches);
+            _teamRatingWinCoeffRepository.InsertNewTeams(teamsId,_seasonValueCreator.GetSeason(_gameDate.Year));
+            _ratingActualizer.Actualize(_gameDate);
 
         }
 
@@ -149,6 +158,7 @@ namespace BusinessLogicLayer.Scenario
             teams.AddRange(guest);
             return teams.Distinct().ToList();
         }
+
 
         private void insertNewRows(List<Match> matches)
         {
