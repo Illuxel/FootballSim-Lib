@@ -11,8 +11,45 @@ namespace BusinessLogicLayer.Services
         public ITeamForMatch HomeTeam { get; internal set; }
         public ITeamForMatch GuestTeam { get; internal set; }
 
-        public int HomeTeamGoals = 0;
-        public int GuestTeamGoals = 0;
+        private int? _homeTeamGoals;
+        public int HomeTeamGoals
+        {
+            get
+            {
+                if(_homeTeamGoals == null)
+                {
+                    _homeTeamGoals = 0;
+                    foreach (var goal in Goals)
+                    {
+                        if (goal.TeamId == HomeTeam.Id.ToString())
+                        {
+                            _homeTeamGoals += 1;
+                        }
+                    }
+                }
+                return _homeTeamGoals ?? 0;
+            }
+        }
+
+        private int? _guestTeamGoals;
+        public int GuestTeamGoals
+        {
+            get
+            {
+                if (_guestTeamGoals == null)
+                {
+                    _guestTeamGoals = 0;
+                    foreach (var goal in Goals)
+                    {
+                        if (goal.TeamId == GuestTeam.Id.ToString())
+                        {
+                            _guestTeamGoals += 1;
+                        }
+                    }
+                }
+                return _guestTeamGoals ?? 0;
+            }
+        }
         
 
         public List<Goal> Goals;
@@ -21,38 +58,26 @@ namespace BusinessLogicLayer.Services
         {
             get 
             {
-                if(HomeTeam.AllPlayers.Count < 18)
-                {
-                    return new Guid(GuestTeam.Id);
-                }
-                else if(GuestTeam.AllPlayers.Count < 18)
-                {
-                    return new Guid(HomeTeam.Id);
-                }
-
-                foreach (var goal in Goals) 
-                {
-                    if (goal.TeamId == HomeTeam.Id.ToString())
-                    {
-                        HomeTeamGoals += 1;
-                    }
-                    else 
-                    {
-                        GuestTeamGoals += 1;
-                    }
-                }
-
-                if (HomeTeamGoals > GuestTeamGoals)
+                if (HomeTeamGoals > GuestTeamGoals || GuestTeam.AllPlayers.Count < 18)
                 {
                      return new Guid(HomeTeam.Id);
                 } 
-                if (HomeTeamGoals < GuestTeamGoals)
+                if (HomeTeamGoals < GuestTeamGoals || HomeTeam.AllPlayers.Count < 18)
                 {
                      return new Guid(GuestTeam.Id);
                 }
 
                 return null;
             }
+        }
+
+        public bool IsValidMatch()
+        {
+            if (GuestTeam.AllPlayers.Count < 18 || HomeTeam.AllPlayers.Count < 18)
+            {
+                return false;
+            }
+            return true;
         }
 
         public List<IMatchGameEvent> MatchHistory { get; set; }
