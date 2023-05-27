@@ -54,7 +54,7 @@ namespace DatabaseLayer.Repositories
             return result;
         }
         
-        public List<Match> Retrieve(DateTime gameDate)
+        public Dictionary<int, List<Match>> Retrieve(DateTime gameDate)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -63,7 +63,8 @@ namespace DatabaseLayer.Repositories
                 var result = connection.Query<Match>(
                     @"SELECT * FROM Match
                     WHERE MatchDate = @gameDate", new { @gameDate = date}).AsList();
-                return result;
+                return result.GroupBy(match => match.LeagueId).
+                    ToDictionary(group => group.Key, group => group.ToList());
             }
         }
 

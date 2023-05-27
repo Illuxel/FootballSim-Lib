@@ -51,7 +51,7 @@ namespace BusinessLogicLayer.Scenario
                 insertNewRows(matches);
             }
 
-            var allMatches = getAllMatches();
+            var allMatches = getMatches(_gameDate);
             generateAllMatches(allMatches);
             _teamRatingWinCoeffRepository.InsertNewTeams(teamsId,_seasonValueCreator.GetSeason(_gameDate.Year));
             _ratingActualizer.Actualize(_gameDate);
@@ -63,19 +63,10 @@ namespace BusinessLogicLayer.Scenario
             _scheduleGenerator.Generate(gameDate.Year);
         }
 
-        private Dictionary<int,List<Match>> getAllMatches()
+        private Dictionary<int,List<Match>> getMatches(DateTime tourDate)
         {
-            var matchesByLeague = new Dictionary<int, List<Match>>();
+            var matchesByLeague = _matchRepository.Retrieve(tourDate);
 
-            var allLeagues = _leagueRepository.Retrieve();
-            
-            foreach(var league in allLeagues)
-            {
-                var id = league.Id;
-
-                var matchesInLeague = _matchRepository.Retrieve(id);
-                matchesByLeague.Add(id, matchesInLeague);
-            }
             return matchesByLeague;
         }
         
@@ -159,8 +150,33 @@ namespace BusinessLogicLayer.Scenario
             return teams.Distinct().ToList();
         }
 
+        private List<string> getAllTeamsId(Dictionary<int, List<Match>> matches)
+        {
+            var teamdsIds = new List<string>();
+            foreach (var matchesByLeague in matches.Values)
+            {
+                foreach(var match in matchesByLeague)
+                {
+                    teamdsIds.Add(match.HomeTeamId);
+                    teamdsIds.Add(match.GuestTeamId);
+                }
+            }
+            return teamdsIds.Distinct().ToList();
+        }
+
 
         private void insertNewRows(List<Match> matches)
+        {
+            var teamsID = getAllTeamsId(matches);
+
+            foreach (var item in teamsID)
+            {
+                var tab = createResultTable(item);
+                _nationalResTabRepository.Insert(tab);
+            }
+        }
+
+        private void insertNewRows(Dictionary<int, List<Match>> matches)
         {
             var teamsID = getAllTeamsId(matches);
 
