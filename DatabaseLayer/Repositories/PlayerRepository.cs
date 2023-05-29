@@ -58,7 +58,7 @@ namespace DatabaseLayer.Repositories
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
-                var query = @"SELECT Player.*, Person.*, PositionCode.*
+                var query = @"SELECT Player.*, Person.*, Position.*
                     FROM Player
                     INNER JOIN Person ON Player.PersonID = Person.ID
                     LEFT JOIN Position ON Player.PositionCode = Position.Code
@@ -72,7 +72,8 @@ namespace DatabaseLayer.Repositories
                         return player;
                     },
                     param: new { personId },
-                    splitOn: "PersonID, PositionCode");
+                    splitOn: "ID, CODE"
+                    );
 
                 return results.FirstOrDefault();
             }
