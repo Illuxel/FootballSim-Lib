@@ -28,7 +28,7 @@ namespace BusinessLogicLayerTests.Services
                 new PlayerRepository().RetrieveOne("b32c46eb-5776-46ef-94db-39c29c4dd72d"),// st
             };
         [Test]
-        public void GetSeason_2023()
+        public void CreateTeamForMatch()
         {
             var teamForMatch = new TeamForMatchCreator();
             var result = teamForMatch.Create("3809238CBB4AA8274B555A7B0750FCE5");
