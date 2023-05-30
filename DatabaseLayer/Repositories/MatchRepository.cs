@@ -73,6 +73,10 @@ namespace DatabaseLayer.Repositories
                 var result = connection.Query<Match>(
                     @"SELECT * FROM Match
                     WHERE MatchDate = @gameDate", new { @gameDate = gameDate.ToString() }).AsList();
+                if(result.Count == 0)
+                {
+                    return new Dictionary<int, List<Match>>();
+                }
                 return result.GroupBy(match => match.LeagueId).
                     ToDictionary(group => group.Key, group => group.ToList());
             }

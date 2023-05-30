@@ -10,8 +10,13 @@ namespace StartupProject
         {
             var stopWatch = new Stopwatch();
             stopWatch.Start();
-            var serv = new GenerateAllMatchesByTour(new DateTime(2023, 12, 30, 0, 0, 0));
+            var serv = new GenerateAllMatchesByTour(new DateTime(2023, 8, 12, 0, 0, 0));
             serv.Generate();
+
+
+            var serv2 = new GenerateAllMatchesByTour(new DateTime(2023, 8, 19, 0, 0, 0));
+            serv2.Generate();
+
 
             stopWatch.Stop();
             Console.WriteLine(stopWatch.ElapsedMilliseconds.ToString());
