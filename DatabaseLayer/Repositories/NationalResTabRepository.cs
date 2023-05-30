@@ -1,8 +1,10 @@
 ﻿using Dapper;
 using DatabaseLayer.DBSettings;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
-using System.Text.RegularExpressions;
+using System.Linq;
 
 
 namespace DatabaseLayer.Repositories
@@ -43,7 +45,7 @@ namespace DatabaseLayer.Repositories
                      "UPDATE NationalResultTable SET "+
                      "Wins = @wins, Draws = @draws,"+
                      "Loses = @loses, ScoredGoals = @scoredGoals, MissedGoals = @missedGoals,"+
-                     "TotalPosition = @totalPosition WHERE TeamId = @teamId AND Season = @season", 
+                     "TotalPosition = @totalPosition, TotalPoints = @totalPoints WHERE TeamId = @teamId AND Season = @season", 
                      param: new { model });
                 result = rowAffected == 1;
             }
@@ -74,6 +76,32 @@ namespace DatabaseLayer.Repositories
             return result;
         }
 
+        public Dictionary<string, NationalResultTable> Retrieve(string season)
+        {
+            var results = new Dictionary<string, NationalResultTable>();
+
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+
+                string query = @"SELECT * FROM NationalResultTable
+                         WHERE Season = @season";
+
+                var queryResult = connection.Query<NationalResultTable>(
+                    query, new { season }).AsList();
+
+                foreach (var result in queryResult)
+                {
+                    if (!results.ContainsKey(result.TeamID))
+                    {
+                        results[result.TeamID] = result;
+                    }
+                }
+            }
+
+            return results;
+        }
+
         public bool Insert(NationalResultTable model)
         {
             bool result = false;
@@ -82,8 +110,8 @@ namespace DatabaseLayer.Repositories
                 connection.Open();
 
                 var rowAffected = connection.Execute(
-                    @"INSERT INTO NationalResultTable (Season, TeamId, Wins, Draws, Loses, ScoredGoals, MissedGoals, TotalPosition)
-                    VALUES (@Season, @TeamId, @Wins, @Draws, @Loses, @ScoredGoals, @MissedGoals, @TotalPosition)", model
+                    @"INSERT INTO NationalResultTable (Season, TeamId, Wins, Draws, Loses, ScoredGoals, MissedGoals, TotalPosition, TotalPoints)
+                    VALUES (@Season, @TeamId, @Wins, @Draws, @Loses, @ScoredGoals, @MissedGoals, @TotalPosition, @TotalPoints)", model
                     );
 
                 result = rowAffected == 0;
@@ -113,7 +141,9 @@ namespace DatabaseLayer.Repositories
                     "UPDATE NationalResultTable SET " +
                     "Wins = @Wins, Draws = @Draws, Loses = @Loses, " +
                     "ScoredGoals = @ScoredGoals, MissedGoals = @MissedGoals, " +
-                    "TotalPosition = @TotalPosition WHERE TeamId = @TeamId AND Season = @Season",
+                    "TotalPosition = @TotalPosition " +
+                    "TotalPoints = @TotalPoints"+
+                    "WHERE TeamId = @TeamId AND Season = @Season",
                     new
                     {
                         homeTeam.Wins,
@@ -123,6 +153,7 @@ namespace DatabaseLayer.Repositories
                         homeTeam.MissedGoals,
                         homeTeam.TotalPosition,
                         homeTeam.TeamID,
+                        homeTeam.TotalPoints,
                         Season = season
                     });
 
@@ -132,7 +163,8 @@ namespace DatabaseLayer.Repositories
                         "UPDATE NationalResultTable SET " +
                         "Wins = @Wins, Draws = @Draws, Loses = @Loses, " +
                         "ScoredGoals = @ScoredGoals, MissedGoals = @MissedGoals, " +
-                        "TotalPosition = @TotalPosition WHERE TeamId = @TeamId AND Season = @Season",
+                        "TotalPosition = @TotalPosition, TotalPoints = @TotalPoints " +
+                        "WHERE TeamId = @TeamId AND Season = @Season",
                         new
                         {
                             guestTeam.Wins,
@@ -142,6 +174,7 @@ namespace DatabaseLayer.Repositories
                             guestTeam.MissedGoals,
                             guestTeam.TotalPosition,
                             guestTeam.TeamID,
+                            guestTeam.TotalPoints,
                             Season = season
                         });
 
@@ -151,6 +184,49 @@ namespace DatabaseLayer.Repositories
                 return false;
             }
         }
-
+        //
+        public bool Update(List<NationalResultTable> teamResultTab, string season)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                using (IDbTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        var rowAffected = connection.Execute(
+                            "UPDATE NationalResultTable " +
+                            "SET Wins = @Wins, " +
+                            "Draws = @Draws, " +
+                            "Loses = @Loses, " +
+                            "ScoredGoals = @ScoredGoals, " +
+                            "MissedGoals = @MissedGoals, " +
+                            "TotalPosition = @TotalPosition, " +
+                            "TotalPoints = @TotalPoints " +
+                            "WHERE TeamId = @TeamId AND Season = @Season",
+                            teamResultTab.Select(nrt => new
+                            {
+                                Wins = nrt.Wins,
+                                Draws = nrt.Draws,
+                                Loses = nrt.Loses,
+                                ScoredGoals = nrt.ScoredGoals,
+                                MissedGoals = nrt.MissedGoals,
+                                TotalPosition = nrt.TotalPosition,
+                                TotalPoints = nrt.TotalPoints,
+                                TeamId = nrt.TeamID,
+                                Season = season
+                            }),
+                            transaction);
+                        transaction.Commit();
+                        return rowAffected != 0;
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception(ex.Message);
+                    }
+                }
+            }
+        }
     }
 }

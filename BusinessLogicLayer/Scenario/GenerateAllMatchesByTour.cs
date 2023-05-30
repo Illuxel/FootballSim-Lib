@@ -13,11 +13,9 @@ namespace BusinessLogicLayer.Scenario
         ScheduleMatchGenerator _scheduleGenerator;
         MatchGenerator _matchGenerator;
         MatchRepository _matchRepository;
-        LeagueRepository _leagueRepository;
         GoalRepository _goalRepository;
         SeasonValueCreator _seasonValueCreator;
         NationalResTabRepository _nationalResTabRepository;
-        RatingActualizer _ratingActualizer;
         TeamRatingWinCoeffRepository _teamRatingWinCoeffRepository;
 
 
@@ -26,18 +24,15 @@ namespace BusinessLogicLayer.Scenario
             _gameDate = gameDate;
             _scheduleGenerator = new ScheduleMatchGenerator();
             _matchRepository = new MatchRepository();
-            _leagueRepository = new LeagueRepository();
             _goalRepository = new GoalRepository();
             _seasonValueCreator = new SeasonValueCreator();
             _nationalResTabRepository = new NationalResTabRepository();
-            _ratingActualizer = new RatingActualizer();
             _teamRatingWinCoeffRepository = new TeamRatingWinCoeffRepository();
         }
 
         public void Generate()
         {
             var matches = _matchRepository.Retrieve(_gameDate);
-            var teamsId = getAllTeamsId(matches);
             if (matches.Count == 0)
             {
                 generateSchedule(_gameDate);
@@ -47,14 +42,14 @@ namespace BusinessLogicLayer.Scenario
                     throw new Exception("Error");
                 }
 
-                teamsId = getAllTeamsId(matches);
                 insertNewRows(matches);
             }
+            var teamsId = getAllTeamsId(matches);
 
             var allMatches = getMatches(_gameDate);
             generateAllMatches(allMatches);
             _teamRatingWinCoeffRepository.InsertNewTeams(teamsId,_seasonValueCreator.GetSeason(_gameDate.Year));
-            _ratingActualizer.Actualize(_gameDate);
+            /*_ratingActualizer.Actualize(_gameDate);*/
 
         }
 
@@ -72,6 +67,7 @@ namespace BusinessLogicLayer.Scenario
         
         private void generateAllMatches(Dictionary<int,List<Match>> schedule)
         {
+            List<Match> allMatches = new List<Match>();
             List<Goal> goalList = new List<Goal>();
             foreach (var matches in schedule)
             {
@@ -86,44 +82,63 @@ namespace BusinessLogicLayer.Scenario
                     match.HomeTeamGoals = result.HomeTeamGoals;
                     match.GuestTeamGoals = result.GuestTeamGoals;
 
-                    _matchRepository.Update(match);
-                    defineTeamsStats(match);
+                    allMatches.Add(match);
                 }
             }
-
+            _matchRepository.Update(allMatches);
+            defineTeamsStats(allMatches);
             _goalRepository.Insert(goalList);
         }
-
-        private void defineTeamsStats(Match match)
+        //rewrite => 
+        private void defineTeamsStats(List<Match> matches)
         {
+            //2 teams + tryGetValue => 
+            var teamsWithResult = _nationalResTabRepository.Retrieve(_seasonValueCreator.GetSeason(_gameDate.Year));
             string season = _seasonValueCreator.GetSeason(_gameDate.Year);
-            var homeTeamTabRecord = _nationalResTabRepository.Retrieve(match.HomeTeamId, season).FirstOrDefault();
-            var guestTeamTabRecord = _nationalResTabRepository.Retrieve(match.GuestTeamId, season).FirstOrDefault();
-
-            homeTeamTabRecord.ScoredGoals += match.HomeTeamGoals;
-            homeTeamTabRecord.MissedGoals += match.GuestTeamGoals;
-
-
-            guestTeamTabRecord.ScoredGoals += match.GuestTeamGoals;
-            guestTeamTabRecord.MissedGoals += match.HomeTeamGoals;
-
-            if(homeTeamTabRecord.ScoredGoals > guestTeamTabRecord.ScoredGoals)
+            foreach(var match in matches)
             {
-                homeTeamTabRecord.Wins += 1;
-                guestTeamTabRecord.Loses += 1;
-            }
-            else if(homeTeamTabRecord.ScoredGoals < guestTeamTabRecord.ScoredGoals)
-            {
-                homeTeamTabRecord.Loses += 1;
-                guestTeamTabRecord.Wins += 1;
-            }
-            else
-            {
-                homeTeamTabRecord.Draws += 1;
-                guestTeamTabRecord.Draws += 1;
-            }
+                if(teamsWithResult.TryGetValue(match.HomeTeamId,out NationalResultTable homeTeamTabRecord)
+                     && teamsWithResult.TryGetValue(match.GuestTeamId, out NationalResultTable guestTeamTabRecord))
+                {
+                    homeTeamTabRecord.ScoredGoals += match.HomeTeamGoals;
+                    guestTeamTabRecord.ScoredGoals += match.GuestTeamGoals;
 
-            _nationalResTabRepository.Update(homeTeamTabRecord,guestTeamTabRecord,season);
+                    guestTeamTabRecord.MissedGoals += match.HomeTeamGoals;
+                    homeTeamTabRecord.MissedGoals += match.GuestTeamGoals;
+
+
+                    if (homeTeamTabRecord.ScoredGoals > guestTeamTabRecord.ScoredGoals)
+                    {
+                        homeTeamTabRecord.Wins += 1;
+                        guestTeamTabRecord.Loses += 1;
+                        //
+                        homeTeamTabRecord.TotalPoints += 3;
+                    }
+                    else if (homeTeamTabRecord.ScoredGoals < guestTeamTabRecord.ScoredGoals)
+                    {
+                        homeTeamTabRecord.Loses += 1;
+                        guestTeamTabRecord.Wins += 1;
+                        //
+                        guestTeamTabRecord.TotalPoints += 3;
+                    }
+                    else
+                    {
+                        homeTeamTabRecord.Draws += 1;
+                        guestTeamTabRecord.Draws += 1;
+                        //
+                        homeTeamTabRecord.TotalPoints += 1;
+                        guestTeamTabRecord.TotalPoints += 1;
+
+                    }
+
+                    // + points 3 - win, 1 - draw ,lose - 0;
+                    // update NationalResultTable
+                }
+
+                
+            }
+            _nationalResTabRepository.Update(teamsWithResult.Values.ToList(), season);
+
         }
 
         private NationalResultTable createResultTable(string teamId)
@@ -136,19 +151,20 @@ namespace BusinessLogicLayer.Scenario
                 Draws = 0,
                 Loses = 0,
                 ScoredGoals = 0,
-                MissedGoals = 0
+                MissedGoals = 0,
+                TotalPoints = 0,
             };
             return resultTable;
         }
 
-        private List<string> getAllTeamsId(List<Match> matches)
+        /*private List<string> getAllTeamsId(List<Match> matches)
         {
             var home = matches.Select(x => x.HomeTeamId).ToList();
             var guest = matches.Select(x => x.GuestTeamId).ToList();
             var teams = home;
             teams.AddRange(guest);
             return teams.Distinct().ToList();
-        }
+        }*/
 
         private List<string> getAllTeamsId(Dictionary<int, List<Match>> matches)
         {
@@ -165,7 +181,7 @@ namespace BusinessLogicLayer.Scenario
         }
 
 
-        private void insertNewRows(List<Match> matches)
+        /*private void insertNewRows(List<Match> matches)
         {
             var teamsID = getAllTeamsId(matches);
 
@@ -174,7 +190,7 @@ namespace BusinessLogicLayer.Scenario
                 var tab = createResultTable(item);
                 _nationalResTabRepository.Insert(tab);
             }
-        }
+        }*/
 
         private void insertNewRows(Dictionary<int, List<Match>> matches)
         {
@@ -186,7 +202,5 @@ namespace BusinessLogicLayer.Scenario
                 _nationalResTabRepository.Insert(tab);
             }
         }
-        //Написати реквест до національної таблиці з можливістю оновлення господарів та гостів матчу
-        //Написати метод для врахування перемоги чи поразки = обновити таблицю NationalRes
     }
 }

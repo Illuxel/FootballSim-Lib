@@ -58,11 +58,10 @@ namespace DatabaseLayer.Repositories
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
-                var date = gameDate.ToString();
                 connection.Open();
                 var result = connection.Query<Match>(
                     @"SELECT * FROM Match
-                    WHERE MatchDate = @gameDate", new { @gameDate = date}).AsList();
+                    WHERE MatchDate = @gameDate", new { @gameDate = gameDate.ToString() }).AsList();
                 return result.GroupBy(match => match.LeagueId).
                     ToDictionary(group => group.Key, group => group.ToList());
             }
@@ -156,6 +155,39 @@ namespace DatabaseLayer.Repositories
                     result = rowsAffected == 1;
                 }
                 return result;
+            }
+        }
+        //
+        public bool Update(List<Match> matches)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                var rowsAffected = 0;
+                using (IDbTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        rowsAffected += connection.Execute(
+                        @"UPDATE Match
+                            SET HomeTeamId = @HomeTeamId,
+                                GuestTeamId = @GuestTeamId,
+                                MatchDate = @MatchDate,
+                                HomeTeamGoals = @HomeTeamGoals,
+                                GuestTeamGoals = @GuestTeamGoals,
+                                TourNumber = @TourNumber,
+                                LeagueId = @LeagueId
+                            WHERE Id = @Id;",
+                        matches,transaction);
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception(ex.Message);
+                    }
+                };
+                return rowsAffected != 1;
             }
         }
     }
