@@ -44,13 +44,11 @@ namespace BusinessLogicLayer.Scenario
 
                 insertNewRows(matches);
             }
-            var teamsId = getAllTeamsId(matches);
 
+            var teamsId = getAllTeamsId(matches);
             var allMatches = getMatches(_gameDate);
             generateAllMatches(allMatches);
             _teamRatingWinCoeffRepository.InsertNewTeams(teamsId,_seasonValueCreator.GetSeason(_gameDate.Year));
-            /*_ratingActualizer.Actualize(_gameDate);*/
-
         }
 
         private void generateSchedule(DateTime gameDate)
@@ -85,14 +83,13 @@ namespace BusinessLogicLayer.Scenario
                     allMatches.Add(match);
                 }
             }
+
             _matchRepository.Update(allMatches);
             defineTeamsStats(allMatches);
             _goalRepository.Insert(goalList);
         }
-        //rewrite => 
         private void defineTeamsStats(List<Match> matches)
         {
-            //2 teams + tryGetValue => 
             var teamsWithResult = _nationalResTabRepository.Retrieve(_seasonValueCreator.GetSeason(_gameDate.Year));
             string season = _seasonValueCreator.GetSeason(_gameDate.Year);
             foreach(var match in matches)
@@ -111,31 +108,24 @@ namespace BusinessLogicLayer.Scenario
                     {
                         homeTeamTabRecord.Wins += 1;
                         guestTeamTabRecord.Loses += 1;
-                        //
                         homeTeamTabRecord.TotalPoints += 3;
                     }
                     else if (homeTeamTabRecord.ScoredGoals < guestTeamTabRecord.ScoredGoals)
                     {
                         homeTeamTabRecord.Loses += 1;
                         guestTeamTabRecord.Wins += 1;
-                        //
                         guestTeamTabRecord.TotalPoints += 3;
                     }
                     else
                     {
                         homeTeamTabRecord.Draws += 1;
                         guestTeamTabRecord.Draws += 1;
-                        //
                         homeTeamTabRecord.TotalPoints += 1;
                         guestTeamTabRecord.TotalPoints += 1;
 
                     }
 
-                    // + points 3 - win, 1 - draw ,lose - 0;
-                    // update NationalResultTable
                 }
-
-                
             }
             _nationalResTabRepository.Update(teamsWithResult.Values.ToList(), season);
 
@@ -157,15 +147,6 @@ namespace BusinessLogicLayer.Scenario
             return resultTable;
         }
 
-        /*private List<string> getAllTeamsId(List<Match> matches)
-        {
-            var home = matches.Select(x => x.HomeTeamId).ToList();
-            var guest = matches.Select(x => x.GuestTeamId).ToList();
-            var teams = home;
-            teams.AddRange(guest);
-            return teams.Distinct().ToList();
-        }*/
-
         private List<string> getAllTeamsId(Dictionary<int, List<Match>> matches)
         {
             var teamdsIds = new List<string>();
@@ -179,18 +160,6 @@ namespace BusinessLogicLayer.Scenario
             }
             return teamdsIds.Distinct().ToList();
         }
-
-
-        /*private void insertNewRows(List<Match> matches)
-        {
-            var teamsID = getAllTeamsId(matches);
-
-            foreach (var item in teamsID)
-            {
-                var tab = createResultTable(item);
-                _nationalResTabRepository.Insert(tab);
-            }
-        }*/
 
         private void insertNewRows(Dictionary<int, List<Match>> matches)
         {

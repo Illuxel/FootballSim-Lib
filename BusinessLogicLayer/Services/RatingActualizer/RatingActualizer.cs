@@ -22,7 +22,6 @@ namespace BusinessLogicLayer.Services
         public void Actualize(DateTime gameDate)
         {
             var teamsWinCoef = getAverageCoeff(gameDate.Year);
-            //teamratingCoef.upd
             actualizeRating(teamsWinCoef);
         }
 

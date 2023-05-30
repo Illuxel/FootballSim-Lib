@@ -184,7 +184,7 @@ namespace DatabaseLayer.Repositories
                 return false;
             }
         }
-        //
+
         public bool Update(List<NationalResultTable> teamResultTab, string season)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
@@ -204,16 +204,16 @@ namespace DatabaseLayer.Repositories
                             "TotalPosition = @TotalPosition, " +
                             "TotalPoints = @TotalPoints " +
                             "WHERE TeamId = @TeamId AND Season = @Season",
-                            teamResultTab.Select(nrt => new
+                            teamResultTab.Select(res => new
                             {
-                                Wins = nrt.Wins,
-                                Draws = nrt.Draws,
-                                Loses = nrt.Loses,
-                                ScoredGoals = nrt.ScoredGoals,
-                                MissedGoals = nrt.MissedGoals,
-                                TotalPosition = nrt.TotalPosition,
-                                TotalPoints = nrt.TotalPoints,
-                                TeamId = nrt.TeamID,
+                                res.Wins,
+                                res.Draws,
+                                res.Loses,
+                                res.ScoredGoals,
+                                res.MissedGoals,
+                                res.TotalPosition,
+                                res.TotalPoints,
+                                res.TeamID,
                                 Season = season
                             }),
                             transaction);

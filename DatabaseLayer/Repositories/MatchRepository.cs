@@ -31,7 +31,6 @@ namespace DatabaseLayer.Repositories
                     "SELECT * FROM Match WHERE HomeTeamId = @teamId or GuestTeamId = @teamId",
                     new { teamId }).AsList();
             }
-
             return result;
         }
 
@@ -52,6 +51,18 @@ namespace DatabaseLayer.Repositories
             }
 
             return result;
+        }
+
+        public List<Match> Retrieve(int tourNumber)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                var result = connection.Query<Match>(
+                    "SELECT * FROM Match WHERE TourNumber = @tourNumber",
+                    new { tourNumber }).AsList();
+                return result;
+            }
         }
         
         public Dictionary<int, List<Match>> Retrieve(DateTime gameDate)
@@ -116,21 +127,6 @@ namespace DatabaseLayer.Repositories
             }
         }
 
-        /*public void Insert(List<Match> matches)
-        {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
-            {
-                connection.Open();
-                foreach(var match in matches)
-                {
-                    match.Id = Guid.NewGuid().ToString();
-                }
-                connection.Insert(matches);
-
-                //return rowsAffected == 1;
-            }
-        }*/
-
         public bool Update(Match match)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
@@ -157,7 +153,6 @@ namespace DatabaseLayer.Repositories
                 return result;
             }
         }
-        //
         public bool Update(List<Match> matches)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
