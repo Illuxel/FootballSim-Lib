@@ -18,7 +18,7 @@ namespace DatabaseLayer.Repositories
             {
                 var sql = @"SELECT Team.*, League.*
                     FROM Team 
-                    LEFT JOIN League on Team.LeagueID = League.Id
+                    LEFT JOIN League on Team.LeagueID = League.ID
                     WHERE TEAM.RowState = @rowState";
                 var results = connection.Query<Team, League, Team>(
                     sql,
