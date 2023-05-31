@@ -54,6 +54,14 @@ namespace DatabaseLayer.Repositories
             }
         }
 
+
+        public List<Player> RetrieveByScout(string personId)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                return retrieve("PLAYER.FINDBYSCOUT = @personId", new { personId });
+            }
+        }
         public Player RetrieveOne(string personId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
