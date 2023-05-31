@@ -9,7 +9,7 @@ namespace DatabaseLayer.Repositories
 {
     public class ContractRepository
     {
-        public List<Contract> Retrieve()
+        /*public List<Contract> Retrieve()
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -28,7 +28,18 @@ namespace DatabaseLayer.Repositories
 
                 return leagues.ToList();
             }
+        }*/
+
+        public List<Contract> Retrieve()
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                var response = connection.Query<Contract>("SELECT * FROM Contract").AsList();
+                return response;
+            }
         }
+
 
         public List<Contract> RetrieveByTeam(string teamId)
         {

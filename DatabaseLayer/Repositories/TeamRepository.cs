@@ -18,7 +18,7 @@ namespace DatabaseLayer.Repositories
             {
                 var sql = @"SELECT Team.*, League.*
                     FROM Team 
-                    LEFT JOIN League on Team.LeagueID = League.ID
+                    LEFT JOIN League on Team.LeagueID = League.Id
                     WHERE TEAM.RowState = @rowState";
                 var results = connection.Query<Team, League, Team>(
                     sql,
@@ -101,29 +101,66 @@ namespace DatabaseLayer.Repositories
                 bool result = false;
                 if (record != null)
                 {
-                    Console.WriteLine(team.ExtName);
+                    /*Console.WriteLine(team.ExtName);*/
                     var rowsAffected = connection.Execute(
-                        @"UPDATE Team SET 
-                            Name = @Name, 
-                            LeagueID = @LeagueId,
-                            SportsDirectorID = @SportDirectorId,
-                            Budget = @Budget,
-                            CoachId = @CoachId,
-                            ScoutId = @ScoutId, 
-                            IsNationalTeam = @IsNationalTeam,
-                            Strategy = @Strategy,
-                            TacticSchema = @TacticSchema,
-                            BaseColor = @BaseColor,
-                            ExtId = @ExtId,
-                            ExtName = @ExtName 
-                            WHERE ID = @Id",
-                        team);
+                    @"UPDATE Team SET 
+                        Name = @Name, 
+                        LeagueID = @LeagueID,
+                        SportsDirectorID = @SportsDirectorID,
+                        CoachID = @CoachID,
+                        ScoutID = @ScoutID, 
+                        Budget = @Budget,
+                        IsNationalTeam = @IsNationalTeam,
+                        Strategy = @Strategy,
+                        TacticSchema = @TacticSchema,
+                        BaseColor = @BaseColor,
+                        ExtId = @ExtId,
+                        ExtName = @ExtName,
+                        CurrentInterlRatingPosition = @CurrentInterlRatingPosition
+                        WHERE Id = @Id",
+                    team);
+
                     result = rowsAffected == 1;
                 }
                 return result;
             }
         }
-
+        public bool Update(List<Team> teams)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                using (IDbTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        var rowsAffected = connection.Execute(
+                        @"UPDATE Team SET 
+                            Name = @Name, 
+                        LeagueID = @LeagueID,
+                        SportsDirectorID = @SportsDirectorID,
+                        CoachID = @CoachID,
+                        ScoutID = @ScoutID, 
+                        Budget = @Budget,
+                        IsNationalTeam = @IsNationalTeam,
+                        Strategy = @Strategy,
+                        TacticSchema = @TacticSchema,
+                        BaseColor = @BaseColor,
+                        ExtId = @ExtId,
+                        ExtName = @ExtName,
+                        CurrentInterlRatingPosition = @CurrentInterlRatingPosition
+                        WHERE Id = @Id",
+                        teams,transaction);
+                        transaction.Commit();
+                        return rowsAffected != 0;
+                    }
+                    catch (Exception ex) 
+                    {
+                        throw new Exception(ex.Message);
+                    }
+                }
+            }
+        }
         public bool Delete(string teamId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))

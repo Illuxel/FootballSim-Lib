@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BusinessLogicLayer.Services;
+using System;
+using System.Diagnostics;
 
 namespace StartupProject
 {
@@ -7,9 +9,13 @@ namespace StartupProject
        
         public static void Main(string[] args)
         {
+            Stopwatch sw = new Stopwatch();
             //TeamForMatchCreatorTest
-
-            Console.ReadKey();
+            sw.Start();
+            BudgetManager budgetManager = new BudgetManager();
+            budgetManager.PaySalary();
+            sw.Stop();
+            Console.WriteLine(sw.ElapsedMilliseconds.ToString());
         }
     }
 }
