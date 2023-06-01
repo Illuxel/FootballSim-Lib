@@ -65,11 +65,6 @@ namespace BusinessLogicLayer.Services
                 {
                     team.Key.Budget -= team.Value / 1000000;
                 }
-                /*else
-                {
-                    Чи потрібно якось опрацьовувати нульові бюджети команд?
-                    Також бюджет може перейти в мінус
-                }*/
             }
             return teamsWithAmounts.Keys.ToList();
         }
