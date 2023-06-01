@@ -101,7 +101,6 @@ namespace DatabaseLayer.Repositories
                 bool result = false;
                 if (record != null)
                 {
-                    /*Console.WriteLine(team.ExtName);*/
                     var rowsAffected = connection.Execute(
                     @"UPDATE Team SET 
                         Name = @Name, 
