@@ -9,27 +9,6 @@ namespace DatabaseLayer.Repositories
 {
     public class ContractRepository
     {
-        /*public List<Contract> Retrieve()
-        {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
-            {
-                var query = @"SELECT Contract.*, Team.*, Person.*
-                    FROM Contract
-                    LEFT JOIN Team ON Contract.TeamID = Team.ID
-                    LEFT JOIN Person on Contract.PersonID = Person.ID";
-                var leagues = connection.Query<Contract, Team, Person, Contract>(query,
-                    (contract, team, person) =>
-                    {
-                        contract.Person = person;
-                        contract.Team = team;
-                        return contract;
-                    },
-                    splitOn: "TeamID, PersonID");
-
-                return leagues.ToList();
-            }
-        }*/
-
         public List<Contract> Retrieve()
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
