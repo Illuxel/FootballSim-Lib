@@ -11,15 +11,17 @@ namespace BusinessLogicLayer.Services
     {
         private TeamRepository _teamRepository;
         private TacticSchemaFactory _tacticSchemaFactory;
+        private PlayerFieldPartPositionConvertor _playerFieldPartPositionConvertor;
         public PlayerPositionDeterminer() 
         {
             _teamRepository = new TeamRepository();
             _tacticSchemaFactory = new TacticSchemaFactory();
+            _playerFieldPartPositionConvertor = new PlayerFieldPartPositionConvertor();
         }
 
         public Dictionary<int, TacticPlayerPosition> GetPlayersWithPosition(TacticSchema tacticSchema, List<Player> players)
         {
-            var playersPositions = _tacticSchemaFactory.GetPlayersPosition (tacticSchema);
+            var playersPositions = _tacticSchemaFactory.GetPlayersPosition(tacticSchema);
             var teamTactic = SetPlayers(players, playersPositions);
             return teamTactic;
         }
@@ -58,7 +60,8 @@ namespace BusinessLogicLayer.Services
                     {
                         CurrentPlayer = selectedPlayer,
                         IndexPosition = position.Key,
-                        RealPosition = position.Value
+                        RealPosition = position.Value,
+                        FieldPosition = _playerFieldPartPositionConvertor.Convert(position.Value)
                     };
                     existsPlayers.Add(selectedPlayer.PersonID);
                 }
@@ -103,7 +106,8 @@ namespace BusinessLogicLayer.Services
                     {
                         CurrentPlayer = selectedPlayer,
                         IndexPosition = emptyPosition,
-                        RealPosition = positionCode
+                        RealPosition = positionCode,
+                        FieldPosition = _playerFieldPartPositionConvertor.Convert(positionCode)
                     };
                     existsPlayers.Add(selectedPlayer.PersonID);
                 }
@@ -127,11 +131,13 @@ namespace BusinessLogicLayer.Services
 
                 var selectedPlayer = freePlayers.OrderBy(item => item.CurrentPlayerRating).FirstOrDefault();
                 selectedPlayer.UpdateCurrentRating(-20);
+                var positionCode = positions[stillEmptyPos];
                 playersWithPositions[stillEmptyPos] = new TacticPlayerPosition()
                 {
                     IndexPosition = stillEmptyPos,
                     CurrentPlayer = selectedPlayer,
-                    RealPosition = positions[stillEmptyPos]
+                    RealPosition = positionCode,
+                    FieldPosition = _playerFieldPartPositionConvertor.Convert(positionCode)
                 };
 
                 if (playersWithPositions.Count == 11)

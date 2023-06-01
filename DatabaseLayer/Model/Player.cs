@@ -32,8 +32,8 @@ namespace DatabaseLayer
 
         public Person Person { get; internal set; }
         public Position Position { get; set; }
-
-
+        public int IsJunior { get; set; }
+        public string FindByScout { get; set; }
         public int IndexPosition { get; set; }
         public PlayerPositionGroup PlayerPositionGroup { get; set; }
 

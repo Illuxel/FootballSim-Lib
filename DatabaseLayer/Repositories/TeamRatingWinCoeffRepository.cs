@@ -1,7 +1,10 @@
 ﻿using Dapper;
 using DatabaseLayer.DBSettings;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
+using System.Linq;
 
 namespace DatabaseLayer.Repositories
 {
@@ -135,7 +138,52 @@ namespace DatabaseLayer.Repositories
                 return rowsAffected == 1;
             }
         }
-        
-       
+
+        public bool InsertNewTeams(List<string> teamsId, string season)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+
+                var existingTeams = connection.Query<string>(
+                    @"SELECT TeamId FROM TeamRatingWinCoeff WHERE Season = @season",
+                    new { season });
+
+                var teamsToInsert = teamsId.Except(existingTeams).ToList();
+
+                if (teamsToInsert.Any())
+                {
+                    using (IDbTransaction transaction = connection.BeginTransaction())
+                    {
+                        try
+                        {
+                            string insertQuery = @"INSERT INTO TeamRatingWinCoeff (TeamId, Season, WinCoeff) 
+                              VALUES (@TeamId, @Season, @WinCoeff)";
+
+                            List<TeamRatingWinCoeff> collection = teamsToInsert.Select(teamId => new TeamRatingWinCoeff
+                            {
+                                TeamId = teamId,
+                                Season = season,
+                                WinCoeff = 0
+                            }).ToList();
+
+                            var rowsAffected = connection.Execute(insertQuery, collection, transaction);
+
+                            transaction.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback();
+                            throw new Exception(ex.Message);
+                        }
+                        return true;
+                    }
+
+                }
+                return false;
+            }
+        }
+
+
     }
 }
