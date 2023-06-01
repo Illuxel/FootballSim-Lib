@@ -29,6 +29,7 @@ namespace BusinessLogicLayer.Services
             teamForMatch.TacticSchema = team.TacticSchema;
             teamForMatch.MainPlayers = _playerPositionDeterminer.GetPlayersWithPosition(team.TacticSchema, team.Players);
             teamForMatch.SparePlayers = team.Players.Except(teamForMatch.MainPlayers.Select(pl => pl.Value.CurrentPlayer)).OrderByDescending(pl => pl.CurrentPlayerRating).Take(sparePlayersCount).ToList();
+            teamForMatch.AllPlayers = team.Players;
             return teamForMatch;
         }
 
