@@ -53,7 +53,7 @@ namespace DatabaseLayer.Repositories
             return result;
         }
 
-        public List<Match> Retrieve(int tourNumber)
+        public List<Match> RetrieveByTourNumber(int tourNumber)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
