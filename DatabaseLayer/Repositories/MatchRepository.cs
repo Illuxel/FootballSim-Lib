@@ -189,7 +189,7 @@ namespace DatabaseLayer.Repositories
                 return rowsAffected != 1;
             }
         }
-        public int Retrieve(DateTime gameDate, int leagueId)
+        public int GetTourNumber(DateTime gameDate, int leagueId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {

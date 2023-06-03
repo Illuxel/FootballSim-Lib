@@ -1,8 +1,5 @@
-﻿using DatabaseLayer;
-using DatabaseLayer.Repositories;
+﻿using DatabaseLayer.Repositories;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace BusinessLogicLayer.Services
 {
@@ -14,9 +11,9 @@ namespace BusinessLogicLayer.Services
         {
             _matchRepository = new MatchRepository();
         }
-        public int DetermineTourNumber(int leagueId, DateTime gameDate)
+        public int GetTourNumber(int leagueId, DateTime gameDate)
         {
-            var tourNumber = _matchRepository.Retrieve(gameDate,leagueId);
+            var tourNumber = _matchRepository.GetTourNumber(gameDate,leagueId);
             return tourNumber;
         }
     }
