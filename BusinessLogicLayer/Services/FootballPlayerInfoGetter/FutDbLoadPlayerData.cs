@@ -1,6 +1,7 @@
 ﻿using DatabaseLayer;
 using DatabaseLayer.Repositories;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -164,14 +165,15 @@ namespace BusinessLogicLayer.Services
                         _personRepos.Insert(person);
 
                         var contract = new Contract();
-                        contract.SeasonFrom = currentSeason;
-                        contract.SeasonTo = _seasonValueCreator.GetFutureSeason(currentSeason, 3);
+
+                        contract.DateFrom = new DateTime(_seasonValueCreator.GetStartYear(currentSeason), 06, 1);
+                        contract.DateTo = new DateTime(contract.DateFrom.Year + 3, 05, 31);
                         contract.PersonId = person.Id;
                         contract.TeamId = team.Id;
                         contract.Salary = getContractPrice(extPlayer.Rating);
 
                         _contractRepos.Insert(contract);
-
+                         
                         var player = new Player();
                         player.PersonID = person.Id;
                         player.Passing = extPlayer.Passing;

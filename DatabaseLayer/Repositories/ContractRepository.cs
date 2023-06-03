@@ -19,7 +19,6 @@ namespace DatabaseLayer.Repositories
             }
         }
 
-
         public List<Contract> RetrieveByTeam(string teamId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
@@ -100,8 +99,8 @@ namespace DatabaseLayer.Repositories
                 if (record == null)
                 {
                     var rowsAffected = connection.Execute(
-                        @"INSERT INTO contract (ID, SeasonFrom, SeasonTo, TeamId, PersonId, Salary) 
-                            VALUES (@Id, @SeasonFrom, @SeasonTo, @TeamId, @PersonId, @Salary)",
+                        @"INSERT INTO contract (ID, DateFrom, DateTo, TeamId, PersonId, Salary) 
+                            VALUES (@Id, @DateFrom, @DateTo, @TeamId, @PersonId, @Salary)",
                         contract);
                     result = rowsAffected == 1;
                 }
@@ -119,5 +118,6 @@ namespace DatabaseLayer.Repositories
                 return rowsAffected == 1;
             }
         }
+        //Between Retreive => DateTime
     }
 }

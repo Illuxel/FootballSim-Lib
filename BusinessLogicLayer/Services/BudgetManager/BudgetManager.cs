@@ -1,5 +1,6 @@
 ﻿using DatabaseLayer;
 using DatabaseLayer.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,9 +21,9 @@ namespace BusinessLogicLayer.Services
             return _teamRepository.Retrieve();
         }
 
-        private List<Contract> getAllContracts()
+        private List<Contract> getAllContracts(/*DateTime*/)
         {
-            return _contractRepository.Retrieve();
+            return _contractRepository.Retrieve(/*DateTime*/);
         }
 
         private Dictionary<Team, List<Contract>> getTeamsWithTheirContracts(List<Team> teams, List<Contract> contracts)
@@ -69,7 +70,7 @@ namespace BusinessLogicLayer.Services
             return teamsWithAmounts.Keys.ToList();
         }
 
-        public void PaySalary()
+        public void PaySalary(DateTime gameDate)
         {
             var teams = getAllTeams();
             var contracts = getAllContracts();

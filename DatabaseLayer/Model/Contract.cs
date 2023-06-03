@@ -1,4 +1,6 @@
-﻿namespace DatabaseLayer
+﻿using System;
+
+namespace DatabaseLayer
 {
     public class Contract
     {
@@ -10,8 +12,8 @@
         public string PersonId { get; set; }
         public Person Person { get; set; }
 
-        public string SeasonTo { get; set; }
-        public string SeasonFrom { get; set; }
+        public DateTime DateTo { get; set; }
+        public DateTime DateFrom { get; set; }
 
         public double Salary { get; set; }
     }
