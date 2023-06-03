@@ -77,7 +77,7 @@ namespace BusinessLogicLayer.Services
                             GuestTeamId = guestTeam.Id,
                             TourNumber = currentTour,
                             LeagueId = leagueId,
-                            MatchDate = currentDate.ToString()
+                            MatchDate = currentDate.ToString("yyyy-MM-dd")
 
                         });
 
@@ -89,7 +89,7 @@ namespace BusinessLogicLayer.Services
                             GuestTeamId = homeTeam.Id,
                             TourNumber = (teams.Count - 1) + currentTour,
                             LeagueId = leagueId,
-                            MatchDate = currentDate.AddDays((_countDaysOfRest * (teams.Count - 1))).ToString()
+                            MatchDate = currentDate.AddDays((_countDaysOfRest * (teams.Count - 1))).ToString("yyyy-MM-dd")
                         });
                     }
                 }

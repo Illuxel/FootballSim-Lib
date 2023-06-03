@@ -1,5 +1,3 @@
-﻿
-
 namespace StartupProject
 {
     internal class Program

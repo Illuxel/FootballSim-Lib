@@ -53,7 +53,7 @@ namespace DatabaseLayer.Repositories
             return result;
         }
 
-        public List<Match> Retrieve(int tourNumber)
+        public List<Match> RetrieveByTourNumber(int tourNumber)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -189,6 +189,23 @@ namespace DatabaseLayer.Repositories
                 return rowsAffected != 1;
             }
         }
+        public int GetTourNumber(DateTime gameDate, int leagueId)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                {
+                    var response = connection.Query<int>(
+                        "SELECT TourNumber " +
+                        "FROM Match " +
+                        "WHERE date(MatchDate) >= date(@gameDate) AND LeagueId = @leagueId " +
+                        "ORDER BY date(MatchDate) " +
+                        "LIMIT 1", new { gameDate, leagueId }).First();
+                    return response;
+                }
+            }
+        }
+
     }
 }
 
