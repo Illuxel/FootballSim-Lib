@@ -166,8 +166,8 @@ namespace BusinessLogicLayer.Services
 
                         var contract = new Contract();
 
-                        contract.DateFrom = new DateTime(_seasonValueCreator.GetStartYear(currentSeason), 06, 1);
-                        contract.DateTo = new DateTime(contract.DateFrom.Year + 3, 05, 31);
+                        contract.DateFrom = new DateTime(_seasonValueCreator.GetStartYear(currentSeason), 06, 1).ToString("yyyy,MM,dd");
+                        contract.DateTo = new DateTime(_seasonValueCreator.GetStartYear(contract.DateFrom) + 3, 05, 31).ToString("yyyy,MM,dd"); ;
                         contract.PersonId = person.Id;
                         contract.TeamId = team.Id;
                         contract.Salary = getContractPrice(extPlayer.Rating);

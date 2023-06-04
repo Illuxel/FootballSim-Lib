@@ -107,7 +107,7 @@ namespace DatabaseLayer.Repositories
                 return result;
             }
         }
-       
+
         public bool Delete(string contractId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
@@ -118,6 +118,16 @@ namespace DatabaseLayer.Repositories
                 return rowsAffected == 1;
             }
         }
-        //Between Retreive => DateTime
+        public List<Contract> Retrieve(DateTime gameDate)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                var response = connection.Query<Contract>(
+                    "SELECT * FROM Contract WHERE @gameDate BETWEEN DateFrom AND DateTo",
+                    new { gameDate }).AsList();
+                return response;
+            }
+        }
     }
 }

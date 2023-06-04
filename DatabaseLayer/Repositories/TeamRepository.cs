@@ -7,6 +7,7 @@ using DatabaseLayer.Enums;
 using System.Data;
 using System.Linq;
 using System.Transactions;
+using System.Net;
 
 namespace DatabaseLayer.Repositories
 {
@@ -31,6 +32,16 @@ namespace DatabaseLayer.Repositories
                     splitOn: "Id" 
                 );
                 return results.AsList();
+            }
+        }
+        
+        public List<Team> Retrieve(List<string> teamsId)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                var teams = connection.Query<Team>(@"SELECT * FROM TEAM WHERE ID IN @teamsId", new { teamsId }).AsList();
+                return teams;
             }
         }
 

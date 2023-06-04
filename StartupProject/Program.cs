@@ -1,4 +1,6 @@
 ﻿using BusinessLogicLayer.Services;
+using DatabaseLayer;
+using DatabaseLayer.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,10 +13,16 @@ namespace StartupProject
         public static void Main(string[] args)
         {
             Stopwatch sw = new Stopwatch();
-            //TeamForMatchCreatorTest
-            sw.Start();
+
+            /*Contract c = new Contract();
+            ContractRepository cr = new ContractRepository();
+            for(int i = 0;i<10000;i++)
+            {
+                cr.Insert(c.GetNewContract());
+            }
+            sw.Start();*/
             BudgetManager budgetManager = new BudgetManager();
-            budgetManager.PaySalary();
+            budgetManager.PaySalary(new DateTime(2023,12,04));
             sw.Stop();
             Console.WriteLine(sw.ElapsedMilliseconds.ToString());
         }

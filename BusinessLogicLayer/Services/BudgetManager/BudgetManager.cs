@@ -3,6 +3,7 @@ using DatabaseLayer.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace BusinessLogicLayer.Services
 {
@@ -16,14 +17,22 @@ namespace BusinessLogicLayer.Services
             _teamRepository = new TeamRepository();
         }
 
-        private List<Team> getAllTeams()
+        private List<Contract> getAllContracts(DateTime gameDate)
         {
-            return _teamRepository.Retrieve();
+            var response = _contractRepository.Retrieve(gameDate);
+            return response;
         }
 
-        private List<Contract> getAllContracts(/*DateTime*/)
+        private List<Team> getAllTeams(List<Contract> contracts)
         {
-            return _contractRepository.Retrieve(/*DateTime*/);
+            var teamsId = new HashSet<string>();
+
+            foreach(var contract in contracts)
+            {
+                teamsId.Add(contract.TeamId);
+            }
+
+            return _teamRepository.Retrieve(teamsId.ToList());
         }
 
         private Dictionary<Team, List<Contract>> getTeamsWithTheirContracts(List<Team> teams, List<Contract> contracts)
@@ -32,54 +41,39 @@ namespace BusinessLogicLayer.Services
 
             foreach (var team in teams)
             {
-                var teamContracts = new List<Contract>();
-
-                foreach (var contract in contracts)
-                {
-                    if (contract.TeamId == team.Id)
-                    {
-                        teamContracts.Add(contract);
-                    }
-                }
-
+                var teamContracts = contracts.Where(x => x.TeamId == team.Id).ToList(); 
                 dict.Add(team, teamContracts);
             }
             return dict;
         }
-
-        private Dictionary<Team, double> countAmount(Dictionary<Team, List<Contract>> teamsContractsDict)
+        private List<Team> paySalary(Dictionary<Team, List<Contract>> teamsContractsDict)
         {
-            var dict = new Dictionary<Team, double>();
+            var teams = new List<Team>();
             foreach (var team in teamsContractsDict)
             {
                 double amount = team.Value.Sum(x => x.Salary) / 12;
-                dict.Add(team.Key, amount);
-            }
-            return dict;
-        }
-
-        private List<Team> determineRest(Dictionary<Team, double> teamsWithAmounts)
-        {
-            foreach (var team in teamsWithAmounts)
-            {
                 if (team.Key.Budget != null)
                 {
-                    team.Key.Budget -= team.Value / 1000000;
+                    team.Key.Budget -= amount / 1000000;
                 }
+                teams.Add(team.Key);
             }
-            return teamsWithAmounts.Keys.ToList();
-        }
+            return teams;
+        }   
 
         public void PaySalary(DateTime gameDate)
         {
-            var teams = getAllTeams();
-            var contracts = getAllContracts();
+            var contracts = getAllContracts(gameDate);
+            var teams = getAllTeams(contracts);
+
+            if(contracts.Count == 0)
+            {
+                return;
+            }
 
             var teamsContractsDict = getTeamsWithTheirContracts(teams, contracts);
 
-            var teamsAmount = countAmount(teamsContractsDict);
-
-            var payedTeams = determineRest(teamsAmount);
+            var payedTeams = paySalary(teamsContractsDict);
 
             _teamRepository.Update(payedTeams);
         }
