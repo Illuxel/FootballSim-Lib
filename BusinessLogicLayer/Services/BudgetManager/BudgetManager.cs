@@ -3,7 +3,6 @@ using DatabaseLayer.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 
 namespace BusinessLogicLayer.Services
 {
@@ -17,13 +16,13 @@ namespace BusinessLogicLayer.Services
             _teamRepository = new TeamRepository();
         }
 
-        private List<Contract> getAllContracts(DateTime gameDate)
+        private List<Contract> getAllContractsByDate(DateTime gameDate)
         {
             var response = _contractRepository.Retrieve(gameDate);
             return response;
         }
 
-        private List<Team> getAllTeams(List<Contract> contracts)
+        private List<Team> getAllTeamsByContracts(List<Contract> contracts)
         {
             var teamsId = new HashSet<string>();
 
@@ -63,8 +62,8 @@ namespace BusinessLogicLayer.Services
 
         public void PaySalary(DateTime gameDate)
         {
-            var contracts = getAllContracts(gameDate);
-            var teams = getAllTeams(contracts);
+            var contracts = getAllContractsByDate(gameDate);
+            var teams = getAllTeamsByContracts(contracts);
 
             if(contracts.Count == 0)
             {

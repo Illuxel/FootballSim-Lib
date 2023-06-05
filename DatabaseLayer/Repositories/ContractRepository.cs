@@ -123,9 +123,10 @@ namespace DatabaseLayer.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
+                string formattedDate = gameDate.ToString("yyyy-MM-dd");
                 var response = connection.Query<Contract>(
-                    "SELECT * FROM Contract WHERE @gameDate BETWEEN DateFrom AND DateTo",
-                    new { gameDate }).AsList();
+                    "SELECT * FROM Contract WHERE Date(@gameDate) BETWEEN DateFrom AND DateTo",
+                    new { gameDate = formattedDate }).AsList();
                 return response;
             }
         }
