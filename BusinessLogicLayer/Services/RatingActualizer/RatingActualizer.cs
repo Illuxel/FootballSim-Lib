@@ -50,7 +50,7 @@ namespace BusinessLogicLayer.Services
         {
             var actualRating = new List<Team>();
             var list = teamsRatingDict.OrderByDescending(x => x.Value).ToList();
-
+         
             foreach (var item in list)
             {
                 var rating = list.IndexOf(item) + 1;
@@ -65,5 +65,6 @@ namespace BusinessLogicLayer.Services
             }
             _teamRepository.UpdateRating(actualRating);
         }
+        
     }
 }

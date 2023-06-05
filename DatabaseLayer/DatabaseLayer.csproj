@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <None Update="Database\FootbalLifeDB.db">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

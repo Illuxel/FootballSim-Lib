@@ -77,7 +77,30 @@ namespace DatabaseLayer.Repositories
                 return team;
             }
         }
-
+        public List<Player> RetrieveJuniors(string teamId)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                var sql = @"SELECT P.*, PR.*, PS.*
+                    FROM PLAYER P
+                    LEFT JOIN CONTRACT C on C.ID = P.CONTRACTID
+                    INNER JOIN Person PR ON P.PersonID = PR.ID
+                    LEFT JOIN Position PS ON P.PositionCode = Ps.Code
+                    WHERE C.TEAMID = @teamId AND P.ISJUNIOR = 1 ";
+                var results = connection.Query<Player, Person, Position, Player>(
+                    sql,
+                    (player, person, position) =>
+                    {
+                        player.Person = person;
+                        player.Position = position;
+                        return player;
+                    },
+                    param: new { teamId },
+                    splitOn: "ID, CODE"
+                );
+                return results.AsList();
+            }
+        }
         internal bool Insert(Team team)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))

@@ -58,7 +58,7 @@ namespace BusinessLogicLayer.Services
 
         public Player GetPlayer(PlayerFieldPartPosition playerPostion)
         {
-            var selectedPlayers = MainPlayers.Where(player => player.Value.CurrentPlayer.Position.Location == playerPostion);
+            var selectedPlayers = MainPlayers.Where(player => player.Value.FieldPosition == playerPostion);
             return selectedPlayers.Select(item => item.Value.CurrentPlayer).FirstOrDefault();
         }
         public double AvgSpeed(PlayerFieldPartPosition playerPostion = PlayerFieldPartPosition.All)
@@ -66,7 +66,7 @@ namespace BusinessLogicLayer.Services
             return playerPostion == PlayerFieldPartPosition.All
                 ? MainPlayers.Average(p => p.Value.CurrentPlayer.Speed)
                 : MainPlayers
-                    .Where(p => p.Value.CurrentPlayer.Position.Location == playerPostion)
+                    .Where(p => p.Value.FieldPosition == playerPostion)
                     .Average(p => p.Value.CurrentPlayer.Speed);
         }
         public double AvgStrike(PlayerFieldPartPosition playerPostion = PlayerFieldPartPosition.All)
@@ -74,7 +74,7 @@ namespace BusinessLogicLayer.Services
             return playerPostion == PlayerFieldPartPosition.All
                 ? MainPlayers.Average(p => p.Value.CurrentPlayer.Strike)
                 : MainPlayers
-                    .Where(p => p.Value.CurrentPlayer.Position.Location == playerPostion)
+                    .Where(p => p.Value.FieldPosition == playerPostion)
                     .Average(p => p.Value.CurrentPlayer.Strike);
         }
         public double AvgDefense(PlayerFieldPartPosition playerPostion = PlayerFieldPartPosition.All)
@@ -82,7 +82,7 @@ namespace BusinessLogicLayer.Services
             return playerPostion == PlayerFieldPartPosition.All
                 ? MainPlayers.Average(p => p.Value.CurrentPlayer.Defending)
                 : MainPlayers
-                    .Where(p => p.Value.CurrentPlayer.Position.Location == playerPostion)
+                    .Where(p => p.Value.FieldPosition == playerPostion)
                     .Average(p => p.Value.CurrentPlayer.Defending);
         }
         public double AvgPhysicalTraining(PlayerFieldPartPosition playerPostion = PlayerFieldPartPosition.All)
@@ -90,7 +90,7 @@ namespace BusinessLogicLayer.Services
             return playerPostion == PlayerFieldPartPosition.All
                 ? MainPlayers.Average(p => p.Value.CurrentPlayer.Physics)
                 : MainPlayers
-                    .Where(p => p.Value.CurrentPlayer.Position.Location == playerPostion)
+                    .Where(p => p.Value.FieldPosition == playerPostion)
                     .Average(p => p.Value.CurrentPlayer.Physics);
         }
         public double AvgTechnique(PlayerFieldPartPosition playerPostion = PlayerFieldPartPosition.All)
@@ -98,7 +98,7 @@ namespace BusinessLogicLayer.Services
             return playerPostion == PlayerFieldPartPosition.All
                 ? MainPlayers.Average(p => p.Value.CurrentPlayer.Dribbling)
                 : MainPlayers
-                    .Where(p => p.Value.CurrentPlayer.Position.Location == playerPostion)
+                    .Where(p => p.Value.FieldPosition == playerPostion)
                     .Average(p => p.Value.CurrentPlayer.Dribbling);
         }
         public double AvgPassing(PlayerFieldPartPosition playerPostion = PlayerFieldPartPosition.All)
@@ -106,7 +106,7 @@ namespace BusinessLogicLayer.Services
             return playerPostion == PlayerFieldPartPosition.All
                 ? MainPlayers.Average(p => p.Value.CurrentPlayer.Passing)
                 : MainPlayers
-                    .Where(p => p.Value.CurrentPlayer.Position.Location == playerPostion)
+                    .Where(p => p.Value.FieldPosition == playerPostion)
                     .Average(p => p.Value.CurrentPlayer.Passing);
         }
 

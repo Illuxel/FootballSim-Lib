@@ -15,5 +15,7 @@
         public int MissedGoals { get; set; }
 
         public int TotalPosition { get; set; }
+        
+        public int TotalPoints { get; set; }
     }
 }
