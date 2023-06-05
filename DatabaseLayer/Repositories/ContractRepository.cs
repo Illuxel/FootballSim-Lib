@@ -13,20 +13,9 @@ namespace DatabaseLayer.Repositories
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
-                var query = @"SELECT Contract.*, Team.*, Person.*
-                    FROM Contract
-                    LEFT JOIN Team ON Contract.TeamID = Team.ID
-                    LEFT JOIN Person on Contract.PersonID = Person.ID";
-                var leagues = connection.Query<Contract, Team, Person, Contract>(query,
-                    (contract, team, person) =>
-                    {
-                        contract.Person = person;
-                        contract.Team = team;
-                        return contract;
-                    },
-                    splitOn: "TeamID, PersonID");
-
-                return leagues.ToList();
+                connection.Open();
+                var response = connection.Query<Contract>("SELECT * FROM Contract").AsList();
+                return response;
             }
         }
 
@@ -110,15 +99,15 @@ namespace DatabaseLayer.Repositories
                 if (record == null)
                 {
                     var rowsAffected = connection.Execute(
-                        @"INSERT INTO contract (ID, SeasonFrom, SeasonTo, TeamId, PersonId, Salary) 
-                            VALUES (@Id, @SeasonFrom, @SeasonTo, @TeamId, @PersonId, @Salary)",
+                        @"INSERT INTO contract (ID, DateFrom, DateTo, TeamId, PersonId, Salary) 
+                            VALUES (@Id, @DateFrom, @DateTo, @TeamId, @PersonId, @Salary)",
                         contract);
                     result = rowsAffected == 1;
                 }
                 return result;
             }
         }
-       
+
         public bool Delete(string contractId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
@@ -127,6 +116,18 @@ namespace DatabaseLayer.Repositories
                 var rowsAffected = connection.Execute("DELETE FROM Contract WHERE ID = @contractId ",
                     new { contractId });
                 return rowsAffected == 1;
+            }
+        }
+        public List<Contract> Retrieve(DateTime gameDate)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                string formattedDate = gameDate.ToString("yyyy-MM-dd");
+                var response = connection.Query<Contract>(
+                    "SELECT * FROM Contract WHERE Date(@gameDate) BETWEEN DateFrom AND DateTo",
+                    new { gameDate = formattedDate }).AsList();
+                return response;
             }
         }
     }
