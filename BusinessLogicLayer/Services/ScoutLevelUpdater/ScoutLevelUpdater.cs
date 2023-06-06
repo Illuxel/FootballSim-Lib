@@ -1,18 +1,19 @@
 ﻿using DatabaseLayer.Enums;
+using DatabaseLayer.Services;
 
-namespace DatabaseLayer.Services
+namespace BusinessLogicLayer.Services
 {
     public class ScoutLevelUpgrader
     {
         public bool Upgrade(ScoutSkillLevel level, PlayerGameData playerGameData)
         {
 
-            double upgradeCost = GetUpgradeCost(level);
+            double upgradeCost = getUpgradeCost(level);
 
             if (playerGameData.Money >= upgradeCost)
             {
             
-                playerGameData.level = level;
+                playerGameData.CurrentLevel = level;
                 playerGameData.Money -= upgradeCost;
 
                 return true;
@@ -21,7 +22,7 @@ namespace DatabaseLayer.Services
             return false;
         }
 
-        private double GetUpgradeCost(ScoutSkillLevel level)
+        private double getUpgradeCost(ScoutSkillLevel level)
         {
             switch (level)
             {
