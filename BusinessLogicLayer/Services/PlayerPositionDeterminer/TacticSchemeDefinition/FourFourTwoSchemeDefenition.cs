@@ -8,7 +8,7 @@ namespace BusinessLogicLayer.Services
     {
         //index by positions:
         //-----1-----
-        //--5-4-3-2--
+        //--6-5-3-2--
         //-16-15-13-12-
         //--25---26--
         public Dictionary<int, string> GetPositions()
@@ -16,8 +16,8 @@ namespace BusinessLogicLayer.Services
             return new Dictionary<int, string>()
             {
                 { 1, EnumDescription.GetEnumDescription(PlayerPosition.Goalkeeper) },
-                { 5, EnumDescription.GetEnumDescription(PlayerPosition.RightDefender) },
-                { 4, EnumDescription.GetEnumDescription(PlayerPosition.CentralDefender) },
+                { 6, EnumDescription.GetEnumDescription(PlayerPosition.RightDefender) },
+                { 5, EnumDescription.GetEnumDescription(PlayerPosition.CentralDefender) },
                 { 3, EnumDescription.GetEnumDescription(PlayerPosition.CentralDefender) },
                 { 2, EnumDescription.GetEnumDescription(PlayerPosition.LeftDefender) },
                 { 16, EnumDescription.GetEnumDescription(PlayerPosition.RightMidfielder) },
