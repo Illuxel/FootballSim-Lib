@@ -13,7 +13,7 @@ namespace DatabaseLayer.Services
         public UserRole Role { get; set; }
         public ScoutSkillLevel CurrentLevel { get; set; }
 
-        public PlayerGameData(string playerName, string playerSurname, string clubId, string realDate, string gameDate, double money, UserRole role, ScoutSkillLevel CurrentLevel)
+        public PlayerGameData(string playerName, string playerSurname, string clubId, string realDate, string gameDate, double money, UserRole role, ScoutSkillLevel currentLevel)
         {
             this.PlayerName = playerName;
             this.PlayerSurname = playerSurname;
@@ -22,7 +22,7 @@ namespace DatabaseLayer.Services
             this.GameDate = gameDate;
             this.Money = money;
             this.Role = role;
-            this.CurrentLevel = CurrentLevel;
+            this.CurrentLevel = currentLevel;
         }
         public PlayerGameData()
         {
