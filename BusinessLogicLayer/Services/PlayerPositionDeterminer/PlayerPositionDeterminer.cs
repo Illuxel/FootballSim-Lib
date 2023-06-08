@@ -55,7 +55,7 @@ namespace BusinessLogicLayer.Services
                 }
                 if (playerSamePositions.Count > 0)
                 {
-                    var selectedPlayer = playerSamePositions.OrderBy(item => item.Rating).FirstOrDefault();
+                    var selectedPlayer = playerSamePositions.OrderByDescending(item => item.Rating).FirstOrDefault();
                     playersWithPositions[position.Key] = new TacticPlayerPosition()
                     {
                         CurrentPlayer = selectedPlayer,
