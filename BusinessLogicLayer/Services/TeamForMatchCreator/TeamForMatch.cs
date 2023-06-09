@@ -1,7 +1,5 @@
 ﻿using DatabaseLayer;
-using Newtonsoft.Json.Serialization;
 using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 
 namespace BusinessLogicLayer.Services
@@ -16,6 +14,7 @@ namespace BusinessLogicLayer.Services
         public List<Player> AllPlayers { get; set; }
         public Dictionary<int, TacticPlayerPosition> MainPlayers { get; set; }
 
+        public List<PlayerInMatch> PlayersInMatch { get; set; }
         public List<Player> SparePlayers { get; set; }
 
         //Instance for spared players list
@@ -25,8 +24,8 @@ namespace BusinessLogicLayer.Services
         private PlayerPositionDeterminer _playerPositionDeterminer { get; set; }
 
         internal TeamForMatch()
-         {
-
+        {
+            PlayersInMatch = new List<PlayerInMatch>();
             AllPlayers = new List<Player>();
             MainPlayers = new Dictionary<int, TacticPlayerPosition>();
             SparePlayers = new List<Player>();
@@ -34,28 +33,52 @@ namespace BusinessLogicLayer.Services
 
             _playerPositionDeterminer = new PlayerPositionDeterminer();
             MainPlayers = _playerPositionDeterminer.GetPlayersWithPosition(TacticSchema, AllPlayers);
-         }
 
-         public void ChangeTacticScheme(TacticSchema newTacticSchema)
-         {
-             TacticSchema = newTacticSchema;
-             MainPlayers = _playerPositionDeterminer.GetPlayersWithPosition(newTacticSchema,
-                 MainPlayers.Values.Select(item => item.CurrentPlayer).ToList());
-         }
+            foreach (var player in MainPlayers.Values)
+            {
+                PlayersInMatch.Add(createPlayerInMatch(player.CurrentPlayer.ContractID));
+            }
+        }
+
+        private PlayerInMatch createPlayerInMatch(string playerId, int startMinute = 0)
+        {
+            return new PlayerInMatch()
+            {
+                PlayerId = playerId,
+                TeamId = Id,
+                StartMinute = startMinute,
+                LastMinute = 90,
+            };
+        }
+
         //Implemented SubstitutePlayer method
-        public void SubstitutePlayer(int indexMainPlayer, Player sparePlayer)
+        public void SubstitutePlayer(int indexMainPlayer, Player sparePlayer,int currentMinute)
         {
             if(MainPlayers.TryGetValue(indexMainPlayer,out var playerPosition))
             {
                 SparedPlayers.Add(playerPosition.CurrentPlayer);
                 playerPosition.CurrentPlayer = sparePlayer;
+
+                foreach (var playerInMatch in PlayersInMatch)
+                {
+                    if (playerInMatch.PlayerId == playerPosition.CurrentPlayer.PersonID)
+                    {
+                        playerInMatch.LastMinute = currentMinute;
+                    }
+                }
+                PlayersInMatch.Add(createPlayerInMatch(sparePlayer.PersonID, currentMinute));
             }
             else
             {
                 throw new System.Exception("Index doesn`t belong to that team");
             }
         }
-
+        public void ChangeTacticScheme(TacticSchema newTacticSchema)
+        {
+            TacticSchema = newTacticSchema;
+            MainPlayers = _playerPositionDeterminer.GetPlayersWithPosition(newTacticSchema,
+            MainPlayers.Values.Select(item => item.CurrentPlayer).ToList());
+        }
         public Player GetPlayer(PlayerFieldPartPosition playerPostion)
         {
             var selectedPlayers = MainPlayers.Where(player => player.Value.FieldPosition == playerPostion);
