@@ -1,5 +1,6 @@
 ﻿using DatabaseLayer;
 using System;
+using System.Linq;
 
 namespace BusinessLogicLayer.Services
 {
@@ -128,7 +129,7 @@ namespace BusinessLogicLayer.Services
                     currentEvent.ProcessEvent();
 
                     _matchData.MatchHistory.Add(currentEvent);
-
+                    saveEvent(currentEvent);
                     if (currentEvent is BallStrikeGoalEvent)
                     {
                         Goal goal = new Goal()
@@ -160,33 +161,74 @@ namespace BusinessLogicLayer.Services
                 }
             }
 
-            finalizeGeneration();
+            //finalizeGeneration();
         }
 
+        private void saveEvent(IMatchGameEvent matchGameEvent)
+        {
+            if (matchGameEvent != null)
+            {
+                if(matchGameEvent.YellowCardPlayer != null)
+                {
+                    if (matchGameEvent.AssistedPlayer != null)
+                    {
+                        _matchData.AssistedPlayers.Add(matchGameEvent.AssistedPlayer.Value);
+                    }
+                    if (matchGameEvent.InjuredPlayer != null)
+                    {
+                        _matchData.InjuredPlayers.Add(matchGameEvent.InjuredPlayer.Value);
+                    }
+                    if (matchGameEvent.YellowCardPlayer != null)
+                    {
+                        _matchData.YellowCardPlayers.Add(matchGameEvent.YellowCardPlayer.Value);
+                        int yellowCardsByCurrentPlayer = _matchData.YellowCardPlayers.
+                            Where(item => item == matchGameEvent.YellowCardPlayer.Value).Count();
+                        if (yellowCardsByCurrentPlayer == 2)
+                        {
+                            _matchData.RedCardPlayers.Add(matchGameEvent.YellowCardPlayer.Value);
+                            removePlayer(matchGameEvent.YellowCardPlayer.Value);
+                        }
+
+                    }
+                    if (matchGameEvent.RedCardPlayer != null)
+                    {
+                        _matchData.RedCardPlayers.Add(matchGameEvent.RedCardPlayer.Value);
+                        removePlayer(matchGameEvent.RedCardPlayer.Value);
+                    }
+                    if (matchGameEvent.ScoredPlayer != null)
+                    {
+                        _matchData.ScoredPlayers.Add(matchGameEvent.ScoredPlayer.Value);
+                    }
+                }
+            }
+        }
+
+        private void removePlayer(Guid playerId)
+        {
+            foreach (var player in _matchData.GuestTeam.MainPlayers)
+            {
+                if (player.Value.CurrentPlayer != null && new Guid(player.Value.CurrentPlayer.PersonID) == playerId)
+                {
+                    player.Value.CurrentPlayer = null;
+                    _matchData.GuestTeam.AvailablePlayerCount -= 1;
+                    break;
+                }
+            }
+            foreach (var player in _matchData.HomeTeam.MainPlayers)
+            {
+                if (player.Value.CurrentPlayer != null && new Guid(player.Value.CurrentPlayer.PersonID) == playerId)
+                {
+                    player.Value.CurrentPlayer = null;
+                    _matchData.HomeTeam.AvailablePlayerCount -= 1;
+                    break;
+                }
+            }
+        }
         private void finalizeGeneration()
         {
             foreach (var gameEvent in _matchData.MatchHistory)
             {
-                if (gameEvent.AssistedPlayer != null)
-                {
-                    _matchData.AssistedPlayers.Add(gameEvent.AssistedPlayer.Value);
-                }
-                if (gameEvent.InjuredPlayer != null)
-                {
-                    _matchData.InjuredPlayers.Add(gameEvent.InjuredPlayer.Value);
-                }
-                if (gameEvent.YellowCardPlayer != null)
-                {
-                    _matchData.YellowCardPlayers.Add(gameEvent.YellowCardPlayer.Value);
-                }
-                if (gameEvent.RedCardPlayer != null)
-                {
-                    _matchData.RedCardPlayers.Add(gameEvent.RedCardPlayer.Value);
-                }
-                if (gameEvent.ScoredPlayer != null)
-                {
-                    _matchData.ScoredPlayers.Add(gameEvent.ScoredPlayer.Value);
-                }
+                saveEvent(gameEvent);
             }
         }
     }

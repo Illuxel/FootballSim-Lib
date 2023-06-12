@@ -3,6 +3,7 @@ using Newtonsoft.Json.Serialization;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
+using System.Numerics;
 
 namespace BusinessLogicLayer.Services
 {
@@ -11,6 +12,8 @@ namespace BusinessLogicLayer.Services
         public string Id { get; set; }
         public string Name { get; set; }
         public string BaseColor { get; set; }
+
+        public int AvailablePlayerCount { get; set; }
         public StrategyType Strategy { get; set; }
         public TacticSchema TacticSchema { get; set; }
         public List<Player> AllPlayers { get; set; }
@@ -33,6 +36,7 @@ namespace BusinessLogicLayer.Services
             SparedPlayers = new List<Player>();
 
             _playerPositionDeterminer = new PlayerPositionDeterminer();
+            AvailablePlayerCount = 11;
             MainPlayers = _playerPositionDeterminer.GetPlayersWithPosition(TacticSchema, AllPlayers);
          }
 
@@ -58,45 +62,50 @@ namespace BusinessLogicLayer.Services
 
         public Player GetPlayer(PlayerFieldPartPosition playerPostion)
         {
-            var selectedPlayers = MainPlayers.Where(player => player.Value.FieldPosition == playerPostion);
+            var selectedPlayers = MainPlayers.Where(player => player.Value.CurrentPlayer != null && player.Value.FieldPosition == playerPostion);
             return selectedPlayers.Select(item => item.Value.CurrentPlayer).FirstOrDefault();
         }
         public double AvgSpeed(PlayerFieldPartPosition playerPostion = PlayerFieldPartPosition.All)
         {
             return playerPostion == PlayerFieldPartPosition.All
-                ? MainPlayers.Average(p => p.Value.CurrentPlayer.Speed)
-                : MainPlayers
-                    .Where(p => p.Value.FieldPosition == playerPostion)
+                ? MainPlayers.Where(player => player.Value.CurrentPlayer != null).
+                    Average(p => p.Value.CurrentPlayer.Speed)
+            : MainPlayers
+                    .Where(p => p.Value.CurrentPlayer != null && p.Value.FieldPosition == playerPostion)
                     .Average(p => p.Value.CurrentPlayer.Speed);
         }
         public double AvgStrike(PlayerFieldPartPosition playerPostion = PlayerFieldPartPosition.All)
         {
             return playerPostion == PlayerFieldPartPosition.All
-                ? MainPlayers.Average(p => p.Value.CurrentPlayer.Strike)
+                ? MainPlayers.Where(player => player.Value.CurrentPlayer != null).
+                    Average(p => p.Value.CurrentPlayer.Strike)
                 : MainPlayers
-                    .Where(p => p.Value.FieldPosition == playerPostion)
+                    .Where(p => p.Value.CurrentPlayer != null && p.Value.FieldPosition == playerPostion)
                     .Average(p => p.Value.CurrentPlayer.Strike);
         }
         public double AvgDefense(PlayerFieldPartPosition playerPostion = PlayerFieldPartPosition.All)
         {
             return playerPostion == PlayerFieldPartPosition.All
-                ? MainPlayers.Average(p => p.Value.CurrentPlayer.Defending)
+                ? MainPlayers.Where(player => player.Value.CurrentPlayer != null).
+                    Average(p => p.Value.CurrentPlayer.Defending)
                 : MainPlayers
-                    .Where(p => p.Value.FieldPosition == playerPostion)
+                    .Where(p => p.Value.CurrentPlayer != null && p.Value.FieldPosition == playerPostion)
                     .Average(p => p.Value.CurrentPlayer.Defending);
         }
         public double AvgPhysicalTraining(PlayerFieldPartPosition playerPostion = PlayerFieldPartPosition.All)
         {
             return playerPostion == PlayerFieldPartPosition.All
-                ? MainPlayers.Average(p => p.Value.CurrentPlayer.Physics)
+                ? MainPlayers.Where(player => player.Value.CurrentPlayer != null).
+                    Average(p => p.Value.CurrentPlayer.Physics)
                 : MainPlayers
-                    .Where(p => p.Value.FieldPosition == playerPostion)
+                    .Where(p => p.Value.CurrentPlayer != null && p.Value.FieldPosition == playerPostion)
                     .Average(p => p.Value.CurrentPlayer.Physics);
         }
         public double AvgTechnique(PlayerFieldPartPosition playerPostion = PlayerFieldPartPosition.All)
         {
             return playerPostion == PlayerFieldPartPosition.All
-                ? MainPlayers.Average(p => p.Value.CurrentPlayer.Dribbling)
+                ? MainPlayers.Where(player => player.Value.CurrentPlayer != null).
+                    Average(p => p.Value.CurrentPlayer.Dribbling)
                 : MainPlayers
                     .Where(p => p.Value.FieldPosition == playerPostion)
                     .Average(p => p.Value.CurrentPlayer.Dribbling);
@@ -104,9 +113,10 @@ namespace BusinessLogicLayer.Services
         public double AvgPassing(PlayerFieldPartPosition playerPostion = PlayerFieldPartPosition.All)
         {
             return playerPostion == PlayerFieldPartPosition.All
-                ? MainPlayers.Average(p => p.Value.CurrentPlayer.Passing)
+                ? MainPlayers.Where(player => player.Value.CurrentPlayer != null).
+                    Average(p => p.Value.CurrentPlayer.Passing)
                 : MainPlayers
-                    .Where(p => p.Value.FieldPosition == playerPostion)
+                    .Where(p => p.Value.CurrentPlayer != null && p.Value.FieldPosition == playerPostion)
                     .Average(p => p.Value.CurrentPlayer.Passing);
         }
 

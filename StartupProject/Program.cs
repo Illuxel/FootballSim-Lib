@@ -5,6 +5,7 @@ namespace StartupProject
     {
         public static void Main(string[] args)
         {
+            new MatchGeneratingExampleUsing().GenerateMatch();
         }
     }
 }

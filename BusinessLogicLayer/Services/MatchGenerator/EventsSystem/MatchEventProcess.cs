@@ -43,7 +43,21 @@ namespace BusinessLogicLayer.Services
                     var process = AdditonalEvents[i] as MatchEventProcess;
                     process.HomeTeam = HomeTeam;
                     process.GuestTeam = GuestTeam;
+                    process.Location = this.Location;
                     process.ProcessEvent();
+
+                    if(process.InjuredPlayer != null)
+                    {
+                        this.InjuredPlayer = process.InjuredPlayer;
+                    }
+                    if (process.YellowCardPlayer != null)
+                    {
+                        this.YellowCardPlayer = process.YellowCardPlayer;
+                    }
+                    if (process.RedCardPlayer != null)
+                    {
+                        this.RedCardPlayer = process.RedCardPlayer;
+                    }
                 }
             }
 

@@ -123,9 +123,9 @@
       "NextEvents": [
         {
           "GuestPart": [
-            { "BallStrikeMissed": 35 },
-            { "BallStrikeGoal": 28 },
-            { "BallStrikeSafe": 37 }
+            { "BallStrikeMissed": 41 },
+            { "BallStrikeGoal": 15 },
+            { "BallStrikeSafe": 44 }
           ]
         }
       ]

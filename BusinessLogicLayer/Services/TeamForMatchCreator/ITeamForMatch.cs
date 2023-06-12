@@ -10,6 +10,7 @@ namespace BusinessLogicLayer.Services
         string Id { get;}
         string Name { get; }
         string BaseColor { get; }
+        int AvailablePlayerCount { get; set; }
         StrategyType Strategy { get; set; }
 
         TacticSchema TacticSchema { get; set; }

@@ -75,13 +75,13 @@ namespace StartupProject
             foreach (var goal in result.Goals)
             {
                 var scoredPlayerName = string.Empty;
-                var goalPlayer = homeTeamForMatch.MainPlayers.Values.Where(item => item.CurrentPlayer.PersonID == goal.PlayerId).FirstOrDefault();
+                var goalPlayer = homeTeamForMatch.AllPlayers.FirstOrDefault(item => item.PersonID == goal.PlayerId);
                 if (goalPlayer == null)
                 {
-                    goalPlayer = guestTeamForMatch.MainPlayers.Values.Where(item => item.CurrentPlayer.PersonID == goal.PlayerId).FirstOrDefault();
+                    goalPlayer = guestTeamForMatch.AllPlayers.FirstOrDefault(item => item.PersonID == goal.PlayerId);
 
                 }
-                Console.WriteLine($"{goal.MatchMinute} Scored by: {goalPlayer.CurrentPlayer.Person.Surname}");
+                Console.WriteLine($"{goal.MatchMinute} Scored by: {goalPlayer.Person.Surname}");
             }
         }
     }
