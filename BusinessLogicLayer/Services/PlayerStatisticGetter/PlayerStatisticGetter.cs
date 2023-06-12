@@ -1,4 +1,5 @@
 ﻿using DatabaseLayer.Repositories;
+using System;
 using System.Linq;
 
 namespace BusinessLogicLayer.Services
@@ -25,15 +26,40 @@ namespace BusinessLogicLayer.Services
 
             var playerInMatchesCount = getPlayerInMatchesCount(playerId);
 
-            return new PlayerInvolvement() 
+            return new PlayerInvolvement()
             {
                 TotalMatch = allMatchesCount,
                 PlayedMatch = playerInMatchesCount
             };
         }
 
-        private string getTeamId(string playerId) => _contractRepository.Retrieve(playerId).First().TeamId;
-        private int getAllMatchesCount(string teamId, string season) => _matchRepository.Retrieve(teamId, season).Count;
-        private int getPlayerInMatchesCount(string playerId) => _playerInMatchRepository.Retrieve(playerId).Count;
+        private string getTeamId(string playerId)
+        {
+            if (string.IsNullOrEmpty(playerId))
+            {
+                throw new Exception("Player ID is not set");
+            }
+            else
+            {
+                return _contractRepository.Retrieve(playerId).First().TeamId;
+            }
+        }
+        private int getAllMatchesCount(string teamId, string season)
+        {
+            if (string.IsNullOrEmpty(teamId) || string.IsNullOrEmpty(season))
+            {
+                throw new Exception("Incoming value is not set");
+            }
+            return _matchRepository.Retrieve(teamId, season).Count;
+        }
+        private int getPlayerInMatchesCount(string playerId)
+        {
+            if (string.IsNullOrEmpty(playerId))
+            {
+                throw new Exception("Player ID is not set");
+            }
+
+            return _playerInMatchRepository.Retrieve(playerId).Count;
+        }
     }
 }
