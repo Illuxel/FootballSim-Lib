@@ -1,4 +1,5 @@
 ﻿using DatabaseLayer;
+using DatabaseLayer.Repositories;
 using System;
 using System.Linq;
 
@@ -8,7 +9,8 @@ namespace BusinessLogicLayer.Services
     {
         private MatchResult _matchData;
         private TeamForMatchCreator _teamForMatchCreator;
-        public MatchResult MatchData { get { return _matchData; } } 
+        private PlayerInMatchRepository _playerInMatchRepository;
+        public MatchResult MatchData { get { return _matchData; } }
 
         public StrategyType HomeTeamStrategy
         {
@@ -53,6 +55,8 @@ namespace BusinessLogicLayer.Services
         public MatchGenerator(ITeamForMatch homeTeam, ITeamForMatch guestTeam)
         {
             _matchData = new MatchResult();
+            _playerInMatchRepository = new PlayerInMatchRepository();
+
 
             _matchData.MatchID = Guid.NewGuid().ToString();
 
@@ -66,6 +70,7 @@ namespace BusinessLogicLayer.Services
         {
             _matchData = new MatchResult();
             _teamForMatchCreator = new TeamForMatchCreator();
+            _playerInMatchRepository = new PlayerInMatchRepository();
 
             _matchData.MatchID = match.Id;
 
@@ -86,6 +91,8 @@ namespace BusinessLogicLayer.Services
             var currentMinute = 0;
             var firstTime = true;
             var strategyEventName = "BallControl";
+
+            //
 
             while (!_isMatcFinished)
             {
@@ -160,6 +167,17 @@ namespace BusinessLogicLayer.Services
                     currentEvent = nextEvent as MatchEventProcess;
                 }
             }
+            foreach (var player in MatchData.HomeTeam.PlayersInMatch)
+            {
+                player.MatchId = MatchData.MatchID;
+            }
+            foreach (var player in MatchData.GuestTeam.PlayersInMatch)
+            {
+                player.MatchId = MatchData.MatchID;
+            }
+
+            var playersInMatch = MatchData.HomeTeam.PlayersInMatch.Concat(MatchData.GuestTeam.PlayersInMatch).ToList();
+            _playerInMatchRepository.Insert(playersInMatch);
 
             //finalizeGeneration();
         }

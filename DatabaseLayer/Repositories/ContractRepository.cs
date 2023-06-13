@@ -64,7 +64,6 @@ namespace DatabaseLayer.Repositories
                 return leagues.ToList();
             }
         }
-
         public Contract RetrieveOne(string contractId)
         {
             var query = @"SELECT Contract.*, Team.*, Person.*
