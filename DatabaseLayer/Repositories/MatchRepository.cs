@@ -5,6 +5,7 @@ using System.Data.SQLite;
 using Dapper;
 using System.Linq;
 using System.Data;
+using System.Text.RegularExpressions;
 
 namespace DatabaseLayer.Repositories
 {
@@ -33,6 +34,19 @@ namespace DatabaseLayer.Repositories
             }
             return result;
         }
+
+        public List<Match> Retrieve(string firstTeamId, string secondTeamId)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                var result = connection.Query<Match>(
+                    "SELECT * FROM Match WHERE (HomeTeamId = @firstTeamId AND GuestTeamId = @secondTeamId) OR (HomeTeamId = @secondTeamId AND GuestTeamId = @firstTeamId)",
+                    new { firstTeamId, secondTeamId }).ToList();
+                return result;
+            }
+        }
+
 
         public List<Match> Retrieve(int leagueId, int tourNumber = 0)
         {
