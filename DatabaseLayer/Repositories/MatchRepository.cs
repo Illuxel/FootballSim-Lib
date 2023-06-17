@@ -86,7 +86,7 @@ namespace DatabaseLayer.Repositories
                 connection.Open();
                 var result = connection.Query<Match>(
                     @"SELECT * FROM Match
-                    WHERE MatchDate = @gameDate", new { @gameDate = gameDate.ToString() }).AsList();
+                    WHERE MatchDate = @gameDate", new { @gameDate = gameDate.ToString("yyyy-MM-dd")}).AsList();
                 if(result.Count == 0)
                 {
                     return new Dictionary<int, List<Match>>();

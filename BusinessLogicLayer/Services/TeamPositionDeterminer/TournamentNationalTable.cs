@@ -23,10 +23,27 @@ namespace BusinessLogicLayer.Services
 
             positionHandler = pointsHandler;
         }
-
-        public void AddTeam(List<NationalResultTable> team)
+        public void AddTeam(NationalResultTable team)
         {
-            teams.Add(0, team);
+            if (teams.ContainsKey(0))
+            {
+                teams[0].Add(team);
+            }
+            else
+            {
+                teams.Add(0, new List<NationalResultTable>() { team });
+            }
+        }
+        public void AddTeam(List<NationalResultTable> teamsList)
+        {
+            if (teams.ContainsKey(0))
+            {
+                teams[0] = teamsList;
+            }
+            else
+            {
+                teams.Add(0, teamsList);
+            }
         }
 
         public void UpdatePositions()

@@ -14,12 +14,12 @@ namespace BusinessLogicLayer.Services
             _season = season;
             _matchRepository = new MatchRepository();
         }
-        public override void Handle(Dictionary<int, List<NationalResultTable>> team, List<int> teamsWithSamePositionsKeys)
+        public override void Handle(Dictionary<int, List<NationalResultTable>> teams, List<int> teamsWithSamePositionsKeys)
         {
             foreach (var position in teamsWithSamePositionsKeys)
             {
                 var teamsDict = new Dictionary<int, NationalResultTable>();
-                var teamsByPosition = team[position];
+                var teamsByPosition = teams[position];
 
                 foreach (var team1 in teamsByPosition)
                 {
@@ -65,26 +65,26 @@ namespace BusinessLogicLayer.Services
                 var sortedTeams = teamsDict.OrderByDescending(x => x.Key).Select(x => x.Value).ToList();
 
                 var numOfPosition = position;
-                team[numOfPosition] = new List<NationalResultTable>();
+                teams[numOfPosition] = new List<NationalResultTable>();
 
                 foreach (var teamInPosition in sortedTeams)
                 {
-                    team[numOfPosition].Add(teamInPosition);
+                    teams[numOfPosition].Add(teamInPosition);
                     numOfPosition++;
                 }
             }
 
-            teamsWithSamePositionsKeys = SamePositions(team);
+            teamsWithSamePositionsKeys = SamePositions(teams);
 
             if (nextHandler != null && teamsWithSamePositionsKeys.Count != 0)
             {
-                nextHandler.Handle(team);
+                nextHandler.Handle(teams);
             }
             else
             {
                 if (teamsWithSamePositionsKeys.Count == 0)
                 {
-                    saveData(team, _season);
+                    saveData(teams, _season);
                 }
             }
         }

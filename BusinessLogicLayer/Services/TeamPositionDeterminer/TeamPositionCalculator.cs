@@ -13,18 +13,18 @@ namespace BusinessLogicLayer.Services
         public TeamPositionCalculator(string season)
         {
             _teamRepository = new TeamRepository();
-            _tournamentNationalTable = new TournamentNationalTable(season);
             _nationalResTabRepository = new NationalResTabRepository();
         }
 
         public void CalculatePosition(string season)
         {
-
             var getAllTeams = getTeamsByLeague();
             foreach (var league in getAllTeams)
             {
+                _tournamentNationalTable = new TournamentNationalTable(season);
                 var teamIDs = league.Value;
                 var results = getResultsByLeague(season, teamIDs);
+
                 _tournamentNationalTable.AddTeam(results);
                 _tournamentNationalTable.UpdatePositions();
             }

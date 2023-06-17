@@ -11,31 +11,31 @@ namespace BusinessLogicLayer.Services
         {
             _season = season;
         }
-        public override void Handle(Dictionary<int, List<NationalResultTable>> team, List<int> teamsWithSamePositionsKeys)
+        public override void Handle(Dictionary<int, List<NationalResultTable>> teams, List<int> teamsWithSamePositionsKeys)
         {
             foreach (var position in teamsWithSamePositionsKeys)
             {
                 var numOfPosition = position;
-                var teams = team[position];
-                var sortedTeams = teams.OrderByDescending(x => x.ScoredGoals - x.MissedGoals);
+                var team = teams[position];
+                var sortedTeams = team.OrderByDescending(x => x.ScoredGoals - x.MissedGoals);
 
-                team[numOfPosition] = new List<NationalResultTable>();
+                teams[numOfPosition] = new List<NationalResultTable>();
                 foreach (var teamInPosition in sortedTeams)
                 {
-                    team[numOfPosition].Add(teamInPosition);
+                    teams[numOfPosition].Add(teamInPosition);
                     numOfPosition++;
                 }
             }
-            teamsWithSamePositionsKeys = SamePositions(team);
+            teamsWithSamePositionsKeys = SamePositions(teams);
             if (nextHandler != null && teamsWithSamePositionsKeys.Count != 0)
             {
-                nextHandler.Handle(team, teamsWithSamePositionsKeys);
+                nextHandler.Handle(teams, teamsWithSamePositionsKeys);
             }
             else
             {
                 if(teamsWithSamePositionsKeys.Count == 0)
                 {
-                    saveData(team, _season);
+                    saveData(teams, _season);
                 }
             }
         }

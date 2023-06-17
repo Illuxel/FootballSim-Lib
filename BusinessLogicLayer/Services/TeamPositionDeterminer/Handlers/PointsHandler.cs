@@ -13,34 +13,39 @@ namespace BusinessLogicLayer.Services
             _season = season;
 
         }
-        public override void Handle(Dictionary<int, List<NationalResultTable>> team, List<int> keys = null)
+        public override void Handle(Dictionary<int, List<NationalResultTable>> teams, List<int> keys = null)
         {
-            var sortedResults = team[0].OrderByDescending(x => x.TotalPoints).ToList();
-            for (int i = 0; i < sortedResults.Count; i++)
+            var sortedResults = teams[0].OrderByDescending(x => x.TotalPoints).ToList();
+            for (int i = 1; i <= sortedResults.Count; i++)
             {
-                var teamsByPosition = sortedResults.Where(x => x.TotalPoints == sortedResults[i].TotalPoints);
-                team.Add(i, teamsByPosition.ToList());
-                var count = teamsByPosition.Count();
-                if (count != 1)
+                var teamsByPosition = sortedResults.Where(x => x.TotalPoints == sortedResults[i-1].TotalPoints).ToList();
+                teams.Add(i, teamsByPosition);
+                DeleteFromDictionary(teams, teamsByPosition);
+                int count = teamsByPosition.Count;
+                if (count > 1)
                 {
-                    for (int j = i; j < i + count; j++)
+                    var curIndex = i;
+                    for (int j = curIndex + 1; j <= count + curIndex - 1; j++)
                     {
-                        team.Add(j, new List<NationalResultTable>());
-                        i++;
+                        teams.Add(j, new List<NationalResultTable>());
+                        if (j == count + i - 1)
+                        {
+                            i = j;
+                        }
                     }
                 }
             }
-            var teamsWithSamePositionsKeys = SamePositions(team);
+            var teamsWithSamePositionsKeys = SamePositions(teams);
 
-            if (nextHandler != null && ArePositionsSet(team) && teamsWithSamePositionsKeys.Count != 0)
+            if (nextHandler != null && ArePositionsSet(teams) && teamsWithSamePositionsKeys.Count != 0)
             {
-                nextHandler.Handle(team, teamsWithSamePositionsKeys);
+                nextHandler.Handle(teams, teamsWithSamePositionsKeys);
             }
             else
             {
-                if(ArePositionsSet(team) && teamsWithSamePositionsKeys.Count == 0)
+                if (ArePositionsSet(teams) && teamsWithSamePositionsKeys.Count == 0)
                 {
-                    saveData(team, _season);
+                    saveData(teams, _season);
                 }
             }
         }
