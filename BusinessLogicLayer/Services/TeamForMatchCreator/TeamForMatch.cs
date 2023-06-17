@@ -1,9 +1,6 @@
 ﻿using DatabaseLayer;
-using Newtonsoft.Json.Serialization;
 using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.Numerics;
 
 namespace BusinessLogicLayer.Services
 {

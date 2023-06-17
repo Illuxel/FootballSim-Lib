@@ -5,7 +5,6 @@ using System.Data.SQLite;
 using Dapper;
 using System.Linq;
 using System.Data;
-using System.Text.RegularExpressions;
 
 namespace DatabaseLayer.Repositories
 {

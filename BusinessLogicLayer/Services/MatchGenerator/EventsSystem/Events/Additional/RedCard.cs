@@ -1,7 +1,5 @@
 ﻿using DatabaseLayer;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace BusinessLogicLayer.Services
 { 

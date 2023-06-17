@@ -1,6 +1,4 @@
 ﻿using DatabaseLayer;
-using DatabaseLayer.Repositories;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
