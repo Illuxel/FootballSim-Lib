@@ -4,14 +4,10 @@ using System.Linq;
 
 namespace BusinessLogicLayer.Services
 {
-    internal class PointsHandler : PositionHandler
+    internal class PointsHandler : PositionHandlerBase
     {
-        private string _season;
-        public PointsHandler(string season)
+        public PointsHandler(string season) : base(season)
         {
-
-            _season = season;
-
         }
         public override void Handle(Dictionary<int, List<NationalResultTable>> teams, List<int> keys = null)
         {

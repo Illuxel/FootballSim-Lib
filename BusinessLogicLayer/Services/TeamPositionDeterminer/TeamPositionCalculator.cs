@@ -10,7 +10,7 @@ namespace BusinessLogicLayer.Services
         TeamRepository _teamRepository;
         TournamentNationalTable _tournamentNationalTable;
         NationalResTabRepository _nationalResTabRepository;
-        public TeamPositionCalculator(string season)
+        public TeamPositionCalculator()
         {
             _teamRepository = new TeamRepository();
             _nationalResTabRepository = new NationalResTabRepository();
@@ -25,7 +25,7 @@ namespace BusinessLogicLayer.Services
                 var teamIDs = league.Value;
                 var results = getResultsByLeague(season, teamIDs);
 
-                _tournamentNationalTable.AddTeam(results);
+                _tournamentNationalTable.AddTeams(results);
                 _tournamentNationalTable.UpdatePositions();
             }
         }

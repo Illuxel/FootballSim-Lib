@@ -4,12 +4,10 @@ using System.Linq;
 
 namespace BusinessLogicLayer.Services
 {
-    internal class GoalDifferenceHandler : PositionHandler
+    internal class GoalDifferenceHandler : PositionHandlerBase
     {
-        private string _season;
-        public GoalDifferenceHandler(string season)
+        public GoalDifferenceHandler(string season) : base(season)
         {
-            _season = season;
         }
         public override void Handle(Dictionary<int, List<NationalResultTable>> teams, List<int> teamsWithSamePositionsKeys)
         {

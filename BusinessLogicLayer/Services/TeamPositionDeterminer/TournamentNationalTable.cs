@@ -5,17 +5,17 @@ namespace BusinessLogicLayer.Services
 {
     internal class TournamentNationalTable
     {
-        Dictionary<int,List<NationalResultTable>> teams;
-        PositionHandler positionHandler;
+        Dictionary<int,List<NationalResultTable>> _teams;
+        PositionHandlerBase positionHandler;
 
         public TournamentNationalTable(string season)
         {
-            teams = new Dictionary<int, List<NationalResultTable>>();
+            _teams = new Dictionary<int, List<NationalResultTable>>();
     
-            PositionHandler pointsHandler = new PointsHandler(season);
-            PositionHandler goalDifferenceHandler = new GoalDifferenceHandler(season);
-            PositionHandler headToHeadHandler = new HeadToHeadHandler(season);
-            PositionHandler winsHandler = new WinsHandler(season);
+            PositionHandlerBase pointsHandler = new PointsHandler(season);
+            PositionHandlerBase goalDifferenceHandler = new GoalDifferenceHandler(season);
+            PositionHandlerBase headToHeadHandler = new HeadToHeadHandler(season);
+            PositionHandlerBase winsHandler = new WinsHandler(season);
 
             pointsHandler.SetNextHandler(goalDifferenceHandler);
             goalDifferenceHandler.SetNextHandler(headToHeadHandler);
@@ -25,30 +25,26 @@ namespace BusinessLogicLayer.Services
         }
         public void AddTeam(NationalResultTable team)
         {
-            if (teams.ContainsKey(0))
+            if (!_teams.TryGetValue(0, out List<NationalResultTable> existsTeams))
             {
-                teams[0].Add(team);
+                existsTeams = new List<NationalResultTable>();
+                _teams[0] = existsTeams;
             }
-            else
-            {
-                teams.Add(0, new List<NationalResultTable>() { team });
-            }
-        }
-        public void AddTeam(List<NationalResultTable> teamsList)
-        {
-            if (teams.ContainsKey(0))
-            {
-                teams[0] = teamsList;
-            }
-            else
-            {
-                teams.Add(0, teamsList);
-            }
+            existsTeams.Add(team);
         }
 
+        public void AddTeams(List<NationalResultTable> teamsList)
+        {
+            if (!_teams.TryGetValue(0, out List<NationalResultTable> existsTeams))
+            {
+                existsTeams = new List<NationalResultTable>();
+                _teams[0] = existsTeams;
+            }
+            existsTeams.AddRange(teamsList);
+        }
         public void UpdatePositions()
         {
-            positionHandler.Handle(teams);
+            positionHandler.Handle(_teams);
         }
     }
 }

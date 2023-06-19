@@ -5,13 +5,11 @@ using System.Linq;
 
 namespace BusinessLogicLayer.Services
 {
-    internal class HeadToHeadHandler : PositionHandler
+    internal class HeadToHeadHandler : PositionHandlerBase
     {
-        string _season;
         MatchRepository _matchRepository;
-        public HeadToHeadHandler(string season)
+        public HeadToHeadHandler(string season) : base(season)
         {
-            _season = season;
             _matchRepository = new MatchRepository();
         }
         public override void Handle(Dictionary<int, List<NationalResultTable>> teams, List<int> teamsWithSamePositionsKeys)

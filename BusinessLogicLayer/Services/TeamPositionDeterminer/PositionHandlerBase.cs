@@ -1,46 +1,45 @@
 ﻿using DatabaseLayer;
 using DatabaseLayer.Repositories;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace BusinessLogicLayer.Services
 {
-    internal abstract class PositionHandler
+    internal abstract class PositionHandlerBase
     {
-        protected PositionHandler nextHandler;
+        protected PositionHandlerBase nextHandler;
         NationalResTabRepository _nationalResTabRepository;
-        public PositionHandler()
+        protected string _season;
+        public PositionHandlerBase(string season)
         {
             _nationalResTabRepository = new NationalResTabRepository();
+            _season = season;
         }
 
-        public void SetNextHandler(PositionHandler handler)
+        public void SetNextHandler(PositionHandlerBase handler)
         {
             nextHandler = handler;
         }
 
-        public bool ArePositionsSet(Dictionary<int, List<NationalResultTable>> teamsByPosition)
+        public bool ArePositionsSet(Dictionary<int, List<NationalResultTable>> teams)
         {
-            return teamsByPosition[0].Count == 0;
+            return teams[0].Count == 0;
         }
+        public void SetTeams(Dictionary<int, List<NationalResultTable>> teams)
+        {
+            teams = teams;
+        }   
         public void DeleteFromDictionary(Dictionary<int, List<NationalResultTable>> teams, List<NationalResultTable> teamsResults)
         {
-            if (teams.ContainsKey(0))
+            if (teams.TryGetValue(0, out var results))
             {
-                for (int i = teams[0].Count - 1; i >= 0; i--)
-                {
-                    if (teamsResults.Contains(teams[0][i]))
-                    {
-                        teams[0].RemoveAt(i);
-                    }
-                }
+                results.RemoveAll(item => teamsResults.Contains(item));
             }
         }
-        public List<int> SamePositions(Dictionary<int, List<NationalResultTable>> teamsByPosition)
+        public List<int> SamePositions(Dictionary<int, List<NationalResultTable>> teams)
         {
             var keysList = new List<int>();
-            foreach (var team in teamsByPosition)
+            foreach (var team in teams)
             {
                 if (team.Value.Count > 1)
                 {
@@ -49,13 +48,13 @@ namespace BusinessLogicLayer.Services
             }
             return keysList;
         }
-        public abstract void Handle(Dictionary<int, List<NationalResultTable>> teamsByPosition, List<int> teamsWithSamePositionsKeys = null);
+        public abstract void Handle(Dictionary<int, List<NationalResultTable>> teams, List<int> teamsWithSamePositionsKeys = null);
         protected void saveData(Dictionary<int, List<NationalResultTable>> teams, string season)
         {
             for (int i = 1; i < teams.Count; i++)
             {
                 teams[i].ForEach(x => x.TotalPosition = i);
-                Console.WriteLine($"{teams[i].First().TotalPoints} points - {teams[i].First().TotalPosition} position");
+                System.Console.WriteLine($"{teams[i].First().TotalPoints} = {teams[i].First().TotalPosition}");
             }
             var allteams = new List<NationalResultTable>();
             foreach (var position in teams)
