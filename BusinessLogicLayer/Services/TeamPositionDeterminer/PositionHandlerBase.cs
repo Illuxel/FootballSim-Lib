@@ -1,14 +1,13 @@
 ﻿using DatabaseLayer;
 using DatabaseLayer.Repositories;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace BusinessLogicLayer.Services
 {
     internal abstract class PositionHandlerBase
     {
         protected PositionHandlerBase nextHandler;
-        NationalResTabRepository _nationalResTabRepository;
+        private NationalResTabRepository _nationalResTabRepository;
         protected string _season;
         public PositionHandlerBase(string season)
         {
@@ -25,10 +24,6 @@ namespace BusinessLogicLayer.Services
         {
             return teams[0].Count == 0;
         }
-        public void SetTeams(Dictionary<int, List<NationalResultTable>> teams)
-        {
-            teams = teams;
-        }   
         public void DeleteFromDictionary(Dictionary<int, List<NationalResultTable>> teams, List<NationalResultTable> teamsResults)
         {
             if (teams.TryGetValue(0, out var results))
@@ -54,7 +49,6 @@ namespace BusinessLogicLayer.Services
             for (int i = 1; i < teams.Count; i++)
             {
                 teams[i].ForEach(x => x.TotalPosition = i);
-                System.Console.WriteLine($"{teams[i].First().TotalPoints} = {teams[i].First().TotalPosition}");
             }
             var allteams = new List<NationalResultTable>();
             foreach (var position in teams)

@@ -37,12 +37,9 @@ namespace BusinessLogicLayer.Services
             {
                 nextHandler.Handle(teams, teamsWithSamePositionsKeys);
             }
-            else
+            else if (ArePositionsSet(teams) && teamsWithSamePositionsKeys.Count == 0)
             {
-                if (ArePositionsSet(teams) && teamsWithSamePositionsKeys.Count == 0)
-                {
-                    saveData(teams, _season);
-                }
+                saveData(teams, _season);
             }
         }
     }
