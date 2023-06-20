@@ -1,5 +1,4 @@
-﻿using DatabaseLayer;
-using System;
+﻿using System;
 
 namespace BusinessLogicLayer.Services
 {
@@ -7,12 +6,23 @@ namespace BusinessLogicLayer.Services
     {
         public BallStrikeGoalEvent()
         {
-
         }
+
+        //TODO: probability need to save external
         public override void ProcessEvent()
         {
-            ScoredPlayer = new Guid(HomeTeam.GetPlayer(PlayerFieldPartPosition.Attack).PersonID);
-
+            ScoredPlayer = new Guid(HomeTeam.GetPlayer(42,38,19,0).PersonID);
+            var rand = new Random();
+            var assistProbability = rand.NextDouble();
+            if (assistProbability > 0.4)
+            {
+                AssistedPlayer = new Guid(HomeTeam.GetPlayer(32, 41, 26, 0).PersonID);
+                if (ScoredPlayer == AssistedPlayer)
+                {
+                    AssistedPlayer = Guid.Empty;
+                }
+            }
+            
             base.ProcessEvent();
         }
     }

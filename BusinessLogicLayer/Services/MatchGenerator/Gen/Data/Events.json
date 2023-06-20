@@ -2,7 +2,7 @@
     {
       "EventCode": "BallControl",
       "EventDescription": "",
-      "Duration": 1,
+      "Duration": 3,
       "BaseEventLocation": "Center",
       "IsBallIntercepted": false,
       "NextEvents": [
@@ -117,7 +117,7 @@
     {
       "EventCode": "BallStrike",
       "EventDescription": "",
-      "Duration": 1,
+      "Duration": 2,
       "BaseEventLocation": "GuestPart",
       "IsBallIntercepted": false,
       "NextEvents": [
@@ -133,7 +133,7 @@
     {
       "EventCode": "BallStrikeMissed",
       "EventDescription": "",
-      "Duration": 0,
+      "Duration": 1,
       "BaseEventLocation": "GuestPart",
       "IsBallIntercepted": true,
       "NextEvents": [
@@ -147,7 +147,7 @@
     {
       "EventCode": "BallStrikeGoal",
       "EventDescription": "",
-      "Duration": 0,
+      "Duration": 1,
       "BaseEventLocation": "GuestPart",
       "IsBallIntercepted": true,
       "NextEvents": [
@@ -161,7 +161,7 @@
     {
       "EventCode": "BallStrikeSafe",
       "EventDescription": "",
-      "Duration": 0,
+      "Duration": 1,
       "BaseEventLocation": "GuestPart",
       "IsBallIntercepted": true,
       "NextEvents": [
@@ -289,21 +289,21 @@
           "HomePart": [
             { "YellowCard": 10 },
             { "RedCard": 6 },
-            { "PlayerInjury": 5 }
+            { "PlayerInjury": 2 }
           ]
         },
         {
           "Center": [
             { "YellowCard": 7 },
             { "RedCard": 3 },
-            { "PlayerInjury": 5 }
+            { "PlayerInjury": 3 }
           ]
         },
         {
           "GuestPart": [
             { "YellowCard": 7 },
             { "RedCard": 2 },
-            { "PlayerInjury": 5 }
+            { "PlayerInjury": 2 }
           ]
         }
       ]

@@ -28,6 +28,7 @@ namespace BusinessLogicLayer.Services
         void ChangeTacticScheme(TacticSchema newTacticSchema);
 
         Player GetPlayer(PlayerFieldPartPosition playerPostion);
+        Player GetPlayer(double attackProb, double midProb, double defProb, double keeperProb);
         double AvgSpeed(PlayerFieldPartPosition playerPostion = PlayerFieldPartPosition.All);
         double AvgStrike(PlayerFieldPartPosition playerPostion = PlayerFieldPartPosition.All);
         double AvgDefense(PlayerFieldPartPosition playerPostion = PlayerFieldPartPosition.All);
