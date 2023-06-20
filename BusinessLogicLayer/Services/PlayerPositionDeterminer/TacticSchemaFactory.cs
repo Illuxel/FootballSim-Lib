@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BusinessLogicLayer.Services
 {
-    internal class TacticSchemaFactory
+    public class TacticSchemaFactory
     {
         //TODO: add another scheme defenition
         public Dictionary<int, string> GetPlayersPosition(TacticSchema tacticSchema)

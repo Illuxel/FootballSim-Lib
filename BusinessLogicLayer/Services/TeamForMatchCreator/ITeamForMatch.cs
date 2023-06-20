@@ -1,6 +1,5 @@
 ﻿using DatabaseLayer;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace BusinessLogicLayer.Services
 {
@@ -17,17 +16,19 @@ namespace BusinessLogicLayer.Services
         List<Player> AllPlayers { get; set; }
         Dictionary<int, TacticPlayerPosition> MainPlayers { get; set; }
 
+        public List<PlayerInMatch> PlayersInMatch { get; set; }
+
         List<Player> SparePlayers { get; set; }
 
         //Created list for spared players
         List<Player> SparedPlayers { get; set; }
 
         //Inserted method into interface contract
-        void SubstitutePlayer(int indexMainPlayer, Player sparePlayer);
-
+        void SubstitutePlayer(int indexMainPlayer, Player sparePlayer, int currentMinute);
         void ChangeTacticScheme(TacticSchema newTacticSchema);
 
         Player GetPlayer(PlayerFieldPartPosition playerPostion);
+        Player GetPlayer(double attackProb, double midProb, double defProb, double keeperProb);
         double AvgSpeed(PlayerFieldPartPosition playerPostion = PlayerFieldPartPosition.All);
         double AvgStrike(PlayerFieldPartPosition playerPostion = PlayerFieldPartPosition.All);
         double AvgDefense(PlayerFieldPartPosition playerPostion = PlayerFieldPartPosition.All);

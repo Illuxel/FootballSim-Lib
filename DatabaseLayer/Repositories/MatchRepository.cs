@@ -21,6 +21,18 @@ namespace DatabaseLayer.Repositories
                 return result;
             }
         }
+        public List<Match> Retrieve(string teamId,string season)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                var result = connection.Query<Match>(
+                @"SELECT * FROM Match 
+                WHERE (HomeTeamId = @teamId or GuestTeamId = @teamId) and Season = @season",
+                new { teamId, season }).AsList();
+                return result;
+            }
+        }
         public List<Match> Retrieve(string teamId)
         {
             List<Match> result = new List<Match>();
