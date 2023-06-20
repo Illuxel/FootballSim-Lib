@@ -5,6 +5,7 @@ using System.Data.SQLite;
 using Dapper;
 using System.Linq;
 using System.Data;
+using DatabaseLayer.Enums;
 
 namespace DatabaseLayer.Repositories
 {
@@ -104,11 +105,10 @@ namespace DatabaseLayer.Repositories
                     try
                     {
                         var rowsAffected = connection.Execute(
-                        @"INSERT INTO Match (Id, HomeTeamId, GuestTeamId, MatchDate, HomeTeamGoals, 
-                            GuestTeamGoals, TourNumber, LeagueId)
-                            VALUES (@Id, @HomeTeamId, @GuestTeamId, @MatchDate, @HomeTeamGoals, 
-                            @GuestTeamGoals, @TourNumber, @LeagueId)",
-                        matches, transaction);
+                            @"INSERT INTO Match (Id, HomeTeamId, GuestTeamId, MatchDate, HomeTeamGoals, 
+                GuestTeamGoals, TourNumber, LeagueId, IsPlayed)
+                VALUES (@Id, @HomeTeamId, @GuestTeamId, @MatchDate, @HomeTeamGoals, 
+                @GuestTeamGoals, @TourNumber, @LeagueId, @IsPlayed)", matches, transaction);
                         transaction.Commit();
                     }
                     catch (Exception ex)
@@ -133,10 +133,9 @@ namespace DatabaseLayer.Repositories
                 {
                     var rowsAffected = connection.Execute(
                         @"INSERT INTO Match (Id, HomeTeamId, GuestTeamId, MatchDate, HomeTeamGoals, 
-                           GuestTeamGoals, TourNumber, LeagueId)
+                           GuestTeamGoals, TourNumber, LeagueId, IsPlayed)
                          VALUES (@Id, @HomeTeamId, @GuestTeamId, @MatchDate, @HomeTeamGoals, 
-                           @GuestTeamGoals, @TourNumber, @LeagueId)",
-                        match);
+                           @GuestTeamGoals, @TourNumber, @LeagueId, @IsPlayed)",match);
                     result = rowsAffected == 1;
                 }
                 return result;
@@ -154,16 +153,28 @@ namespace DatabaseLayer.Repositories
                 if (record != null)
                 {
                     var rowsAffected = connection.Execute(
-                        @"UPDATE Match
-                            SET HomeTeamId = @HomeTeamId,
-                                GuestTeamId = @GuestTeamId,
-                                MatchDate = @MatchDate,
-                                HomeTeamGoals = @HomeTeamGoals,
-                                GuestTeamGoals = @GuestTeamGoals,
-                                TourNumber = @TourNumber,
-                                LeagueId = @LeagueId
-                            WHERE Id = @Id;",
-                        match);
+                     @"UPDATE Match
+                      SET HomeTeamId = @HomeTeamId,
+                          GuestTeamId = @GuestTeamId,
+                          MatchDate = @MatchDate,
+                          HomeTeamGoals = @HomeTeamGoals,
+                          GuestTeamGoals = @GuestTeamGoals,
+                          TourNumber = @TourNumber,
+                          LeagueId = @LeagueId,
+                          IsPlayed = @IsPlayed
+                      WHERE Id = @Id;",
+                     new
+                     {
+                         match.Id,
+                         match.HomeTeamId,
+                         match.GuestTeamId,
+                         match.MatchDate,
+                         match.HomeTeamGoals,
+                         match.GuestTeamGoals,
+                         match.TourNumber,
+                         match.LeagueId,
+                         IsPlayed = (int)MatchState.IsPlayed
+                     });
                     result = rowsAffected == 1;
                 }
                 return result;
@@ -179,17 +190,31 @@ namespace DatabaseLayer.Repositories
                 {
                     try
                     {
-                        rowsAffected += connection.Execute(
-                        @"UPDATE Match
-                            SET HomeTeamId = @HomeTeamId,
-                                GuestTeamId = @GuestTeamId,
-                                MatchDate = @MatchDate,
-                                HomeTeamGoals = @HomeTeamGoals,
-                                GuestTeamGoals = @GuestTeamGoals,
-                                TourNumber = @TourNumber,
-                                LeagueId = @LeagueId
-                            WHERE Id = @Id;",
-                        matches,transaction);
+                        rowsAffected = connection.Execute(
+                    @"UPDATE Match SET 
+                          HomeTeamId = @HomeTeamId,
+                          GuestTeamId = @GuestTeamId,
+                          MatchDate = @MatchDate,
+                          HomeTeamGoals = @HomeTeamGoals,
+                          GuestTeamGoals = @GuestTeamGoals,
+                          TourNumber = @TourNumber,
+                          LeagueId = @LeagueId,
+                          IsPlayed = @IsPlayed
+                      WHERE Id = @Id;",
+                    matches.Select(match => new
+                    {
+                        match.Id,
+                        match.HomeTeamId,
+                        match.GuestTeamId,
+                        match.MatchDate,
+                        match.HomeTeamGoals,
+                        match.GuestTeamGoals,
+                        match.TourNumber,
+                        match.LeagueId,
+                        IsPlayed = (int)MatchState.IsPlayed
+                    }),
+                    transaction);
+
                         transaction.Commit();
                     }
                     catch (Exception ex)
