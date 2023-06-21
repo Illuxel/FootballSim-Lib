@@ -47,7 +47,7 @@ namespace DatabaseLayer.Repositories
             return result;
         }
 
-        public List<Match> Retrieve(string firstTeamId, string secondTeamId)
+        public List<Match> RetrieveByTeamsInMatch(string firstTeamId, string secondTeamId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
