@@ -47,6 +47,19 @@ namespace DatabaseLayer.Repositories
             return result;
         }
 
+        public List<Match> Retrieve(string firstTeamId, string secondTeamId)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                var result = connection.Query<Match>(
+                    "SELECT * FROM Match WHERE (HomeTeamId = @firstTeamId AND GuestTeamId = @secondTeamId) OR (HomeTeamId = @secondTeamId AND GuestTeamId = @firstTeamId)",
+                    new { firstTeamId, secondTeamId }).ToList();
+                return result;
+            }
+        }
+
+
         public List<Match> Retrieve(int leagueId, int tourNumber = 0)
         {
             List<Match> result = new List<Match>();
@@ -85,7 +98,7 @@ namespace DatabaseLayer.Repositories
                 connection.Open();
                 var result = connection.Query<Match>(
                     @"SELECT * FROM Match
-                    WHERE MatchDate = @gameDate", new { @gameDate = gameDate.ToString() }).AsList();
+                    WHERE MatchDate = @gameDate", new { @gameDate = gameDate.ToString("yyyy-MM-dd")}).AsList();
                 if(result.Count == 0)
                 {
                     return new Dictionary<int, List<Match>>();

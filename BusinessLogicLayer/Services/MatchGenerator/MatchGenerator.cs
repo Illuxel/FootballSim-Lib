@@ -1,6 +1,7 @@
 ﻿using DatabaseLayer;
 using DatabaseLayer.Repositories;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BusinessLogicLayer.Services
@@ -51,6 +52,9 @@ namespace BusinessLogicLayer.Services
 
         public delegate void GameEventHandler(IMatchGameEvent gameEvent);
         public event GameEventHandler? OnMatchEventHappend;
+
+        public delegate void MatchFinishedHandler(MatchResult result);
+        public event MatchFinishedHandler? OnMatchFinished;
 
         public MatchGenerator(ITeamForMatch homeTeam, ITeamForMatch guestTeam)
         {
@@ -108,11 +112,8 @@ namespace BusinessLogicLayer.Services
 
                 while (true)
                 {
-                    if (currentMinute >= 90)
-                    { 
-                        _isMatcFinished = true;
-                        break;
-                    }
+                    var nextEvent = MatchEventFactory.CreateNextEvent(currentEvent);
+                    currentEvent = nextEvent as MatchEventProcess;
 
                     if (_isStrategyChanged)
                     {
@@ -120,23 +121,10 @@ namespace BusinessLogicLayer.Services
                         break;
                     }
 
-                    if (currentMinute >= 45 && firstTime)
-                    {
-                        firstTime = false;
-
-                        currentEvent.HomeTeam = _matchData.GuestTeam;
-                        currentEvent.GuestTeam = _matchData.HomeTeam;
-
-                        OnMatchPaused?.Invoke();
-                    }
-
-                    currentMinute += currentEvent.Duration;
                     currentEvent.MatchMinute = currentMinute;
 
                     currentEvent.ProcessEvent();
 
-                    _matchData.MatchHistory.Add(currentEvent);
-                    saveEvent(currentEvent);
                     if (currentEvent is BallStrikeGoalEvent)
                     {
                         Goal goal = new Goal()
@@ -147,12 +135,43 @@ namespace BusinessLogicLayer.Services
                             TeamId = currentEvent.HomeTeam.Id.ToString(),
                             MatchMinute = currentMinute
                         };
+                        if(currentEvent.AssistedPlayer.HasValue)
+                        {
+                            goal.AssistPlayerId = currentEvent.AssistedPlayer.Value.ToString();
+                        }
+                        //TODO: remove after find better solution
+                        //check goal from free kick or penalty
+                        var goalsWithoutAssistEvents = new List<string>() { "Penalty", "FreeKick" };
+                        if(_matchData.MatchHistory.
+                            Where(item => item.MatchMinute == currentMinute - 3 
+                            && goalsWithoutAssistEvents.Contains(item.EventCode)).Count() > 0)
+                        {
+                            goal.AssistPlayerId = string.Empty;
+                            currentEvent.AssistedPlayer = Guid.Empty;
+                        }
 
                         _matchData.Goals.Add(goal);
                         OnMatchGoal?.Invoke(goal);
                     }
 
                     OnMatchEventHappend?.Invoke(currentEvent);
+
+                    _matchData.MatchHistory.Add(currentEvent);
+                    saveEvent(currentEvent);
+                    currentMinute += currentEvent.Duration;
+                    if(currentEvent.InjuredPlayer.HasValue || currentEvent.RedCardPlayer.HasValue)
+                    {
+                        OnMatchPaused?.Invoke();
+                    }
+                    if (currentMinute >= 45 && firstTime)
+                    {
+                        firstTime = false;
+
+                        currentEvent.HomeTeam = _matchData.GuestTeam;
+                        currentEvent.GuestTeam = _matchData.HomeTeam;
+
+                        OnMatchPaused?.Invoke();
+                    }
 
                     if (currentEvent.IsBallIntercepted)
                     {
@@ -162,9 +181,12 @@ namespace BusinessLogicLayer.Services
 
                         OnMatchTeamChanged?.Invoke();
                     }
-
-                    var nextEvent = MatchEventFactory.CreateNextEvent(currentEvent);
-                    currentEvent = nextEvent as MatchEventProcess;
+                    if (currentMinute >= 90 && !(currentEvent is BallStrikeEvent))
+                    {
+                        _isMatcFinished = true;
+                        OnMatchFinished?.Invoke(_matchData);
+                        break;
+                    }
                 }
             }
             foreach (var player in MatchData.HomeTeam.PlayersInMatch)
@@ -186,38 +208,34 @@ namespace BusinessLogicLayer.Services
         {
             if (matchGameEvent != null)
             {
-                if(matchGameEvent.YellowCardPlayer != null)
+                if (matchGameEvent.AssistedPlayer != null)
                 {
-                    if (matchGameEvent.AssistedPlayer != null)
+                    _matchData.AssistedPlayers.Add(matchGameEvent.AssistedPlayer.Value);
+                }
+                if (matchGameEvent.InjuredPlayer != null)
+                {
+                    _matchData.InjuredPlayers.Add(matchGameEvent.InjuredPlayer.Value);
+                }
+                if (matchGameEvent.YellowCardPlayer != null)
+                {
+                    _matchData.YellowCardPlayers.Add(matchGameEvent.YellowCardPlayer.Value);
+                    int yellowCardsByCurrentPlayer = _matchData.YellowCardPlayers.
+                        Where(item => item == matchGameEvent.YellowCardPlayer.Value).Count();
+                    if (yellowCardsByCurrentPlayer == 2)
                     {
-                        _matchData.AssistedPlayers.Add(matchGameEvent.AssistedPlayer.Value);
-                    }
-                    if (matchGameEvent.InjuredPlayer != null)
-                    {
-                        _matchData.InjuredPlayers.Add(matchGameEvent.InjuredPlayer.Value);
-                    }
-                    if (matchGameEvent.YellowCardPlayer != null)
-                    {
-                        _matchData.YellowCardPlayers.Add(matchGameEvent.YellowCardPlayer.Value);
-                        int yellowCardsByCurrentPlayer = _matchData.YellowCardPlayers.
-                            Where(item => item == matchGameEvent.YellowCardPlayer.Value).Count();
-                        if (yellowCardsByCurrentPlayer == 2)
-                        {
-                            _matchData.RedCardPlayers.Add(matchGameEvent.YellowCardPlayer.Value);
-                            removePlayer(matchGameEvent.YellowCardPlayer.Value);
-                        }
-
-                    }
-                    if (matchGameEvent.RedCardPlayer != null)
-                    {
-                        _matchData.RedCardPlayers.Add(matchGameEvent.RedCardPlayer.Value);
-                        removePlayer(matchGameEvent.RedCardPlayer.Value);
-                    }
-                    if (matchGameEvent.ScoredPlayer != null)
-                    {
-                        _matchData.ScoredPlayers.Add(matchGameEvent.ScoredPlayer.Value);
+                        matchGameEvent.RedCardPlayer = matchGameEvent.YellowCardPlayer.Value;
                     }
                 }
+                if (matchGameEvent.RedCardPlayer != null)
+                {
+                    _matchData.RedCardPlayers.Add(matchGameEvent.RedCardPlayer.Value);
+                    removePlayer(matchGameEvent.RedCardPlayer.Value);
+                }
+                if (matchGameEvent.ScoredPlayer != null)
+                {
+                    _matchData.ScoredPlayers.Add(matchGameEvent.ScoredPlayer.Value);
+                }
+                
             }
         }
 

@@ -3,6 +3,7 @@ using DatabaseLayer.Repositories;
 using DatabaseLayer;
 using System;
 using System.Linq;
+using System.Diagnostics;
 
 namespace StartupProject
 {
@@ -21,6 +22,24 @@ namespace StartupProject
         public static void OnEventHappend(IMatchGameEvent gameEvent)
         {
             Console.WriteLine($"{gameEvent.MatchMinute} name: {gameEvent.EventCode} team: {gameEvent.HomeTeam.Name}");
+            if (gameEvent.InjuredPlayer != null)
+            {
+                Console.BackgroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine($"{gameEvent.MatchMinute} Injure from {gameEvent.HomeTeam.Name} player: {gameEvent.InjuredPlayer}");
+                Console.ResetColor();
+            }
+            if (gameEvent.YellowCardPlayer != null)
+            {
+                Console.BackgroundColor = ConsoleColor.Magenta;
+                Console.WriteLine($"{gameEvent.MatchMinute} Yellow card for {gameEvent.HomeTeam.Name} player: {gameEvent.YellowCardPlayer}");
+                Console.ResetColor();
+            }
+            if (gameEvent.RedCardPlayer != null)
+            {
+                Console.BackgroundColor = ConsoleColor.Red;
+                Console.WriteLine($"{gameEvent.MatchMinute} Red card for {gameEvent.HomeTeam.Name} player: {gameEvent.RedCardPlayer}");
+                Console.ResetColor();
+            }
         }
         public static void OnMatchPaused()
         {
