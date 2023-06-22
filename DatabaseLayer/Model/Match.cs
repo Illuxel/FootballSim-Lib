@@ -19,11 +19,6 @@ namespace DatabaseLayer
         public int TourNumber { get; set; }
         public int LeagueId { get; set; }
         public League League { get; internal set; }
-        public int IsPlayed { get; internal set; }
-
-        public Match()
-        {
-            IsPlayed = (int)MatchState.NotPlayed;
-        }
+        public bool IsPlayed { get; set; }
     }
 }

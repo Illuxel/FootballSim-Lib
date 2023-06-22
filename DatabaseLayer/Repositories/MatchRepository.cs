@@ -176,18 +176,7 @@ namespace DatabaseLayer.Repositories
                           LeagueId = @LeagueId,
                           IsPlayed = @IsPlayed
                       WHERE Id = @Id;",
-                     new
-                     {
-                         match.Id,
-                         match.HomeTeamId,
-                         match.GuestTeamId,
-                         match.MatchDate,
-                         match.HomeTeamGoals,
-                         match.GuestTeamGoals,
-                         match.TourNumber,
-                         match.LeagueId,
-                         IsPlayed = (int)MatchState.IsPlayed
-                     });
+                     match);
                     result = rowsAffected == 1;
                 }
                 return result;
@@ -213,20 +202,8 @@ namespace DatabaseLayer.Repositories
                           TourNumber = @TourNumber,
                           LeagueId = @LeagueId,
                           IsPlayed = @IsPlayed
-                      WHERE Id = @Id;",
-                    matches.Select(match => new
-                    {
-                        match.Id,
-                        match.HomeTeamId,
-                        match.GuestTeamId,
-                        match.MatchDate,
-                        match.HomeTeamGoals,
-                        match.GuestTeamGoals,
-                        match.TourNumber,
-                        match.LeagueId,
-                        IsPlayed = (int)MatchState.IsPlayed
-                    }),
-                    transaction);
+                      WHERE Id = @Id",
+                    matches,transaction) ;
 
                         transaction.Commit();
                     }
