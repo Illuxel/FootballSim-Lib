@@ -50,7 +50,7 @@ namespace BusinessLogicLayer.Services
             {
                 return 0;
             }
-            return _matchRepository.RetrieveByTeamsInMatch(teamId, season).Count;
+            return _matchRepository.Retrieve(teamId, season).Count;
         }
         private int getPlayerInMatchesCount(string playerId)
         {
