@@ -32,6 +32,7 @@ namespace BusinessLogicLayer.Services
                     {
                         if (team1 != team2)
                         {
+
                             headByHeadMatches = _matchRepository.Retrieve(team1.TeamID, team2.TeamID,startDate,endDate);
 
                             foreach (var match in headByHeadMatches)

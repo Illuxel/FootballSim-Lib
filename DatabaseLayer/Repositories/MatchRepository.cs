@@ -49,11 +49,13 @@ namespace DatabaseLayer.Repositories
             return result;
         }
 
+
         public List<Match> Retrieve(string firstTeamId, string secondTeamId, DateTime seasonStartDate, DateTime seasonEndDate)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
+
                 var matches = connection.Query<Match>(
                     @"SELECT * FROM Match 
                     WHERE ((HomeTeamId = @firstTeamId AND GuestTeamId = @secondTeamId) 

@@ -15,9 +15,9 @@ namespace DatabaseLayer.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 var query = @"SELECT Person.*, Role.*, Country.*
-                    FROM Person 
-                    LEFT JOIN Role ON Person.CurrentRoleID = Role.ID
-                    LEFT JOIN Country on Country.ID = Person.CountryID";
+                      FROM Person
+                      LEFT JOIN Role ON Person.CurrentRoleID = Role.ID
+                      LEFT JOIN Country ON Country.ID = Person.CountryID";
                 var leagues = connection.Query<Person, Role, Country, Person>(query,
                     (person, role, country) =>
                     {
@@ -25,8 +25,7 @@ namespace DatabaseLayer.Repositories
                         person.Country = country;
                         return person;
                     },
-                    splitOn: "TeamID, PersonID");
-
+                    splitOn: "ID, ID");
                 return leagues.AsList();
             }
         }
@@ -35,10 +34,10 @@ namespace DatabaseLayer.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 var query = @"SELECT Person.*, Role.*, Country.*
-                    FROM Person 
-                    LEFT JOIN Role t ON Person.CurrentRoleID = Role.ID
-                    LEFT JOIN Country on Country.ID = Person.CountryID
-                    WHERE Person.ID = @personId";
+                      FROM Person 
+                      LEFT JOIN Role ON Person.CurrentRoleID = Role.ID
+                      LEFT JOIN Country ON Country.ID = Person.CountryID
+                      WHERE Person.ID = @personId";
                 var leagues = connection.Query<Person, Role, Country, Person>(query,
                     (person, role, country) =>
                     {
@@ -47,11 +46,13 @@ namespace DatabaseLayer.Repositories
                         return person;
                     },
                     param: new { personId },
-                    splitOn: "TeamID, PersonID");
+                    splitOn: "ID, ID");
 
                 return leagues.FirstOrDefault();
             }
         }
+
+
 
         public bool Insert(Person person)
         {
