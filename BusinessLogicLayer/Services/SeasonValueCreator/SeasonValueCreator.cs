@@ -1,9 +1,16 @@
-﻿using System;
+﻿using DatabaseLayer.Repositories;
+using System;
+using System.Linq;
 
 namespace BusinessLogicLayer.Services
 {
     public class SeasonValueCreator
     {
+        TeamRepository _teamRepository;
+        public SeasonValueCreator()
+        {
+            _teamRepository = new TeamRepository();
+        }
         public int GetStartYear(string season)
         {
             if (string.IsNullOrEmpty(season) || !season.Contains('/'))
@@ -59,6 +66,24 @@ namespace BusinessLogicLayer.Services
         public DateTime GetSeasonStartDate(string season)
         {
             return GetSeasonStartDate(GetStartYear(season));
+        }
+        public DateTime GetSeasonEndDate(string season)
+        {
+            return getSeasonEndDate(GetStartYear(season));
+        }
+        private DateTime getSeasonEndDate(int year)
+        {
+            DateTime firstTourDate = GetSeasonStartDate(year);
+            int maxNumberOfTours = calculateMaxNumberOfTours();
+            return firstTourDate.AddDays(maxNumberOfTours * 7);
+        }
+        
+        private int calculateMaxNumberOfTours()
+        {
+            var teams = _teamRepository.Retrieve();
+            int maxNumberOfTeams = teams.GroupBy(x => x.LeagueID).Max(g => g.Count());
+            int maxNumberOfTours = (maxNumberOfTeams - 1) * 2;
+            return maxNumberOfTours;
         }
     }
 }
