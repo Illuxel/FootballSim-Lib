@@ -5,7 +5,6 @@ using System.Data.SQLite;
 using Dapper;
 using System.Linq;
 using System.Data;
-using DatabaseLayer.Enums;
 
 namespace DatabaseLayer.Repositories
 {
@@ -22,15 +21,18 @@ namespace DatabaseLayer.Repositories
                 return result;
             }
         }
-        public List<Match> Retrieve(string teamId,string season)
+        public List<Match> Retrieve(string teamId, DateTime seasonStartDate, DateTime seasonEndDate)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
+
                 var result = connection.Query<Match>(
-                @"SELECT * FROM Match 
-                WHERE (HomeTeamId = @teamId or GuestTeamId = @teamId) and Season = @season",
-                new { teamId, season }).AsList();
+                    @"SELECT * FROM Match
+                    WHERE date(MatchDate) BETWEEN @seasonStartDate AND @seasonEndDate
+                    AND HomeTeamId = @teamId OR GuestTeamId = @teamId",
+                    new { seasonStartDate = seasonStartDate.ToString("yyyy-MM-dd"), seasonEndDate = seasonEndDate.ToString("yyyy-MM-dd"), teamId }).AsList();
+
                 return result;
             }
         }
@@ -47,19 +49,22 @@ namespace DatabaseLayer.Repositories
             return result;
         }
 
-        public List<Match> Retrieve(string firstTeamId, string secondTeamId,string season)
+        public List<Match> Retrieve(string firstTeamId, string secondTeamId, DateTime seasonStartDate, DateTime seasonEndDate)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
-                var result = connection.Query<Match>(
+                var matches = connection.Query<Match>(
                     @"SELECT * FROM Match 
-                    WHERE (HomeTeamId = @firstTeamId AND GuestTeamId = @secondTeamId) 
-                    OR (HomeTeamId = @secondTeamId AND GuestTeamId = @firstTeamId) AND Season = @season",
-                    new { firstTeamId, secondTeamId, season}).ToList();
-                return result;
+                    WHERE ((HomeTeamId = @firstTeamId AND GuestTeamId = @secondTeamId) 
+                    OR (HomeTeamId = @secondTeamId AND GuestTeamId = @firstTeamId))
+                    AND date(MatchDate) BETWEEN @seasonStartDate AND @seasonEndDate",
+                    new { firstTeamId, secondTeamId, seasonStartDate = seasonStartDate.ToString("yyyy-MM-dd"), seasonEndDate = seasonEndDate.ToString("yyyy-MM-dd") }).ToList();
+
+                return matches;
             }
         }
+
 
 
         public List<Match> Retrieve(int leagueId, int tourNumber = 0)
@@ -109,7 +114,6 @@ namespace DatabaseLayer.Repositories
                     ToDictionary(group => group.Key, group => group.ToList());
             }
         }
-
         public void Insert(List<Match> matches)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))

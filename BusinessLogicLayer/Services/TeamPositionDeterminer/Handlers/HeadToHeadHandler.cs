@@ -8,12 +8,16 @@ namespace BusinessLogicLayer.Services
     internal class HeadToHeadHandler : PositionHandlerBase
     {
         MatchRepository _matchRepository;
+        SeasonValueCreator _seasonValueCreator;
         public HeadToHeadHandler(string season) : base(season)
         {
             _matchRepository = new MatchRepository();
+            _seasonValueCreator = new SeasonValueCreator(); 
         }
         public override void Handle(Dictionary<int, List<NationalResultTable>> teams, List<int> teamsWithSamePositionsKeys)
         {
+            var startDate = _seasonValueCreator.GetSeasonStartDate(_season);
+            var endDate = _seasonValueCreator.GetSeasonEndDate(_season);
             foreach (var position in teamsWithSamePositionsKeys)
             {
                 var teamsDict = new Dictionary<int, NationalResultTable>();
@@ -28,7 +32,7 @@ namespace BusinessLogicLayer.Services
                     {
                         if (team1 != team2)
                         {
-                            headByHeadMatches = _matchRepository.Retrieve(team1.TeamID, team2.TeamID,_season);
+                            headByHeadMatches = _matchRepository.Retrieve(team1.TeamID, team2.TeamID,startDate,endDate);
 
                             foreach (var match in headByHeadMatches)
                             {
