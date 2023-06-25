@@ -46,14 +46,16 @@ namespace DatabaseLayer.Repositories
             return result;
         }
 
-        public List<Match> RetrieveByTeamsInMatch(string firstTeamId, string secondTeamId)
+        public List<Match> Retrieve(string firstTeamId, string secondTeamId, string season)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
                 var result = connection.Query<Match>(
-                    "SELECT * FROM Match WHERE (HomeTeamId = @firstTeamId AND GuestTeamId = @secondTeamId) OR (HomeTeamId = @secondTeamId AND GuestTeamId = @firstTeamId)",
-                    new { firstTeamId, secondTeamId }).ToList();
+                    @"SELECT * FROM Match 
+                    WHERE (HomeTeamId = @firstTeamId AND GuestTeamId = @secondTeamId) 
+                    OR (HomeTeamId = @secondTeamId AND GuestTeamId = @firstTeamId) AND Season = @season",
+                    new { firstTeamId, secondTeamId, season }).ToList();
                 return result;
             }
         }
