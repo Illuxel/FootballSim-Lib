@@ -1,4 +1,6 @@
-﻿namespace DatabaseLayer
+﻿using DatabaseLayer.Enums;
+
+namespace DatabaseLayer
 {
     public class Match
     {
@@ -17,5 +19,6 @@
         public int TourNumber { get; set; }
         public int LeagueId { get; set; }
         public League League { get; internal set; }
+        public bool IsPlayed { get; set; }
     }
 }

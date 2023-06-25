@@ -79,11 +79,11 @@ namespace BusinessLogicLayer.Scenario
 
                     match.HomeTeamGoals = result.HomeTeamGoals;
                     match.GuestTeamGoals = result.GuestTeamGoals;
-
+                    match.IsPlayed = true;
                     allMatches.Add(match);
                 }
             }
-
+            
             _matchRepository.Update(allMatches);
             defineTeamsStats(allMatches);
             _goalRepository.Insert(goalList);

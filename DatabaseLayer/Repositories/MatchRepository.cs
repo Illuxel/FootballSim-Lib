@@ -21,15 +21,18 @@ namespace DatabaseLayer.Repositories
                 return result;
             }
         }
-        public List<Match> Retrieve(string teamId,string season)
+        public List<Match> Retrieve(string teamId, DateTime seasonStartDate, DateTime seasonEndDate)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
+
                 var result = connection.Query<Match>(
-                @"SELECT * FROM Match 
-                WHERE (HomeTeamId = @teamId or GuestTeamId = @teamId) and Season = @season",
-                new { teamId, season }).AsList();
+                    @"SELECT * FROM Match
+                    WHERE date(MatchDate) BETWEEN @seasonStartDate AND @seasonEndDate
+                    AND HomeTeamId = @teamId OR GuestTeamId = @teamId",
+                    new { seasonStartDate = seasonStartDate.ToString("yyyy-MM-dd"), seasonEndDate = seasonEndDate.ToString("yyyy-MM-dd"), teamId }).AsList();
+
                 return result;
             }
         }
@@ -46,19 +49,24 @@ namespace DatabaseLayer.Repositories
             return result;
         }
 
-        public List<Match> Retrieve(string firstTeamId, string secondTeamId, string season)
+
+        public List<Match> Retrieve(string firstTeamId, string secondTeamId, DateTime seasonStartDate, DateTime seasonEndDate)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
-                var result = connection.Query<Match>(
+
+                var matches = connection.Query<Match>(
                     @"SELECT * FROM Match 
-                    WHERE (HomeTeamId = @firstTeamId AND GuestTeamId = @secondTeamId) 
-                    OR (HomeTeamId = @secondTeamId AND GuestTeamId = @firstTeamId) AND Season = @season",
-                    new { firstTeamId, secondTeamId, season }).ToList();
-                return result;
+                    WHERE ((HomeTeamId = @firstTeamId AND GuestTeamId = @secondTeamId) 
+                    OR (HomeTeamId = @secondTeamId AND GuestTeamId = @firstTeamId))
+                    AND date(MatchDate) BETWEEN @seasonStartDate AND @seasonEndDate",
+                    new { firstTeamId, secondTeamId, seasonStartDate = seasonStartDate.ToString("yyyy-MM-dd"), seasonEndDate = seasonEndDate.ToString("yyyy-MM-dd") }).ToList();
+
+                return matches;
             }
         }
+
 
 
         public List<Match> Retrieve(int leagueId, int tourNumber = 0)
@@ -108,7 +116,6 @@ namespace DatabaseLayer.Repositories
                     ToDictionary(group => group.Key, group => group.ToList());
             }
         }
-
         public void Insert(List<Match> matches)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
@@ -119,11 +126,10 @@ namespace DatabaseLayer.Repositories
                     try
                     {
                         var rowsAffected = connection.Execute(
-                        @"INSERT INTO Match (Id, HomeTeamId, GuestTeamId, MatchDate, HomeTeamGoals, 
-                            GuestTeamGoals, TourNumber, LeagueId)
-                            VALUES (@Id, @HomeTeamId, @GuestTeamId, @MatchDate, @HomeTeamGoals, 
-                            @GuestTeamGoals, @TourNumber, @LeagueId)",
-                        matches, transaction);
+                            @"INSERT INTO Match (Id, HomeTeamId, GuestTeamId, MatchDate, HomeTeamGoals, 
+                GuestTeamGoals, TourNumber, LeagueId, IsPlayed)
+                VALUES (@Id, @HomeTeamId, @GuestTeamId, @MatchDate, @HomeTeamGoals, 
+                @GuestTeamGoals, @TourNumber, @LeagueId, @IsPlayed)", matches, transaction);
                         transaction.Commit();
                     }
                     catch (Exception ex)
@@ -148,10 +154,9 @@ namespace DatabaseLayer.Repositories
                 {
                     var rowsAffected = connection.Execute(
                         @"INSERT INTO Match (Id, HomeTeamId, GuestTeamId, MatchDate, HomeTeamGoals, 
-                           GuestTeamGoals, TourNumber, LeagueId)
+                           GuestTeamGoals, TourNumber, LeagueId, IsPlayed)
                          VALUES (@Id, @HomeTeamId, @GuestTeamId, @MatchDate, @HomeTeamGoals, 
-                           @GuestTeamGoals, @TourNumber, @LeagueId)",
-                        match);
+                           @GuestTeamGoals, @TourNumber, @LeagueId, @IsPlayed)",match);
                     result = rowsAffected == 1;
                 }
                 return result;
@@ -169,16 +174,17 @@ namespace DatabaseLayer.Repositories
                 if (record != null)
                 {
                     var rowsAffected = connection.Execute(
-                        @"UPDATE Match
-                            SET HomeTeamId = @HomeTeamId,
-                                GuestTeamId = @GuestTeamId,
-                                MatchDate = @MatchDate,
-                                HomeTeamGoals = @HomeTeamGoals,
-                                GuestTeamGoals = @GuestTeamGoals,
-                                TourNumber = @TourNumber,
-                                LeagueId = @LeagueId
-                            WHERE Id = @Id;",
-                        match);
+                     @"UPDATE Match
+                      SET HomeTeamId = @HomeTeamId,
+                          GuestTeamId = @GuestTeamId,
+                          MatchDate = @MatchDate,
+                          HomeTeamGoals = @HomeTeamGoals,
+                          GuestTeamGoals = @GuestTeamGoals,
+                          TourNumber = @TourNumber,
+                          LeagueId = @LeagueId,
+                          IsPlayed = @IsPlayed
+                      WHERE Id = @Id;",
+                     match);
                     result = rowsAffected == 1;
                 }
                 return result;
@@ -194,17 +200,19 @@ namespace DatabaseLayer.Repositories
                 {
                     try
                     {
-                        rowsAffected += connection.Execute(
-                        @"UPDATE Match
-                            SET HomeTeamId = @HomeTeamId,
-                                GuestTeamId = @GuestTeamId,
-                                MatchDate = @MatchDate,
-                                HomeTeamGoals = @HomeTeamGoals,
-                                GuestTeamGoals = @GuestTeamGoals,
-                                TourNumber = @TourNumber,
-                                LeagueId = @LeagueId
-                            WHERE Id = @Id;",
-                        matches,transaction);
+                        rowsAffected = connection.Execute(
+                    @"UPDATE Match SET 
+                          HomeTeamId = @HomeTeamId,
+                          GuestTeamId = @GuestTeamId,
+                          MatchDate = @MatchDate,
+                          HomeTeamGoals = @HomeTeamGoals,
+                          GuestTeamGoals = @GuestTeamGoals,
+                          TourNumber = @TourNumber,
+                          LeagueId = @LeagueId,
+                          IsPlayed = @IsPlayed
+                      WHERE Id = @Id",
+                    matches,transaction) ;
+
                         transaction.Commit();
                     }
                     catch (Exception ex)

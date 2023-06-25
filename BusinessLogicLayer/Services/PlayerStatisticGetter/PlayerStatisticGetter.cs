@@ -1,17 +1,18 @@
 ﻿using DatabaseLayer.Repositories;
-using System;
 using System.Linq;
 
 namespace BusinessLogicLayer.Services
 {
     public class PlayerStatisticGetter
     {
+        SeasonValueCreator _seasonValueCreator;
         ContractRepository _contractRepository;
         MatchRepository _matchRepository;
         PlayerInMatchRepository _playerInMatchRepository;
 
         public PlayerStatisticGetter()
         {
+            _seasonValueCreator = new SeasonValueCreator();
             _contractRepository = new ContractRepository();
             _matchRepository = new MatchRepository();
             _playerInMatchRepository = new PlayerInMatchRepository();
@@ -50,7 +51,11 @@ namespace BusinessLogicLayer.Services
             {
                 return 0;
             }
-            return _matchRepository.Retrieve(teamId, season).Count;
+
+            var startDate = _seasonValueCreator.GetSeasonStartDate(season);
+            var endDate = _seasonValueCreator.GetSeasonEndDate(season);
+
+            return _matchRepository.Retrieve(teamId,startDate,endDate).Count;
         }
         private int getPlayerInMatchesCount(string playerId)
         {
