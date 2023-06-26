@@ -28,7 +28,7 @@ namespace BusinessLogicLayer.Services
 
         [JsonProperty("AdditionalEvents")]
         internal List<Dictionary<string, object>> _additionalEvents { get; set; }
-        public Dictionary<string, double> GetNextEvents(EventLocation location, StrategyType strategyType = StrategyType.None)
+        public Dictionary<string, double> GetNextEvents(EventLocation location, StrategyType strategyType = StrategyType.BallСontrol)
         {
             //if (_nextEventsChances == null)
             {

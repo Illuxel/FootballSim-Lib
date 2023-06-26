@@ -1,4 +1,6 @@
-﻿namespace DatabaseLayer
+﻿using System.ComponentModel;
+
+namespace DatabaseLayer
 {
     public enum PlayerFieldPartPosition
     {
@@ -10,10 +12,13 @@
     }
     public enum StrategyType
     {
-        None,
+        [Description("Ball Сontrol")]
         BallСontrol,
+        [Description("Long ball")]
         DefenseAttack,
+        [Description("Total Pressing")]
         TotalPressing,
+        [Description("Total Defense")]
         TotalDefense
     }
 }
