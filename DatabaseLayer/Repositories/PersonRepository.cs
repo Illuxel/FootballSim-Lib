@@ -52,9 +52,7 @@ namespace DatabaseLayer.Repositories
             }
         }
 
-
-
-        public bool Insert(Person person)
+        public string Insert(Person person)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -65,9 +63,8 @@ namespace DatabaseLayer.Repositories
                     @"INSERT INTO Person (ID, Name, Surname, Birthday, CurrentRoleId, CountryId, Icon)
                     VALUES (@ID, @Name, @Surname, @Birthday, @CurrentRoleId, @CountryId, @Icon)",
                     person);
-                var result = rowsAffected == 1;
                 
-                return result;
+                return person.Id;
             }
         }
 
