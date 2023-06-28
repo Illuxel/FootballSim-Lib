@@ -52,7 +52,7 @@ namespace DatabaseLayer.Repositories
             }
         }
 
-        public string Insert(Person person)
+        public bool Insert(Person person)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -64,7 +64,7 @@ namespace DatabaseLayer.Repositories
                     VALUES (@ID, @Name, @Surname, @Birthday, @CurrentRoleID, @CountryID, @Icon)",
                     person);
                 
-                return person.Id;
+                return rowsAffected == 1;
             }
         }
 

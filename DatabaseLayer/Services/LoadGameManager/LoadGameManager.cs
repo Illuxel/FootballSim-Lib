@@ -179,7 +179,6 @@ namespace DatabaseLayer.Services
 
         public SaveInfo NewGame(PlayerGameData data, string saveName = "")
         {
-
             var saveInfo = new SaveInfo();
             //Crete Save File
             string path;
@@ -231,7 +230,10 @@ namespace DatabaseLayer.Services
             person.Birthday = DateTime.MinValue;
             person.CountryID = 0;
 
-            data.ID = _personRepository.Insert(person);
+            if (_personRepository.Insert(person))
+            {
+                data.PersonId = person.Id;
+            }
         }
 
         private void updateUserData(SaveInfo saveInfo )

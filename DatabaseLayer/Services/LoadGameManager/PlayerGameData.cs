@@ -4,7 +4,7 @@ namespace DatabaseLayer.Services
 {
     public class PlayerGameData
     {
-        public string ID { get; set; }
+        public string PersonId { get; set; }
         public string PlayerName { get; set; }
         public string PlayerSurname { get; set; }
         public string ClubId { get; set; }
