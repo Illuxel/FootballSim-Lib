@@ -52,8 +52,6 @@ namespace DatabaseLayer.Repositories
             }
         }
 
-
-
         public bool Insert(Person person)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
@@ -62,12 +60,11 @@ namespace DatabaseLayer.Repositories
                 person.Id = Guid.NewGuid().ToString();
                
                 var rowsAffected = connection.Execute(
-                    @"INSERT INTO Person (ID, Name, Surname, Birthday, CurrentRoleId, CountryId, Icon)
-                    VALUES (@ID, @Name, @Surname, @Birthday, @CurrentRoleId, @CountryId, @Icon)",
+                    @"INSERT INTO Person (ID, Name, Surname, Birthday, CurrentRoleID, CountryID, Icon)
+                    VALUES (@ID, @Name, @Surname, @Birthday, @CurrentRoleID, @CountryID, @Icon)",
                     person);
-                var result = rowsAffected == 1;
                 
-                return result;
+                return rowsAffected == 1;
             }
         }
 

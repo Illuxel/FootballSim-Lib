@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DatabaseLayer.DBSettings;
+using DatabaseLayer.Repositories;
 
 namespace DatabaseLayer.Services
 {
@@ -39,11 +40,14 @@ namespace DatabaseLayer.Services
 
     public class LoadGameManager
     {
-
         internal static string SavesFolderName = "gameSaves";
         public static LoadGameManager instance;
+        private PersonRepository _personRepository;
+
         private LoadGameManager(string pathToSave)
         {
+            _personRepository = new PersonRepository();
+
             if (!pathToSave.Contains(SavesFolderName))
             {
                 DatabaseManager.PathToSave = Path.Combine(pathToSave, SavesFolderName);
@@ -175,7 +179,6 @@ namespace DatabaseLayer.Services
 
         public SaveInfo NewGame(PlayerGameData data, string saveName = "")
         {
-
             var saveInfo = new SaveInfo();
             //Crete Save File
             string path;
@@ -199,6 +202,8 @@ namespace DatabaseLayer.Services
             SaveInfoJson dataToJSON = new SaveInfoJson(path);
             File.WriteAllText(DatabaseManager.SavePathInfo, JsonConvert.SerializeObject(dataToJSON, Formatting.Indented));
 
+            insertNewPerson(data);
+
             //Filling the class SaveInfo with data
             saveInfo.SaveName = saveName;
             saveInfo.PlayerData = data;
@@ -213,6 +218,22 @@ namespace DatabaseLayer.Services
             DatabaseManager.SetConnectionString(path);
 
             return saveInfo;
+        }
+
+        private void insertNewPerson(PlayerGameData data)
+        {
+            var person = new Person();
+
+            person.Name = data.PlayerName;
+            person.Surname = data.PlayerSurname;
+            person.CurrentRoleID = (int)Enums.UserRole.Scout;
+            person.Birthday = DateTime.MinValue;
+            person.CountryID = 0;
+
+            if (_personRepository.Insert(person))
+            {
+                data.PersonId = person.Id;
+            }
         }
 
         private void updateUserData(SaveInfo saveInfo )
