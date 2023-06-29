@@ -42,7 +42,7 @@ namespace BusinessLogicLayer.Services.PlayerGeneration
             player.Defending = Convert.ToInt32(gaussianGenerator.Next() * playersCoef.DefendingCoef);
             player.Passing = Convert.ToInt32(gaussianGenerator.Next() * playersCoef.PassingCoef);
             player.Dribbling = Convert.ToInt32(gaussianGenerator.Next() * playersCoef.DribblingCoef);
-            player.Rating = CalculateRating(player, playersCoef);
+            player.Rating = CalculateAverageRating(player, playersCoef);
             player.PositionCode = EnumDescription.GetEnumDescription(position);
 
             return player;
@@ -57,7 +57,7 @@ namespace BusinessLogicLayer.Services.PlayerGeneration
             return randomPosition;
         }
 
-        private int CalculateRating(Player player, PlayerCoefImportanceProperty playersCoef)
+        internal int CalculateAverageRating(Player player, PlayerCoefImportanceProperty playersCoef)
         {
             return Convert.ToInt32((player.Strike / playersCoef.StrikeCoef + player.Speed / playersCoef.SpeedCoef +
                 player.Physics / playersCoef.PhysicsCoef + player.Defending / playersCoef.DefendingCoef +
