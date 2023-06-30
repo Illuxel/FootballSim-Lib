@@ -99,10 +99,10 @@ namespace DatabaseLayer.Repositories
                     var rowsAffected = connection.Execute(
                         @"INSERT INTO Player (PersonID, PositionCode, ContractId, Speed, Kick, 
                             Endurance, Strike, Physics, Defending, Passing, Dribbling, Rating, IndexPosition, 
-                            CurrentPlayerRating, PlayerPositionGroup) 
+                            CurrentPlayerRating, PlayerPositionGroup, InjuredTo) 
                         VALUES (@PersonID, @PositionCode, @ContractId, @Speed, @Kick, 
                             @Endurance, @Strike, @Physics, @Defending, @Passing, @Dribbling, @Rating, @IndexPosition, 
-                            @CurrentPlayerRating, @PlayerPositionGroup)",
+                            @CurrentPlayerRating, @PlayerPositionGroup, @InjuredTo)",
                         player);
                     result = rowsAffected == 1;
                 }
@@ -122,10 +122,10 @@ namespace DatabaseLayer.Repositories
                         var rowsAffected = connection.Execute(
                         @"INSERT INTO Player (PersonID, PositionCode, ContractId, Speed, Kick, 
                             Endurance, Strike, Physics, Defending, Passing, Dribbling, Rating,  
-                            IndexPosition, CurrentPlayerRating, PlayerPositionGroup) 
+                            IndexPosition, CurrentPlayerRating, PlayerPositionGroup, InjuredTo) 
                         VALUES (@PersonID, @PositionCode, @ContractId, @Speed, @Kick, 
                             @Endurance, @Strike, @Physics, @Defending, @Passing, @Dribbling, Rating,
-                            @IndexPosition, @CurrentPlayerRating, @PlayerPositionGroup)",
+                            @IndexPosition, @CurrentPlayerRating, @PlayerPositionGroup @InjuredTo)",
                         players, transaction);
                     }
                     catch (Exception ex)
@@ -161,6 +161,7 @@ namespace DatabaseLayer.Repositories
                             IndexPosition = @IndexPosition, 
                             CurrentPlayerRating = @CurrentPlayerRating, 
                             PlayerPositionGroup = @PlayerPositionGroup
+                            InjuredTo = @InjuredTo
                         WHERE PersonID = @PersonID",
                         player);
                     result = rowsAffected == 1;

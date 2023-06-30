@@ -37,6 +37,8 @@ namespace DatabaseLayer
         public int IndexPosition { get; set; }
         public PlayerPositionGroup PlayerPositionGroup { get; set; }
 
+        public string InjuredTo { get; set; }
+
         public void UpdateCurrentRating(int value)
         {
             CurrentPlayerRating = Rating + value;

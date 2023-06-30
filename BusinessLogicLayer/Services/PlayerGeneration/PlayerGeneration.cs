@@ -3,7 +3,7 @@ using DatabaseLayer.Enums;
 using System;
 using BusinessLogicLayer.Rules;
 
-namespace BusinessLogicLayer.Services.PlayerGeneration
+namespace BusinessLogicLayer.Services
 {
     public class PlayerGeneration
     {
@@ -14,7 +14,6 @@ namespace BusinessLogicLayer.Services.PlayerGeneration
         public PlayerGeneration()
         {
             _PlayerCoefPropertyFactory = new PlayerCoefPropertyFactory();
-            
         }       
 
         public Player GeneratePlayer(PlayerPosition position, int value)

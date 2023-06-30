@@ -1,9 +1,9 @@
 ﻿using BusinessLogicLayer.Rules;
-using BusinessLogicLayer.Services.PlayerGeneration;
 using DatabaseLayer;
 using DatabaseLayer.Enums;
 using DatabaseLayer.Repositories;
 using System;
+using System.Linq;
 
 namespace BusinessLogicLayer.Services
 {
@@ -11,76 +11,130 @@ namespace BusinessLogicLayer.Services
     {
         PlayerRepository _playerRepository;
         PersonRepository _personRepository;
+        MatchRepository _matchRepository;
         PlayerCoefPropertyFactory _playerCoefPropertyFactory;
+        PlayerInjuryFinder _playerInjuryFinder;
+        PlayerGeneration _playerGeneration;
 
         public PlayerSkillsTrainer()
         {
             _playerRepository = new PlayerRepository();
             _personRepository = new PersonRepository();
+            _matchRepository = new MatchRepository();
             _playerCoefPropertyFactory = new PlayerCoefPropertyFactory();
+            _playerInjuryFinder = new PlayerInjuryFinder();
+            _playerGeneration = new PlayerGeneration();
         }
 
         // TODO: Написати метод який буде отримувати склад команди у минулому матчі
 
         public void TrainPlayers(string teamId, TrainingMode trainingMode)
         {
-            /*А з цим що робити
-            var importancePropertyCoef = getImportancePropertyCoef(player);*/
-            
-            if (trainingMode == TrainingMode.SimplifiedForEveryone || trainingMode == TrainingMode.Standart || trainingMode == TrainingMode.AdvancedForEveryone)
-            {
-                trainAllPlayers(teamId, trainingMode);
-            }
-            else if(trainingMode == TrainingMode.SimplifiedForLastGamePlayers || trainingMode == TrainingMode.AdvancedForLastGameBench)
-            {
-                trainPlayersFromLastGame(teamId, trainingMode);
-            }
-        }
-
-        private void trainAllPlayers(string teamId, TrainingMode trainingMode)
-        {
+            var gameDate = defineDate(teamId);
             var players = _playerRepository.Retrieve(teamId);
             var trainingCoeff = getTrainingCoeff(trainingMode);
+            var enduranceCostPercent = defineEnduranceCost(trainingMode);
+            var enduranceCostPercentForPlayersInLastMatch = defineEnduranceCostForLastGamePlayers(trainingMode);
 
             foreach (var player in players)
             {
-                var ageCoeff = getAgeCoeff(player);
-                var percent = calculatePercent(ageCoeff, trainingCoeff);
-                
-                if (isWillBeImproved(percent))
+                if (_playerInjuryFinder.IsAlreadyInjuried(player))
                 {
-                    improveRandomSkill(player);
+                    break;
                 }
 
-                _playerRepository.Update(player);
-            }
-        }
-        private void trainPlayersFromLastGame(string teamId, TrainingMode trainingMode)
-        {
-            
-        }
-        private double getAgeCoeff(Player player)
-        {
-            var personId = player.PersonID;
-            var person = _personRepository.Retrieve(personId);
-            var age = DateTime.Now.Year - person.Birthday.Year;
+                var ageCoeff = getAgeCoeff(player,gameDate);
+                var percent = calculatePercent(ageCoeff, trainingCoeff);
+                bool isEnoughEndurance;
 
-            if (age <= 21)
-            {
-                return 2;
+                if (isPlayerInLastGame(player) && trainingMode == TrainingMode.SimplifiedForLastGamePlayers || trainingMode == TrainingMode.AdvancedForLastGameBench)
+                {
+                    isEnoughEndurance = isEnoughEnduranceCost(player, enduranceCostPercentForPlayersInLastMatch);
+                }
+                else
+                {
+                    isEnoughEndurance = isEnoughEnduranceCost(player, enduranceCostPercent);
+                }
+
+                if(isEnoughEndurance)
+                {
+                    if (_playerInjuryFinder.IsInjuried(player))
+                    {
+                        _playerInjuryFinder.SetInjury(player, gameDate);
+                    }
+                    else if (isWillBeImproved(percent))
+                    {
+                        player.Rating = calculatePlayerStats(player);
+                    }
+
+                    _playerRepository.Update(player);
+                }
             }
-            else if (age >= 22 && age <= 27)
-            {
-                return 1;
-            }
-            else if (age >= 28 && age <= 31)
-            {   
-                return 0.5;
-            }
-            
-            return 0.05;
+        }
+        
+        private bool isPlayerInLastGame(Player player)
+        {
+            throw new NotImplementedException();
         }
 
+        private bool isWillBeImproved(double percent)
+        {
+            var randomPercent = new Random().Next(0, 100);
+            return randomPercent <= percent * 100;
+        }
+
+        private int calculatePlayerStats(Player player)
+        {
+            improveRandomSkill(player);
+            var importancePropertyCoef = getImportancePropertyCoef(player);
+
+            return _playerGeneration.CalculateAverageRating(player, importancePropertyCoef);
+        }
+
+        private bool isEnoughEnduranceCost(Player player, int enduranceCostPercent)
+        {
+            var enduranceCost = player.Endurance * enduranceCostPercent / 100;
+            var restEndurance = player.Endurance -= enduranceCost;
+
+            if (restEndurance >= 0)
+            {
+                player.Endurance = restEndurance;
+                return true;
+            }
+            return false;
+        }
+
+        private DateTime defineDate(string teamId)
+        {
+            var matches = _matchRepository.Retrieve(teamId);
+            var lastPlayedTour = matches.Where(x => x.IsPlayed).Max(x => x.TourNumber);
+            var stringDate = matches.Where(x => x.TourNumber == lastPlayedTour).FirstOrDefault();
+            return DateTime.Parse(stringDate.MatchDate);
+        }
+
+        private int defineEnduranceCost(TrainingMode trainingMode)
+        {
+            return trainingMode switch
+            {
+                TrainingMode.SimplifiedForEveryone => 10,
+                TrainingMode.SimplifiedForLastGamePlayers => 15,
+                TrainingMode.Standart => 15,
+                TrainingMode.AdvancedForLastGameBench => 25,
+                TrainingMode.AdvancedForEveryone => 25,
+                _ => 0
+            };
+        }
+
+        private int defineEnduranceCostForLastGamePlayers(TrainingMode trainingMode)
+        {
+            return trainingMode switch
+            {
+                TrainingMode.SimplifiedForLastGamePlayers => 10,
+                TrainingMode.AdvancedForLastGameBench => 15,
+                _ => 0
+            };
+        }
+        
         private double getTrainingCoeff(TrainingMode trainingMode)
         {
             return trainingMode switch
@@ -94,21 +148,26 @@ namespace BusinessLogicLayer.Services
             };
         }
 
-        private double calculatePercent(double ageCoeff,double trainingCoeff)
+        private double getAgeCoeff(Player player, DateTime gameDate)
         {
-            return ageCoeff * trainingCoeff;
-        }
+            var personId = player.PersonID;
+            var person = _personRepository.Retrieve(personId);
+            var age = gameDate.Year - person.Birthday.Year;
 
-        private PlayerCoefImportanceProperty getImportancePropertyCoef(Player player)
-        {
-            var position = EnumDescription.GetEnumValueFromDescription<PlayerPosition>(player.PositionCode);
-            return _playerCoefPropertyFactory.Create(position);
-        }
+            if (age <= 21)
+            {
+                return 2;
+            }
+            else if (age >= 22 && age <= 27)
+            {
+                return 1;
+            }
+            else if (age >= 28 && age <= 31)
+            {
+                return 0.5;
+            }
 
-        private bool isWillBeImproved(double percent)
-        {
-            var randomPercent = new Random().Next(0,100);
-            return randomPercent <= percent * 100;
+            return 0.05;
         }
 
         private void improveRandomSkill(Player player)
@@ -139,6 +198,17 @@ namespace BusinessLogicLayer.Services
                 default:
                     break;
             }
+        }
+
+        private PlayerCoefImportanceProperty getImportancePropertyCoef(Player player)
+        {
+            var position = EnumDescription.GetEnumValueFromDescription<PlayerPosition>(player.PositionCode);
+            return _playerCoefPropertyFactory.Create(position);
+        }
+
+        private double calculatePercent(double ageCoeff, double trainingCoeff)
+        {
+            return ageCoeff * trainingCoeff;
         }
     }
 }

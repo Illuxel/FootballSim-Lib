@@ -1,6 +1,6 @@
 ﻿using DatabaseLayer.Enums;
 
-namespace BusinessLogicLayer.Services.PlayerGeneration
+namespace BusinessLogicLayer.Services
 {
     internal class PlayerCoefPropertyFactory
     {
