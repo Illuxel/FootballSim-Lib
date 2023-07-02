@@ -3,6 +3,7 @@ using DatabaseLayer.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace BusinessLogicLayer.Services
 {
@@ -60,7 +61,6 @@ namespace BusinessLogicLayer.Services
         {
             _matchData = new MatchResult();
             _playerInMatchRepository = new PlayerInMatchRepository();
-
 
             _matchData.MatchID = Guid.NewGuid().ToString();
 
@@ -189,6 +189,9 @@ namespace BusinessLogicLayer.Services
                     }
                 }
             }
+            /*var playersInMatch = MatchData.HomeTeam.MainPlayers.Values.Concat(MatchData.GuestTeam.MainPlayers.Values).ToList();
+            var sparedPlayersInMatch = MatchData.HomeTeam.SparedPlayers.Concat(MatchData.GuestTeam.SparedPlayers).ToList();*/
+            /*var playersInMatchList = playersInMatch.AddRange(sparedPlayersInMatch).ToList();*/
             foreach (var player in MatchData.HomeTeam.PlayersInMatch)
             {
                 player.MatchId = MatchData.MatchID;

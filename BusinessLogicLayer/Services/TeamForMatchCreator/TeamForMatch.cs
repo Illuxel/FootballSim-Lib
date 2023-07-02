@@ -29,10 +29,11 @@ namespace BusinessLogicLayer.Services
 
         private PlayerPositionDeterminer _playerPositionDeterminer { get; set; }
 
-        internal TeamForMatch()
+        internal TeamForMatch(string teamId,List<Player> allPlayers)
         {
+            Id = teamId;
             PlayersInMatch = new List<PlayerInMatch>();
-            AllPlayers = new List<Player>();
+            AllPlayers = allPlayers;
             MainPlayers = new Dictionary<int, TacticPlayerPosition>();
             SparePlayers = new List<Player>();
             SparedPlayers = new List<Player>();

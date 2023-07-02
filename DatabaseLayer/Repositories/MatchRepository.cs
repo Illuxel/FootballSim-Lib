@@ -241,6 +241,24 @@ namespace DatabaseLayer.Repositories
             }
         }
 
+        public bool IsPlayerPlayedInLastGame(string playerId,string teamId)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                {
+                    var response = connection.QueryFirstOrDefault<int>(
+                        @"SELECT 1 FROM Player
+                        LEFT JOIN Contract ON Player.PersonID = Contract.PersonID
+                        Left join Team On Team.Id = Contract.TeamID
+                        JOIN Match ON Match.ID = (SELECT MATCH.ID FROM MATCH WHERE (Match.GuestTeamId = Team.Id OR Match.HomeTeamId = Team.Id) AND Match.IsPlayed = 1 ORDER BY Match.TourNumber DESC LIMIT 1)
+                        join PlayerInMatch ON PlayerInMatch.MatchId = Match.ID
+                        WHERE Player.PersonID = @playerId AND Team.ID = @teamID", new {playerId,teamId});
+                    return response == 1;
+                }
+            }
+        }
+
     }
 }
 
