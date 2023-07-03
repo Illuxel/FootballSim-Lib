@@ -5,22 +5,21 @@ namespace BusinessLogicLayer.Services
 {
     public class ScoutLevelUpgrader
     {
-        public bool Upgrade(ScoutSkillLevel level, PlayerGameData playerGameData)
+        public (ScoutSkillLevel, double) Upgrade(ScoutSkillLevel level, PlayerGameData playerGameData)
         {
-
             double upgradeCost = getUpgradeCost(level);
 
             if (playerGameData.Money >= upgradeCost)
             {
-            
                 playerGameData.CurrentLevel = level;
                 playerGameData.Money -= upgradeCost;
 
-                return true;
+                return (playerGameData.CurrentLevel, playerGameData.Money);
             }
 
-            return false;
+            return (playerGameData.CurrentLevel, playerGameData.Money);
         }
+
 
         private double getUpgradeCost(ScoutSkillLevel level)
         {
