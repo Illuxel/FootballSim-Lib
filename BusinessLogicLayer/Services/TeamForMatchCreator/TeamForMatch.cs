@@ -44,7 +44,7 @@ namespace BusinessLogicLayer.Services
 
             foreach (var player in MainPlayers.Values)
             {
-                PlayersInMatch.Add(createPlayerInMatch(player.CurrentPlayer.ContractID));
+                PlayersInMatch.Add(createPlayerInMatch(player.CurrentPlayer.PersonID));
             }
         }
 
