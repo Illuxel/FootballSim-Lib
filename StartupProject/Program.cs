@@ -1,13 +1,5 @@
 using BusinessLogicLayer.Scenario;
 using BusinessLogicLayer.Services;
-using DatabaseLayer;
-using DatabaseLayer.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Mail;
-using System.Security.Cryptography.X509Certificates;
 
 namespace StartupProject
 {
