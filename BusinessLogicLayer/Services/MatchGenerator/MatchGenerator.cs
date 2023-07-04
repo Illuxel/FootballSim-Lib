@@ -196,7 +196,10 @@ namespace BusinessLogicLayer.Services
             {
                 player.MatchId = MatchData.MatchID;
             }
-
+            if (MatchData.HomeTeam.Id == "678065FDDB06C590A0D0F9EDC2B5196F" || MatchData.GuestTeam.Id == "678065FDDB06C590A0D0F9EDC2B5196F")
+            {
+                Console.WriteLine("");
+            }
             var playersInMatch = MatchData.HomeTeam.PlayersInMatch.Concat(MatchData.GuestTeam.PlayersInMatch).ToList();
             _playerInMatchRepository.Insert(playersInMatch);
 

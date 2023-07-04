@@ -7,7 +7,7 @@ namespace DatabaseLayer.Enums
         [Description("GK")]
         Goalkeeper,
 
-        [Description("CD")]
+        [Description("CB")]
         CentralDefender,
 
         [Description("RB")]

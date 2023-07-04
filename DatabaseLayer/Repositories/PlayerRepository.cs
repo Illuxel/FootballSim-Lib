@@ -159,8 +159,8 @@ namespace DatabaseLayer.Repositories
                             Dribbling = @Dribbling,
                             Rating = @Rating,
                             IndexPosition = @IndexPosition, 
-                            CurrentPlayerRating = @CurrentPlayerRating, 
-                            PlayerPositionGroup = @PlayerPositionGroup
+                            CurrentRating = @CurrentPlayerRating, 
+                            PlayerPositionGroup = @PlayerPositionGroup,
                             InjuredTo = @InjuredTo
                         WHERE PersonID = @PersonID",
                         player);

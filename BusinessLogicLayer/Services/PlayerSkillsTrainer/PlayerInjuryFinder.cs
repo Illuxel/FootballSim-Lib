@@ -46,8 +46,7 @@ namespace BusinessLogicLayer.Services
         {
             var playerInjuryTerm = getInjuryTermDays(); 
 
-            gameDate.AddDays(playerInjuryTerm);
-            player.InjuredTo = playerInjuryTerm.ToString("yyyy-MM-dd");
+            player.InjuredTo = gameDate.AddDays(playerInjuryTerm).ToString("yyyy-MM-dd");
         }
         private int getInjuryTermDays()
         {

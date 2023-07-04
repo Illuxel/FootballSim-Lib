@@ -15,6 +15,7 @@ namespace BusinessLogicLayer.Services
         PlayerCoefPropertyFactory _playerCoefPropertyFactory;
         PlayerInjuryFinder _playerInjuryFinder;
         PlayerGeneration _playerGeneration;
+        PlayerInvolvementLastMatchChecker _playerInvolvementLastMatchChecker;
 
         public PlayerSkillsTrainer()
         {
@@ -24,17 +25,19 @@ namespace BusinessLogicLayer.Services
             _playerCoefPropertyFactory = new PlayerCoefPropertyFactory();
             _playerInjuryFinder = new PlayerInjuryFinder();
             _playerGeneration = new PlayerGeneration();
+            _playerInvolvementLastMatchChecker = new PlayerInvolvementLastMatchChecker();
         }
-
-        // TODO: Написати метод який буде отримувати склад команди у минулому матчі
 
         public void TrainPlayers(string teamId, TrainingMode trainingMode)
         {
             var gameDate = defineDate(teamId);
             var players = _playerRepository.Retrieve(teamId);
-            var trainingCoeff = getTrainingCoeff(trainingMode);
             var enduranceCostPercent = defineEnduranceCost(trainingMode);
             var enduranceCostPercentForPlayersInLastMatch = defineEnduranceCostForLastGamePlayers(trainingMode);
+
+            var trainingCoeff = getTrainingCoeff(trainingMode);
+            bool isEnoughEndurance;
+
 
             foreach (var player in players)
             {
@@ -45,11 +48,17 @@ namespace BusinessLogicLayer.Services
 
                 var ageCoeff = getAgeCoeff(player,gameDate);
                 var percent = calculatePercent(ageCoeff, trainingCoeff);
-                bool isEnoughEndurance;
 
-                if (isPlayerInLastGame(player) && trainingMode == TrainingMode.SimplifiedForLastGamePlayers || trainingMode == TrainingMode.AdvancedForLastGameBench)
+                if (trainingMode == TrainingMode.SimplifiedForLastGamePlayers || trainingMode == TrainingMode.AdvancedForLastGameBench)
                 {
-                    isEnoughEndurance = isEnoughEnduranceCost(player, enduranceCostPercentForPlayersInLastMatch);
+                    if (isPlayerInLastGame(teamId, player.PersonID))
+                    {
+                        isEnoughEndurance = isEnoughEnduranceCost(player, enduranceCostPercentForPlayersInLastMatch);
+                    }
+                    else
+                    {
+                        isEnoughEndurance = isEnoughEnduranceCost(player, enduranceCostPercent);
+                    }
                 }
                 else
                 {
@@ -60,10 +69,13 @@ namespace BusinessLogicLayer.Services
                 {
                     if (_playerInjuryFinder.IsInjuried(player))
                     {
+                        Console.WriteLine("IS INJURIED");
                         _playerInjuryFinder.SetInjury(player, gameDate);
                     }
                     else if (isWillBeImproved(percent))
                     {
+                        Console.WriteLine("IS IMPROVE");
+                        improveRandomSkill(player);
                         player.Rating = calculatePlayerStats(player);
                     }
 
@@ -72,9 +84,9 @@ namespace BusinessLogicLayer.Services
             }
         }
         
-        private bool isPlayerInLastGame(Player player)
+        private bool isPlayerInLastGame(string teamId,string playerId)
         {
-            throw new NotImplementedException();
+            return _playerInvolvementLastMatchChecker.Check(teamId,playerId) == true;
         }
 
         private bool isWillBeImproved(double percent)
@@ -85,9 +97,7 @@ namespace BusinessLogicLayer.Services
 
         private int calculatePlayerStats(Player player)
         {
-            improveRandomSkill(player);
             var importancePropertyCoef = getImportancePropertyCoef(player);
-
             return _playerGeneration.CalculateAverageRating(player, importancePropertyCoef);
         }
 
