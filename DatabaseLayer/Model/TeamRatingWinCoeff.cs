@@ -1,5 +1,4 @@
-﻿
-namespace DatabaseLayer
+﻿namespace DatabaseLayer
 {
     public class TeamRatingWinCoeff
     {
