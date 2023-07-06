@@ -37,6 +37,9 @@ namespace BusinessLogicLayer.Services
                 MatchData.GuestTeam.Strategy = value;
             }
         }
+        private PlayerInjuryFinder _playerInjuryFinder;
+        private PlayerRepository _playerRepository;
+        private MatchRepository _matchRepository;
 
         private bool _isStrategyChanged;
         private bool _isMatcFinished;
@@ -60,6 +63,9 @@ namespace BusinessLogicLayer.Services
         {
             _matchData = new MatchResult();
             _playerInMatchRepository = new PlayerInMatchRepository();
+            _playerInjuryFinder = new PlayerInjuryFinder();
+            _playerRepository = new PlayerRepository();
+            _matchRepository = new MatchRepository();
 
             _matchData.MatchID = Guid.NewGuid().ToString();
 
@@ -74,6 +80,10 @@ namespace BusinessLogicLayer.Services
             _matchData = new MatchResult();
             _teamForMatchCreator = new TeamForMatchCreator();
             _playerInMatchRepository = new PlayerInMatchRepository();
+            _playerInjuryFinder = new PlayerInjuryFinder();
+            _playerRepository = new PlayerRepository();
+            _matchRepository = new MatchRepository();
+
 
             _matchData.MatchID = match.Id;
 
@@ -118,6 +128,11 @@ namespace BusinessLogicLayer.Services
                     {
                         _isStrategyChanged = false;
                         break;
+                    }
+
+                    if(currentMinute % 3 == 0)
+                    {
+                        enduranceDecrease();
                     }
 
                     currentEvent.MatchMinute = currentMinute;
@@ -196,10 +211,7 @@ namespace BusinessLogicLayer.Services
             {
                 player.MatchId = MatchData.MatchID;
             }
-            if (MatchData.HomeTeam.Id == "678065FDDB06C590A0D0F9EDC2B5196F" || MatchData.GuestTeam.Id == "678065FDDB06C590A0D0F9EDC2B5196F")
-            {
-                Console.WriteLine("");
-            }
+            
             var playersInMatch = MatchData.HomeTeam.PlayersInMatch.Concat(MatchData.GuestTeam.PlayersInMatch).ToList();
             _playerInMatchRepository.Insert(playersInMatch);
 
@@ -259,6 +271,24 @@ namespace BusinessLogicLayer.Services
                     player.Value.CurrentPlayer = null;
                     _matchData.HomeTeam.AvailablePlayerCount -= 1;
                     break;
+                }
+            }
+        }
+
+        private void enduranceDecrease()
+        {
+            var matchDate = _matchRepository.RetrieveMatchById(_matchData.MatchID).MatchDate;
+            var date = DateTime.Parse(matchDate);
+
+            var playersOnField = MatchData.HomeTeam.MainPlayers.Values.Concat(MatchData.GuestTeam.MainPlayers.Values);
+
+            foreach (var player in playersOnField)
+            {
+                player.CurrentPlayer.Endurance -= (int)Math.Round(player.CurrentPlayer.Endurance * 0.02);
+                if(_playerInjuryFinder.IsInjuried(player.CurrentPlayer))
+                {
+                    _playerInjuryFinder.SetInjury(player.CurrentPlayer, date);
+                    _playerRepository.Update(player.CurrentPlayer);
                 }
             }
         }

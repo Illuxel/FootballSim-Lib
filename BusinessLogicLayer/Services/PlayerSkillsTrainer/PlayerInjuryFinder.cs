@@ -15,9 +15,12 @@ namespace BusinessLogicLayer.Services
         }
         public bool IsInjuried(Player player)
         {
-            if(isMayBeInjuried(player) && isWillBeInjuried(player))
+            if(isMayBeInjuried(player))
             {
-                return true;
+                if(isWillBeInjuried(player))
+                {
+                    return true;
+                }
             }
             return false;
         }
