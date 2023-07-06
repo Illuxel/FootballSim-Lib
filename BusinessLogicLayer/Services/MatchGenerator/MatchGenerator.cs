@@ -284,6 +284,10 @@ namespace BusinessLogicLayer.Services
 
             foreach (var player in playersOnField)
             {
+                if(player.CurrentPlayer == null)
+                {
+                    break;
+                }
                 player.CurrentPlayer.Endurance -= (int)Math.Round(player.CurrentPlayer.Endurance * 0.02);
                 if(_playerInjuryFinder.IsInjuried(player.CurrentPlayer))
                 {

@@ -17,6 +17,8 @@ namespace BusinessLogicLayer.Services
         PlayerGeneration _playerGeneration;
         PlayerInvolvementLastMatchChecker _playerInvolvementLastMatchChecker;
 
+        int _currentPlayerAge;
+
         public PlayerSkillsTrainer()
         {
             _playerRepository = new PlayerRepository();
@@ -46,7 +48,9 @@ namespace BusinessLogicLayer.Services
                     break;
                 }
 
-                var ageCoeff = getAgeCoeff(player,gameDate);
+                defineAge(player, gameDate);
+                
+                var ageCoeff = getAgeCoeff();
                 var percent = calculatePercent(ageCoeff, trainingCoeff);
 
                 if (trainingMode == TrainingMode.SimplifiedForLastGamePlayers || trainingMode == TrainingMode.AdvancedForLastGameBench)
@@ -69,27 +73,68 @@ namespace BusinessLogicLayer.Services
                 {
                     if (_playerInjuryFinder.IsInjuried(player))
                     {
-                        Console.WriteLine("IS INJURIED");
                         _playerInjuryFinder.SetInjury(player, gameDate);
                     }
-                    else if (isWillBeImproved(percent))
+                    else if (processChance(percent))
                     {
-                        Console.WriteLine("IS IMPROVE");
                         improveRandomSkill(player);
+                        var oldRating = player.Rating; 
                         player.Rating = calculatePlayerStats(player);
+                        if(oldRating != player.Rating)
+                        {
+                            //event
+                        }
                     }
-
+                    if(isOldPlayer())
+                    {
+                        var decreaseCoef = oldPlayerDecreaseCoeff();
+                        if(processChance(decreaseCoef))
+                        {
+                            decreaseRandomSkill(player);
+                            var oldRating = player.Rating;
+                            player.Rating = calculatePlayerStats(player);
+                            if (oldRating != player.Rating)
+                            {
+                                //event
+                            }
+                        }
+                    }
                     _playerRepository.Update(player);
                 }
             }
         }
         
+        private double oldPlayerDecreaseCoeff()
+        {
+            if(_currentPlayerAge >= 31 && _currentPlayerAge <= 32)
+            {
+                return 0.05;
+            }
+            else if(_currentPlayerAge >= 33 && _currentPlayerAge < 34)
+            {
+                return 0.15;
+            }
+            else if(_currentPlayerAge >= 35 && _currentPlayerAge < 36)
+            {
+                return 0.25;
+            }
+            else
+            {
+                return 0.50;
+            }
+        }
+
+        private bool isOldPlayer()
+        {
+            return _currentPlayerAge > 30;
+        }
+
         private bool isPlayerInLastGame(string teamId,string playerId)
         {
             return _playerInvolvementLastMatchChecker.Check(teamId,playerId) == true;
         }
 
-        private bool isWillBeImproved(double percent)
+        private bool processChance(double percent)
         {
             var randomPercent = new Random().Next(0, 100);
             return randomPercent <= percent * 100;
@@ -158,28 +203,30 @@ namespace BusinessLogicLayer.Services
             };
         }
 
-        private double getAgeCoeff(Player player, DateTime gameDate)
+        private double getAgeCoeff()
         {
-            var personId = player.PersonID;
-            var person = _personRepository.Retrieve(personId);
-            var age = gameDate.Year - person.Birthday.Year;
-
-            if (age <= 21)
+            if (_currentPlayerAge <= 21)
             {
                 return 2;
             }
-            else if (age >= 22 && age <= 27)
+            else if (_currentPlayerAge >= 22 && _currentPlayerAge <= 27)
             {
                 return 1;
             }
-            else if (age >= 28 && age <= 31)
+            else if (_currentPlayerAge >= 28 && _currentPlayerAge <= 31)
             {
                 return 0.5;
             }
 
             return 0.05;
         }
-
+        private int defineAge(Player player,DateTime gameDate)
+        {
+            var personId = player.PersonID;
+            var person = _personRepository.Retrieve(personId);
+            _currentPlayerAge = gameDate.Year - person.Birthday.Year;
+            return _currentPlayerAge;
+        }
         private void improveRandomSkill(Player player)
         {
             var randomSkill = new Random().Next(0, 5);
@@ -203,6 +250,35 @@ namespace BusinessLogicLayer.Services
                     break;
                 case 5:
                     player.Dribbling++;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        private void decreaseRandomSkill(Player player)
+        {
+            var randomSkill = new Random().Next(0, 5);
+
+            switch (randomSkill)
+            {
+                case 0:
+                    player.Speed--;
+                    break;
+                case 1:
+                    player.Strike--;
+                    break;
+                case 2:
+                    player.Physics--;
+                    break;
+                case 3:
+                    player.Defending--;
+                    break;
+                case 4:
+                    player.Passing--;
+                    break;
+                case 5:
+                    player.Dribbling--;
                     break;
 
                 default:
