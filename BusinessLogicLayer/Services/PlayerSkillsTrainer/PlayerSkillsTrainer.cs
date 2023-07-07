@@ -17,6 +17,12 @@ namespace BusinessLogicLayer.Services
         PlayerGeneration _playerGeneration;
         PlayerInvolvementLastMatchChecker _playerInvolvementLastMatchChecker;
 
+        public delegate void PlayerGrowUpHandler(Player player);
+        public event PlayerGrowUpHandler? OnPlayerGrowUp;
+
+        public delegate void PlayerGrowDownHandler(Player player);
+        public event PlayerGrowDownHandler? OnPlayerGrowDown;
+
         int _currentPlayerAge;
 
         public PlayerSkillsTrainer()
@@ -77,12 +83,12 @@ namespace BusinessLogicLayer.Services
                     }
                     else if (processChance(percent))
                     {
-                        improveRandomSkill(player);
+                        changeStats(player);
                         var oldRating = player.Rating; 
                         player.Rating = calculatePlayerStats(player);
                         if(oldRating != player.Rating)
                         {
-                            //event
+                            OnPlayerGrowUp?.Invoke(player);
                         }
                     }
                     if(isOldPlayer())
@@ -90,12 +96,12 @@ namespace BusinessLogicLayer.Services
                         var decreaseCoef = oldPlayerDecreaseCoeff();
                         if(processChance(decreaseCoef))
                         {
-                            decreaseRandomSkill(player);
+                            changeStats(player,false);
                             var oldRating = player.Rating;
                             player.Rating = calculatePlayerStats(player);
                             if (oldRating != player.Rating)
                             {
-                                //event
+                                OnPlayerGrowUp?.Invoke(player);
                             }
                         }
                     }
@@ -227,58 +233,30 @@ namespace BusinessLogicLayer.Services
             _currentPlayerAge = gameDate.Year - person.Birthday.Year;
             return _currentPlayerAge;
         }
-        private void improveRandomSkill(Player player)
+        private void changeStats(Player player,bool isUpgade = true)
         {
+            int updatingValue = isUpgade ? 1 : -1;
             var randomSkill = new Random().Next(0, 5);
 
             switch (randomSkill)
             {
                 case 0:
-                    player.Speed++;
+                    player.Speed += updatingValue;
                     break;
                 case 1:
-                    player.Strike++;
+                    player.Strike += updatingValue;
                     break;
                 case 2:
-                    player.Physics++;
+                    player.Physics += updatingValue;
                     break;
                 case 3:
-                    player.Defending++;
+                    player.Defending += updatingValue;
                     break;
                 case 4:
-                    player.Passing++;
+                    player.Passing += updatingValue;
                     break;
                 case 5:
-                    player.Dribbling++;
-                    break;
-
-                default:
-                    break;
-            }
-        }
-        private void decreaseRandomSkill(Player player)
-        {
-            var randomSkill = new Random().Next(0, 5);
-
-            switch (randomSkill)
-            {
-                case 0:
-                    player.Speed--;
-                    break;
-                case 1:
-                    player.Strike--;
-                    break;
-                case 2:
-                    player.Physics--;
-                    break;
-                case 3:
-                    player.Defending--;
-                    break;
-                case 4:
-                    player.Passing--;
-                    break;
-                case 5:
-                    player.Dribbling--;
+                    player.Dribbling += updatingValue;
                     break;
 
                 default:

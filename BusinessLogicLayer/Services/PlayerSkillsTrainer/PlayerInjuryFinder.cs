@@ -5,9 +5,10 @@ namespace BusinessLogicLayer.Services
 {
     public class PlayerInjuryFinder
     {
+        private static int _criticalEnduranceLevel = 40;
         private bool isMayBeInjuried(Player player)
         {
-            if(player.Endurance < 40)
+            if(player.Endurance < _criticalEnduranceLevel)
             {
                 return true;
             }
@@ -34,7 +35,7 @@ namespace BusinessLogicLayer.Services
         }   
         private bool isWillBeInjuried(Player player)
         {
-            var injuryChance = 40 - player.Endurance;
+            var injuryChance = _criticalEnduranceLevel - player.Endurance;
 
             var randomNum = new Random().Next(0, 100);
             if(randomNum <= injuryChance)
