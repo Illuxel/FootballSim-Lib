@@ -11,6 +11,8 @@ namespace BusinessLogicLayer.Services
         private MatchResult _matchData;
         private TeamForMatchCreator _teamForMatchCreator;
         private PlayerInMatchRepository _playerInMatchRepository;
+        private DateTime _matchDate;
+        private Dictionary<string,Player> _playedPlayers;
         public MatchResult MatchData { get { return _matchData; } }
 
         public StrategyType HomeTeamStrategy
@@ -74,6 +76,8 @@ namespace BusinessLogicLayer.Services
 
             _isMatcFinished = false;
             _isStrategyChanged = false;
+
+            _playedPlayers = new Dictionary<string,Player>();
         }
         public MatchGenerator(Match match)
         {
@@ -93,6 +97,8 @@ namespace BusinessLogicLayer.Services
 
             _isMatcFinished = false;
             _isStrategyChanged = false;
+            
+            _playedPlayers = new Dictionary<string,Player>();
         }
         public void StartGenerating()
         {
@@ -104,7 +110,7 @@ namespace BusinessLogicLayer.Services
             var currentMinute = 0;
             var firstTime = true;
             var strategyEventName = "BallControl";
-
+            _matchDate = DateTime.Parse(_matchRepository.RetrieveMatchById(_matchData.MatchID).MatchDate);
             //
 
             while (!_isMatcFinished)
@@ -215,6 +221,9 @@ namespace BusinessLogicLayer.Services
             var playersInMatch = MatchData.HomeTeam.PlayersInMatch.Concat(MatchData.GuestTeam.PlayersInMatch).ToList();
             _playerInMatchRepository.Insert(playersInMatch);
 
+            var players = _playedPlayers.Values.ToList();
+            updateEnduranceValuesForPlayers(players);
+            
             //finalizeGeneration();
         }
 
@@ -277,25 +286,59 @@ namespace BusinessLogicLayer.Services
 
         private void enduranceDecrease()
         {
-            var matchDate = _matchRepository.RetrieveMatchById(_matchData.MatchID).MatchDate;
-            var date = DateTime.Parse(matchDate);
-
-            var playersOnField = MatchData.HomeTeam.MainPlayers.Values.Concat(MatchData.GuestTeam.MainPlayers.Values);
-
-            foreach (var player in playersOnField)
+            foreach (var player in MatchData.HomeTeam.MainPlayers.Values)
             {
-                if(player.CurrentPlayer == null)
+                if (player.CurrentPlayer == null)
                 {
                     break;
                 }
-                player.CurrentPlayer.Endurance -= (int)Math.Round(player.CurrentPlayer.Endurance * 0.02);
-                if(_playerInjuryFinder.IsInjuried(player.CurrentPlayer))
+                if (!_playerInjuryFinder.IsAlreadyInjuried(player.CurrentPlayer))
                 {
-                    _playerInjuryFinder.SetInjury(player.CurrentPlayer, date);
-                    _playerRepository.Update(player.CurrentPlayer);
+                    updatePlayerEndurance(player.CurrentPlayer);
+                    checkAndSetPlayerInjury(player.CurrentPlayer);
+                }
+            }
+
+            foreach (var player in MatchData.GuestTeam.MainPlayers.Values)
+            {
+                if (player.CurrentPlayer == null)
+                {
+                    break;
+                }
+                if (!_playerInjuryFinder.IsAlreadyInjuried(player.CurrentPlayer))
+                {
+                    updatePlayerEndurance(player.CurrentPlayer);
+                    checkAndSetPlayerInjury(player.CurrentPlayer);
                 }
             }
         }
+
+        private void updatePlayerEndurance(Player currentPlayer)
+        {
+            if (_playedPlayers.TryGetValue(currentPlayer.ContractID, out var playerObject))
+            {
+                playerObject.Endurance -= (int)Math.Round(currentPlayer.Endurance * 0.02);
+            }
+            else
+            {
+                currentPlayer.Endurance -= (int)Math.Round(currentPlayer.Endurance * 0.02);
+                _playedPlayers.Add(currentPlayer.ContractID, currentPlayer);
+            }
+        }
+
+        private void checkAndSetPlayerInjury(Player currentPlayer)
+        {
+            if (_playerInjuryFinder.IsInjuried(currentPlayer))
+            {
+                _playerInjuryFinder.SetInjury(currentPlayer, _matchDate);
+            }
+        }
+
+        private void updateEnduranceValuesForPlayers(List<Player> players)
+        {
+            _playerRepository.UpdateEndurance(players);
+        }
+
         private void finalizeGeneration()
         {
             foreach (var gameEvent in _matchData.MatchHistory)
