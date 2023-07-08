@@ -3,6 +3,7 @@ using DatabaseLayer.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace BusinessLogicLayer.Services
 {
@@ -288,11 +289,7 @@ namespace BusinessLogicLayer.Services
         {
             foreach (var player in MatchData.HomeTeam.MainPlayers.Values)
             {
-                if (player.CurrentPlayer == null)
-                {
-                    break;
-                }
-                if (!_playerInjuryFinder.IsAlreadyInjuried(player.CurrentPlayer))
+                if (player.CurrentPlayer != null)
                 {
                     updatePlayerEndurance(player.CurrentPlayer);
                     checkAndSetPlayerInjury(player.CurrentPlayer);
@@ -301,11 +298,7 @@ namespace BusinessLogicLayer.Services
 
             foreach (var player in MatchData.GuestTeam.MainPlayers.Values)
             {
-                if (player.CurrentPlayer == null)
-                {
-                    break;
-                }
-                if (!_playerInjuryFinder.IsAlreadyInjuried(player.CurrentPlayer))
+                if (player.CurrentPlayer != null)
                 {
                     updatePlayerEndurance(player.CurrentPlayer);
                     checkAndSetPlayerInjury(player.CurrentPlayer);
@@ -317,13 +310,24 @@ namespace BusinessLogicLayer.Services
         {
             if (_playedPlayers.TryGetValue(currentPlayer.ContractID, out var playerObject))
             {
-                playerObject.Endurance -= (int)Math.Round(currentPlayer.Endurance * 0.02);
+                if(_playerInjuryFinder.IsAlreadyInjuried(playerObject) == false)
+                {
+                    playerObject.Endurance -= defineEnduranceCost(playerObject);
+                }
             }
             else
             {
-                currentPlayer.Endurance -= (int)Math.Round(currentPlayer.Endurance * 0.02);
-                _playedPlayers.Add(currentPlayer.ContractID, currentPlayer);
+                if(_playerInjuryFinder.IsAlreadyInjuried(currentPlayer) == false)
+                {
+                    _playedPlayers.Add(currentPlayer.ContractID, currentPlayer);
+                    _playedPlayers[currentPlayer.ContractID].Endurance -= defineEnduranceCost(_playedPlayers[currentPlayer.ContractID]);
+                }
             }
+        }
+
+        private int defineEnduranceCost(Player player)
+        {
+            return (int)Math.Round(player.Endurance * 0.02);
         }
 
         private void checkAndSetPlayerInjury(Player currentPlayer)
