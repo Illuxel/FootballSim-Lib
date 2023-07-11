@@ -3,7 +3,6 @@ using DatabaseLayer.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 
 namespace BusinessLogicLayer.Services
 {
@@ -14,6 +13,7 @@ namespace BusinessLogicLayer.Services
         private PlayerInMatchRepository _playerInMatchRepository;
         private DateTime _matchDate;
         private Dictionary<string,Player> _playedPlayers;
+        
         public MatchResult MatchData { get { return _matchData; } }
 
         public StrategyType HomeTeamStrategy
@@ -224,7 +224,7 @@ namespace BusinessLogicLayer.Services
 
             var players = _playedPlayers.Values.ToList();
             updateEnduranceValuesForPlayers(players);
-            
+
             //finalizeGeneration();
         }
 
@@ -312,7 +312,8 @@ namespace BusinessLogicLayer.Services
             {
                 if(_playerInjuryFinder.IsAlreadyInjuried(playerObject) == false)
                 {
-                    playerObject.Endurance -= defineEnduranceCost(playerObject);
+                    var enduranceCost = defineEnduranceCost(playerObject);
+                    playerObject.Endurance -= enduranceCost;
                 }
             }
             else
@@ -320,7 +321,8 @@ namespace BusinessLogicLayer.Services
                 if(_playerInjuryFinder.IsAlreadyInjuried(currentPlayer) == false)
                 {
                     _playedPlayers.Add(currentPlayer.ContractID, currentPlayer);
-                    _playedPlayers[currentPlayer.ContractID].Endurance -= defineEnduranceCost(_playedPlayers[currentPlayer.ContractID]);
+                    var enduranceCost = defineEnduranceCost(_playedPlayers[currentPlayer.ContractID]);
+                    _playedPlayers[currentPlayer.ContractID].Endurance -= enduranceCost;
                 }
             }
         }
