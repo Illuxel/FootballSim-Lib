@@ -3,6 +3,7 @@ using DatabaseLayer.DBSettings;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Linq;
 
 namespace DatabaseLayer.Repositories
 {
@@ -35,6 +36,39 @@ namespace DatabaseLayer.Repositories
                 connection.Open();
                 var response = connection.Query<PlayerInMatch>("SELECT * FROM PlayerInMatch WHERE TeamId = @teamId", new { teamId }).AsList();
                 return response;
+            }
+        }
+
+        //key - teamId, Value - players
+        public Dictionary<string, List<string>> RetrieveByLastMatches()
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                var dynamicsResponse  = connection.Query(@"
+                    SELECT t.ID AS TeamID, pim.PlayerId AS PlayerID
+                    FROM (
+                        SELECT m.LeagueId, MAX(m.TourNumber) AS MaxTourNumber
+                        FROM Match m
+                        WHERE m.IsPlayed = 1
+                        GROUP BY m.LeagueId
+                    ) last_matches
+                    JOIN Match m ON m.LeagueId = last_matches.LeagueId AND m.TourNumber = last_matches.MaxTourNumber
+                    JOIN Team t ON t.ID = m.HomeTeamId OR t.ID = m.GuestTeamId
+                    JOIN PlayerInMatch pim ON pim.MatchId = m.Id AND t.ID = pim.TeamId
+                    ORDER BY t.ID");
+
+                var result = new Dictionary<string, List<string>>();
+                foreach (var row in dynamicsResponse)
+                {
+                    if (!result.TryGetValue(row.TeamID, out List<string> players))
+                    {
+                        players = new List<string>();
+                        result[row.TeamID] = players;
+                    }
+                    players.Add(row.PlayerID);
+                }
+                return result;
             }
         }
 

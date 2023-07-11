@@ -54,17 +54,17 @@ namespace BusinessLogicLayer.Services
 
         public List<Goal> Goals;
 
-        public Guid? Winner 
+        public string? Winner 
         {
             get 
             {
                 if (HomeTeamGoals > GuestTeamGoals || GuestTeam.AllPlayers.Count < 18)
                 {
-                     return new Guid(HomeTeam.Id);
+                     return HomeTeam.Id;
                 } 
                 if (HomeTeamGoals < GuestTeamGoals || HomeTeam.AllPlayers.Count < 18)
                 {
-                     return new Guid(GuestTeam.Id);
+                     return GuestTeam.Id;
                 }
 
                 return null;

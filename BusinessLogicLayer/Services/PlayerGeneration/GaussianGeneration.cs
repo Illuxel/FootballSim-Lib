@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BusinessLogicLayer.Services.PlayerGeneration
+namespace BusinessLogicLayer.Services
 {
     internal class GaussianGeneration
     {

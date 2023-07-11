@@ -240,7 +240,6 @@ namespace DatabaseLayer.Repositories
                 }
             }
         }
-
     }
 }
 

@@ -2,7 +2,6 @@ using DatabaseLayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 
 namespace BusinessLogicLayer.Services
 {
@@ -29,10 +28,11 @@ namespace BusinessLogicLayer.Services
 
         private PlayerPositionDeterminer _playerPositionDeterminer { get; set; }
 
-        internal TeamForMatch()
+        internal TeamForMatch(string teamId,List<Player> allPlayers)
         {
+            Id = teamId;
             PlayersInMatch = new List<PlayerInMatch>();
-            AllPlayers = new List<Player>();
+            AllPlayers = allPlayers;
             MainPlayers = new Dictionary<int, TacticPlayerPosition>();
             SparePlayers = new List<Player>();
             SparedPlayers = new List<Player>();
@@ -43,7 +43,7 @@ namespace BusinessLogicLayer.Services
 
             foreach (var player in MainPlayers.Values)
             {
-                PlayersInMatch.Add(createPlayerInMatch(player.CurrentPlayer.ContractID));
+                PlayersInMatch.Add(createPlayerInMatch(player.CurrentPlayer.PersonID));
             }
         }
 

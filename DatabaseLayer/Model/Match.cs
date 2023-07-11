@@ -1,6 +1,4 @@
-﻿using DatabaseLayer.Enums;
-
-namespace DatabaseLayer
+﻿namespace DatabaseLayer
 {
     public class Match
     {
