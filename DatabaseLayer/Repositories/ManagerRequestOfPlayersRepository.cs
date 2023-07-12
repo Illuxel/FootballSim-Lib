@@ -19,14 +19,14 @@ namespace DatabaseLayer.Repositories
             }
         }
 
-        public ManagerRequestOfPlayers Retrieve(string Id)
+        public List<ManagerRequestOfPlayers> Retrieve(string TeamId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
-                var response = connection.QueryFirstOrDefault<ManagerRequestOfPlayers>(@"
-                SELECT * FROM ManagerRequestOfPlayers 
-                WHERE Id = @Id", Id);
+                var response = connection.Query<ManagerRequestOfPlayers>(
+                    @"SELECT * FROM ManagerRequestOfPlayers WHERE TeamId = @TeamId",
+                    new { TeamId }).ToList();
                 return response;
             }
         }
@@ -35,7 +35,7 @@ namespace DatabaseLayer.Repositories
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
-                var createdDate = request.CreatedDate.ToString("dd-MM-yyyy");
+                var createdDate = request.CreatedDate.ToString("yyyy-MM-dd");
                 var criteria = request.Criteria.ToString();
                 connection.Open();
                 var rowsAffected = connection.Execute(
@@ -58,7 +58,7 @@ namespace DatabaseLayer.Repositories
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
-                var createdDate = request.CreatedDate.ToString("dd-MM-yyyy");
+                var createdDate = request.CreatedDate.ToString("yyyy-MM-dd");
                 connection.Open();
                 var rowsAffected = connection.Execute(
                     @"UPDATE ManagerRequestOfPlayers 

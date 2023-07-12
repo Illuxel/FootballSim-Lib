@@ -27,8 +27,14 @@ namespace DatabaseLayer.Model
 
         internal string? CriteriaJSON
         {
-            get { return criteriaJSON; }
-            set { criteriaJSON = value; }
+            get 
+            { 
+                return criteriaJSON; 
+            }
+            set 
+            { 
+                criteriaJSON = value; 
+            }
         }
 
         public ManagerRequestOfPlayers()
