@@ -36,18 +36,19 @@ namespace DatabaseLayer.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 var createdDate = request.CreatedDate.ToString("dd-MM-yyyy");
-                var criteria = request.Criteria.ToString(); 
+                var criteria = request.Criteria.ToString();
                 connection.Open();
                 var rowsAffected = connection.Execute(
-                    @"INSERT INTO ManagerRequestOfPlayers (Id, ManagerId, TeamId, Status, CreatedDate, Criteria)
-                    VALUES (@Id, @ManagerId, @TeamId, @Status, @CreatedDate, @Criteria)",
+                    @"INSERT INTO ManagerRequestOfPlayers (Id, ManagerId, TeamId, Status, CreatedDate, CriteriaJSON)
+            VALUES (@Id, @ManagerId, @TeamId, @Status, @CreatedDate, @CriteriaJSON)",
                     new
                     {
+                        request.Id,
                         request.ManagerId,
                         request.TeamId,
                         request.Status,
-                        createdDate,
-                        criteria
+                        CreatedDate = createdDate,
+                        request.CriteriaJSON
                     });
                 return rowsAffected == 1;
             }
@@ -58,7 +59,6 @@ namespace DatabaseLayer.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 var createdDate = request.CreatedDate.ToString("dd-MM-yyyy");
-                var criteria = request.Criteria.ToString();
                 connection.Open();
                 var rowsAffected = connection.Execute(
                     @"UPDATE ManagerRequestOfPlayers 
@@ -66,7 +66,7 @@ namespace DatabaseLayer.Repositories
                     TeamId = @TeamId, 
                     Status = @Status, 
                     CreatedDate = @CreatedDate, 
-                    Criteria = @Criteria
+                    CriteriaJSON = @CriteriaJSON
                     WHERE Id = @Id",
                     new
                     {
@@ -74,7 +74,8 @@ namespace DatabaseLayer.Repositories
                         request.TeamId,
                         request.Status,
                         createdDate,
-                        criteria
+                        request.CriteriaJSON,
+                        request.Id
                     });
 
                 return rowsAffected == 1;

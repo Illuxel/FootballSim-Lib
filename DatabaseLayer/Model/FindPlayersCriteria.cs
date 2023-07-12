@@ -10,9 +10,14 @@ namespace DatabaseLayer.Model
         public int RatingFrom { get; set; }
         public int RatingTo { get; set; }
 
-        public override string ToString()
+        public string ConvertToJSON(FindPlayersCriteria findPlayersCriteria)
         {
-            return JsonConvert.SerializeObject(this,Formatting.Indented);
+            return JsonConvert.SerializeObject(findPlayersCriteria, Formatting.Indented);
+        }
+
+        public FindPlayersCriteria Deserialize(string findPlayersCriteria)
+        {
+            return JsonConvert.DeserializeObject<FindPlayersCriteria>(findPlayersCriteria);
         }
     }
 }
