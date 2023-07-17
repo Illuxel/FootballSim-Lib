@@ -8,8 +8,10 @@ namespace DatabaseLayer.Model
         public string Id { get; set; }
         public string ManagerId { get; set; }
         public string TeamId { get; set; }
+        public int BudgetLimit { get; set; }
         public ManagerRequestStatus Status { get; set; }
         public DateTime CreatedDate { get; set; }
+        public DateTime FinishDate { get; set; }
 
         private string? criteriaJSON;
 

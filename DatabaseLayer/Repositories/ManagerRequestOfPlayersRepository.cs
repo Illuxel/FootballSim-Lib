@@ -30,24 +30,37 @@ namespace DatabaseLayer.Repositories
                 return response;
             }
         }
+        public ManagerRequestOfPlayers RetrieveById(string Id)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                var response = connection.Query<ManagerRequestOfPlayers>(
+                    @"SELECT * FROM ManagerRequestOfPlayers WHERE Id = @Id",
+                    Id).First();
+                return response;
+            }
+        }
 
         public bool Insert(ManagerRequestOfPlayers request)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 var createdDate = request.CreatedDate.ToString("yyyy-MM-dd");
-                var criteria = request.Criteria.ToString();
+                var finishDate = request.FinishDate.ToString("yyyy-MM-dd");
                 connection.Open();
                 var rowsAffected = connection.Execute(
-                    @"INSERT INTO ManagerRequestOfPlayers (Id, ManagerId, TeamId, Status, CreatedDate, CriteriaJSON)
-            VALUES (@Id, @ManagerId, @TeamId, @Status, @CreatedDate, @CriteriaJSON)",
+                    @"INSERT INTO ManagerRequestOfPlayers (Id, ManagerId, TeamId, Status, BudgetLimit, CreatedDate, FinishDate, CriteriaJSON)
+            VALUES (@Id, @ManagerId, @TeamId, @Status, @BudgetLimit, @CreatedDate, @FinishDate, @CriteriaJSON)",
                     new
                     {
                         request.Id,
                         request.ManagerId,
                         request.TeamId,
                         request.Status,
+                        request.BudgetLimit,
                         CreatedDate = createdDate,
+                        FinishDate = finishDate,
                         request.CriteriaJSON
                     });
                 return rowsAffected == 1;
@@ -59,23 +72,28 @@ namespace DatabaseLayer.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 var createdDate = request.CreatedDate.ToString("yyyy-MM-dd");
+                var finishDate = request.FinishDate.ToString("yyyy-MM-dd");
                 connection.Open();
                 var rowsAffected = connection.Execute(
                     @"UPDATE ManagerRequestOfPlayers 
                     SET ManagerId = @ManagerId, 
                     TeamId = @TeamId, 
                     Status = @Status, 
-                    CreatedDate = @CreatedDate, 
+                    BudgetLimit = @BudgetLimit,
+                    CreatedDate = @CreatedDate,
+                    FinishDate = @FinishDate
                     CriteriaJSON = @CriteriaJSON
                     WHERE Id = @Id",
                     new
                     {
+                        request.Id,
                         request.ManagerId,
                         request.TeamId,
                         request.Status,
-                        createdDate,
-                        request.CriteriaJSON,
-                        request.Id
+                        request.BudgetLimit,
+                        CreatedDate = createdDate,
+                        FinishDate = finishDate,
+                        request.CriteriaJSON
                     });
 
                 return rowsAffected == 1;

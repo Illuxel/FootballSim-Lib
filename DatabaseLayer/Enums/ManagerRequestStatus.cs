@@ -4,6 +4,7 @@
     {
         Done,
         InProgress,
+        OnReviewByTheDirector,
         Failed
     }
 }

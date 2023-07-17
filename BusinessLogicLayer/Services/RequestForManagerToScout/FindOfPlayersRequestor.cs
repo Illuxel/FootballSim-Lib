@@ -1,6 +1,7 @@
 ﻿using DatabaseLayer.Enums;
 using DatabaseLayer.Model;
 using DatabaseLayer.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,9 +14,13 @@ namespace BusinessLogicLayer.Services
         {
             _managerRequestRep = new ManagerRequestOfPlayersRepository();
         }
-
-        public void Create(ManagerRequestOfPlayers request)
+        public void Create(string managerId,string teamId, DateTime createDate)
         {
+            var request = new ManagerRequestOfPlayers();
+            request.ManagerId = managerId;
+            request.TeamId = teamId;
+            request.CreatedDate = createDate;
+            request.Status = ManagerRequestStatus.InProgress;
             _managerRequestRep.Insert(request);
         }
 
