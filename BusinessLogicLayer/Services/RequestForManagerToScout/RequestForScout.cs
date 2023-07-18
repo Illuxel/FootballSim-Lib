@@ -1,10 +1,9 @@
 ﻿using DatabaseLayer.Repositories;
 using System;
-using System.CodeDom;
 
 namespace BusinessLogicLayer.Services
 {
-    public class RequestForScout
+    internal class RequestForScout
     {
         ManagerRequestOfPlayersRepository _managerRequestOfPlayersRepository;
         public RequestForScout()
@@ -26,17 +25,19 @@ namespace BusinessLogicLayer.Services
             var requestFromManager = _managerRequestOfPlayersRepository.RetrieveById(id);
             requestFromManager.BudgetLimit = bugetLimit;
             requestFromManager.FinishDate = finishDate;
-            requestFromManager.Criteria.AgeTo = ageTo;
-            requestFromManager.Criteria.RatingTo = ratingTo;
-            requestFromManager.Criteria.PositionCode = positionCode;
+            var criteria = requestFromManager.Criteria;
+            criteria.AgeTo = ageTo;
+            criteria.RatingTo = ratingTo;
+            criteria.PositionCode = positionCode;
             if(ageFrom != null)
             {
-                requestFromManager.Criteria.AgeFrom = ageFrom;
+                criteria.AgeFrom = ageFrom;
             }
             if(ratingFrom != null)
             {
-                requestFromManager.Criteria.RatingFrom = ratingFrom;
+                criteria.RatingFrom = ratingFrom;
             }
+            requestFromManager.Criteria = criteria;
             _managerRequestOfPlayersRepository.Update(requestFromManager);
         }
     }  

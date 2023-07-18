@@ -12,11 +12,19 @@ namespace DatabaseLayer.Model
 
         public string ConvertToJSON(FindPlayersCriteria findPlayersCriteria)
         {
+            if(findPlayersCriteria == null)
+            {
+                return string.Empty;
+            }
             return JsonConvert.SerializeObject(findPlayersCriteria, Formatting.Indented);
         }
 
-        public FindPlayersCriteria Deserialize(string findPlayersCriteria)
+        public FindPlayersCriteria? Deserialize(string findPlayersCriteria)
         {
+            if(findPlayersCriteria == null)
+            {
+                return new FindPlayersCriteria();
+            }
             return JsonConvert.DeserializeObject<FindPlayersCriteria>(findPlayersCriteria);
         }
     }

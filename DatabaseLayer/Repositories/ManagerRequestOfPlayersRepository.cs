@@ -37,7 +37,7 @@ namespace DatabaseLayer.Repositories
                 connection.Open();
                 var response = connection.Query<ManagerRequestOfPlayers>(
                     @"SELECT * FROM ManagerRequestOfPlayers WHERE Id = @Id",
-                    Id).First();
+                    new { Id }).First();
                 return response;
             }
         }
@@ -81,7 +81,7 @@ namespace DatabaseLayer.Repositories
                     Status = @Status, 
                     BudgetLimit = @BudgetLimit,
                     CreatedDate = @CreatedDate,
-                    FinishDate = @FinishDate
+                    FinishDate = @FinishDate,
                     CriteriaJSON = @CriteriaJSON
                     WHERE Id = @Id",
                     new

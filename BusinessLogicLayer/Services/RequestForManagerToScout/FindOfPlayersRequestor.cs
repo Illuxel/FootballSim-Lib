@@ -7,12 +7,17 @@ using System.Linq;
 
 namespace BusinessLogicLayer.Services
 {
-    public class FindOfPlayersRequestor
+    internal class FindOfPlayersRequestor
     {
+        private string _requestId;
         ManagerRequestOfPlayersRepository _managerRequestRep;
         public FindOfPlayersRequestor()
         {
             _managerRequestRep = new ManagerRequestOfPlayersRepository();
+        }
+        public string GetLastRequestId()
+        {
+            return _requestId;
         }
         public void Create(string managerId,string teamId, DateTime createDate)
         {
@@ -22,6 +27,7 @@ namespace BusinessLogicLayer.Services
             request.CreatedDate = createDate;
             request.Status = ManagerRequestStatus.InProgress;
             _managerRequestRep.Insert(request);
+            _requestId = request.Id;
         }
 
         public List<ManagerRequestOfPlayers> Get(string teamId, ManagerRequestStatus? status = null)
