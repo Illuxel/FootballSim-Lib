@@ -26,6 +26,11 @@ namespace BusinessLogicLayer.Services
             return generatePlayer(GetRandomPlayerPosition(), value);
         }
 
+        public void SetMaxMinValue(int maxValue, int minValue)
+        {
+            _maxValue = maxValue;
+            _minValue = minValue;
+        }
         private Player generatePlayer(PlayerPosition position, int value = 0)
         {
             Player player = new Player();
