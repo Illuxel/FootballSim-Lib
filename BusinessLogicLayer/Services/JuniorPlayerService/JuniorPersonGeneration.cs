@@ -15,6 +15,8 @@ namespace BusinessLogicLayer.Services
         PlayerRepository _playerRepository;
         PersonNameGenaration _personNameGenaration;
         PlayerGeneration _playerGeneration;
+        SeasonValueCreator _seasonValueCreator;
+        ContractRepository _contractRepository;
 
         Dictionary<int, List<PlayerPosition>> _positionsByKey;
 
@@ -24,8 +26,10 @@ namespace BusinessLogicLayer.Services
             _playerRepository = new PlayerRepository();
             _personNameGenaration = new PersonNameGenaration();
             _playerGeneration = new PlayerGeneration();
+            _seasonValueCreator = new SeasonValueCreator();
+            _contractRepository = new ContractRepository();
         }
-        public void GenerateNewJuniorPerson(DateTime birthDate,int countryId, string? name = null, string? surname = null)
+        public void GenerateNewJuniorPerson(string teamId,int gameYear,DateTime birthDate,int countryId, string? name = null, string? surname = null)
         {
             if (name != null || surname != null)
             {
@@ -42,8 +46,7 @@ namespace BusinessLogicLayer.Services
 
             createNewJuniorPerson(birthDate, countryId);
 
-            createNewJuniorPlayer();
-
+            createNewJuniorPlayer(teamId,gameYear);
         }
 
         private void setPositionDict()
@@ -98,7 +101,7 @@ namespace BusinessLogicLayer.Services
             _personRepository.Insert(_juniorPerson);
         }
 
-        private void createNewJuniorPlayer()
+        private void createNewJuniorPlayer(string teamID,int gameYear)
         {
             int maxRating = 60,minRating= 45;
 
@@ -112,8 +115,7 @@ namespace BusinessLogicLayer.Services
             setPlayerPersonId();
             setJuniorStatus();
 
-            Console.WriteLine(_juniorPlayer.Rating);
-
+            createNewContract(teamID,gameYear);
             _playerRepository.Insert(_juniorPlayer);
         }   
         private void setPersonNameSurname(string name,string surname)
@@ -186,5 +188,30 @@ namespace BusinessLogicLayer.Services
             return positions[randomNum];
         }
 
+        private void createNewContract(string teamId,int gameYear)
+        {
+            var contract = new Contract();
+            contract.PersonId = _juniorPerson.Id;
+            contract.TeamId = teamId;
+            var startSeason = _seasonValueCreator.GetSeason(gameYear);
+            var endSeason = _seasonValueCreator.GetFutureSeason(startSeason, 3);
+            contract.SeasonFrom = startSeason;
+            contract.SeasonTo = endSeason;
+            contract.Salary = getJuniorContractSalary();
+
+            _contractRepository.Insert(contract);
+            _juniorPlayer.ContractID = contract.Id;
+        }
+
+        private int getJuniorContractSalary()
+        {
+            int minSalary = 216;
+            int maxSalary = 234;
+
+            Random random = new Random();
+            int randomNum = random.Next(minSalary, maxSalary);
+
+            return randomNum * 1000;
+        }
     }
 }

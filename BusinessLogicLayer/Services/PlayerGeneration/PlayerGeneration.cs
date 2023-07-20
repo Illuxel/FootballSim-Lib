@@ -41,6 +41,9 @@ namespace BusinessLogicLayer.Services
             var gaussianGenerator = new GaussianGeneration(value, _error, _minValue, _maxValue);
 
             player.Strike = Convert.ToInt32(gaussianGenerator.Next() * playersCoef.StrikeCoef);
+            player.Endurance = 100;
+            //Немає кєфу для ударів
+            /*player.Kick = Convert.ToInt32(gaussianGenerator.Next() * playersCoef);*/
             player.Speed = Convert.ToInt32(gaussianGenerator.Next() * playersCoef.SpeedCoef);
             player.Physics = Convert.ToInt32(gaussianGenerator.Next() * playersCoef.PhysicsCoef);
             player.Defending = Convert.ToInt32(gaussianGenerator.Next() * playersCoef.DefendingCoef);

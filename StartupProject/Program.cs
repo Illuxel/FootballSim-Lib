@@ -1,4 +1,10 @@
 using BusinessLogicLayer.Services;
+using DatabaseLayer;
+using DatabaseLayer.Repositories;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace StartupProject
 {
@@ -6,13 +12,8 @@ namespace StartupProject
     {
         public static void Main(string[] args)
         {
-            var serv = new JuniorPersonGeneration();
-            serv.GenerateNewJuniorPerson(new System.DateTime(2000, 1, 1), 1, null, "Surname");
-            serv.GenerateNewJuniorPerson(new System.DateTime(2000, 1, 1), 1, null, "Surname");
-            serv.GenerateNewJuniorPerson(new System.DateTime(2000, 1, 1), 1, null, "Surname");
-            serv.GenerateNewJuniorPerson(new System.DateTime(2000, 1, 1), 1, null, "Surname");
-            serv.GenerateNewJuniorPerson(new System.DateTime(2000, 1, 1), 1, null, "Surname");
-            serv.GenerateNewJuniorPerson(new System.DateTime(2000, 1, 1), 1, null, "Surname");
+           var serv = new JuniorPersonGeneration();
+            serv.GenerateNewJuniorPerson("1", 2020, new DateTime(2000, 1, 1), 1, "GG");
         }
     }
 }
