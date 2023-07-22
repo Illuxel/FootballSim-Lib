@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Data;
 using System;
-using System.Numerics;
 
 namespace DatabaseLayer.Repositories
 {
@@ -23,6 +22,11 @@ namespace DatabaseLayer.Repositories
             {
                 return retrieve("Contract.TeamID = @teamId", new { teamId });
             }
+        }
+
+        public List<Player> RetrieveJuniorsByTeam(string teamId)
+        {
+            return retrieve("Contract.TeamID = @teamId AND IsJunior = 1", new { teamId });
         }
 
         private List<Player> retrieve(string condition, object queryParams = null)
