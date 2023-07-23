@@ -164,10 +164,11 @@ namespace BusinessLogicLayer.Services
 
                         _personRepos.Insert(person);
 
-                        var contract = new Contract();
+                        var seasonTo = _seasonValueCreator.GetFutureSeason(currentSeason, 3);
 
-                        contract.DateFrom = new DateTime(_seasonValueCreator.GetStartYear(currentSeason), 06, 1); 
-                        contract.DateTo = new DateTime(contract.DateFrom.Year + 3, 05, 31);
+                        var contract = new Contract();
+                        contract.SeasonFrom = currentSeason; 
+                        contract.SeasonTo = seasonTo;
                         contract.PersonId = person.Id;
                         contract.TeamId = team.Id;
                         contract.Salary = getContractPrice(extPlayer.Rating);

@@ -100,7 +100,7 @@ namespace DatabaseLayer.Repositories
                     var rowsAffected = connection.Execute(
                         @"INSERT INTO Player (PersonID, PositionCode, ContractId, Speed, Kick, 
                             Endurance, Strike, Physics, Defending, Passing, Dribbling, Rating, IndexPosition, 
-                            CurrentPlayerRating, PlayerPositionGroup, InjuredTo) 
+                            CurrentRating, PlayerPositionGroup, InjuredTo) 
                         VALUES (@PersonID, @PositionCode, @ContractId, @Speed, @Kick, 
                             @Endurance, @Strike, @Physics, @Defending, @Passing, @Dribbling, @Rating, @IndexPosition, 
                             @CurrentPlayerRating, @PlayerPositionGroup, @InjuredTo)",
