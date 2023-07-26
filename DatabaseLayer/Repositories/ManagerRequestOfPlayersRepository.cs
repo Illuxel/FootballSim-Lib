@@ -50,8 +50,8 @@ namespace DatabaseLayer.Repositories
                 var finishDate = request.FinishDate.ToString("yyyy-MM-dd");
                 connection.Open();
                 var rowsAffected = connection.Execute(
-                    @"INSERT INTO ManagerRequestOfPlayers (Id, ManagerId, TeamId, Status, BudgetLimit, CreatedDate, FinishDate, CriteriaJSON)
-            VALUES (@Id, @ManagerId, @TeamId, @Status, @BudgetLimit, @CreatedDate, @FinishDate, @CriteriaJSON)",
+                    @"INSERT INTO ManagerRequestOfPlayers (Id, ManagerId, TeamId, Status, BudgetLimit, CreatedDate, FinishDate, PlayerId, CriteriaJSON)
+            VALUES (@Id, @ManagerId, @TeamId, @Status, @BudgetLimit, @CreatedDate, @FinishDate, @PlayerId, @CriteriaJSON)",
                     new
                     {
                         request.Id,
@@ -61,6 +61,7 @@ namespace DatabaseLayer.Repositories
                         request.BudgetLimit,
                         CreatedDate = createdDate,
                         FinishDate = finishDate,
+                        request.PlayerId,
                         request.CriteriaJSON
                     });
                 return rowsAffected == 1;
@@ -82,6 +83,7 @@ namespace DatabaseLayer.Repositories
                     BudgetLimit = @BudgetLimit,
                     CreatedDate = @CreatedDate,
                     FinishDate = @FinishDate,
+                    PlayerId = @PlayerId,
                     CriteriaJSON = @CriteriaJSON
                     WHERE Id = @Id",
                     new
@@ -93,6 +95,7 @@ namespace DatabaseLayer.Repositories
                         request.BudgetLimit,
                         CreatedDate = createdDate,
                         FinishDate = finishDate,
+                        request.PlayerId,
                         request.CriteriaJSON
                     });
 
