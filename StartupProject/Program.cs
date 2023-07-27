@@ -16,7 +16,7 @@ namespace StartupProject
             var request = new ManagerRequestOfPlayersRepository().RetrieveById(id);
             
             var scoutLookAt = new ScoutLookingForPlayers();
-            scoutLookAt.ConfirmRequest(request, "B5551778D1672E4E544F32BFFAD52BA6","ae71f294-86ff-452d-8bdb-f21989180406");
+            scoutLookAt.ConfirmRequest(request, "B5551778D1672E4E544F32BFFAD52BA6","ae71f294-86ff-452d-8bdb-f21989180406",DateTime.Now);
         }
     }
 }

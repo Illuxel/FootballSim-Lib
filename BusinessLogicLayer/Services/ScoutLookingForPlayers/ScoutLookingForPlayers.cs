@@ -1,4 +1,5 @@
 ﻿using DatabaseLayer;
+using DatabaseLayer.Enums;
 using DatabaseLayer.Model;
 using DatabaseLayer.Repositories;
 using System;
@@ -46,13 +47,20 @@ namespace BusinessLogicLayer.Services
             return false;
         }
 
-        public void ConfirmRequest(ManagerRequestOfPlayers request, string playerTeamId,string playerId)
+        public void ConfirmRequest(ManagerRequestOfPlayers request, string playerTeamId,string playerId,DateTime date)
         {
+            if(date > request.FinishDate)
+            {
+                request.Status = ManagerRequestStatus.Failed;
+                return;
+            }
+            
             if(IsCorrectPlayerForRequest(request,playerTeamId,playerId) == false)
             {
                 return;
             }
             request.PlayerId = playerId;
+            request.Status = ManagerRequestStatus.OnReviewByTheDirector;
             _managerRequestOfPlayersRepository.Update(request);
         }
 
