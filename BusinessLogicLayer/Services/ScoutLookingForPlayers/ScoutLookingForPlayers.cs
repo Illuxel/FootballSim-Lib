@@ -46,8 +46,12 @@ namespace BusinessLogicLayer.Services
             return false;
         }
 
-        public void ConfirmRequest(ManagerRequestOfPlayers request, string playerId)
+        public void ConfirmRequest(ManagerRequestOfPlayers request, string playerTeamId,string playerId)
         {
+            if(IsCorrectPlayerForRequest(request,playerTeamId,playerId) == false)
+            {
+                return;
+            }
             request.PlayerId = playerId;
             _managerRequestOfPlayersRepository.Update(request);
         }
