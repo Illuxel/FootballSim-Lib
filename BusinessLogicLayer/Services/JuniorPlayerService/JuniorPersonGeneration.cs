@@ -1,5 +1,4 @@
-﻿using BusinessLogicLayer.Rules;
-using DatabaseLayer;
+﻿using DatabaseLayer;
 using DatabaseLayer.Enums;
 using DatabaseLayer.Repositories;
 using System;
@@ -45,7 +44,6 @@ namespace BusinessLogicLayer.Services
             }
 
             createNewJuniorPerson(birthDate, countryId);
-
             createNewJuniorPlayer(teamId,gameYear);
         }
 
@@ -144,7 +142,7 @@ namespace BusinessLogicLayer.Services
             _juniorPerson.CountryID = countryId;
         }
 
-        
+
 
         private PlayerPosition randomPositionProcessing()
         {
