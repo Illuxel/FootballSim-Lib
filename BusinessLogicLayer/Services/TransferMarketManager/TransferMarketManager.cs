@@ -6,7 +6,7 @@ using BusinessLogicLayer.Rules;
 using System.Linq;
 using DatabaseLayer.Model;
 
-namespace BusinessLogicLayer.Services.TransferMarketManager
+namespace BusinessLogicLayer.Services
 {
     public class TransferMarketManager
     {

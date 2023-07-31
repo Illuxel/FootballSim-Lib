@@ -12,6 +12,7 @@ namespace DatabaseLayer.Model
         public ManagerRequestStatus Status { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime FinishDate { get; set; }
+        public string PlayerId { get; set; }
 
         private string? criteriaJSON;
 
