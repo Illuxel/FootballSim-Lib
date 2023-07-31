@@ -11,6 +11,14 @@ namespace DatabaseLayer.Repositories
 {
     public class NationalResTabRepository
     {
+        public List<NationalResultTable> Retrieve()
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                return connection.Query<NationalResultTable>("SELECT * FROM NationalResultTable").AsList();
+            }
+        }
         public List<NationalResultTable> Retrieve(long leagueId, string season)
         {
             var result = new List<NationalResultTable>();
