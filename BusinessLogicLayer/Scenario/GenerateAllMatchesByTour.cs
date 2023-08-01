@@ -70,7 +70,7 @@ namespace BusinessLogicLayer.Scenario
             foreach (var matches in schedule)
             {
                 foreach(var match in matches.Value)
-                {            
+                {
                     _matchGenerator = new MatchGenerator(match);
                     _matchGenerator.StartGenerating();
                     
@@ -99,8 +99,7 @@ namespace BusinessLogicLayer.Scenario
             }
             foreach(var match in matches)
             {
-                if(teamsWithResult.TryGetValue(match.HomeTeamId,out NationalResultTable homeTeamTabRecord)
-                     && teamsWithResult.TryGetValue(match.GuestTeamId, out NationalResultTable guestTeamTabRecord))
+                if(teamsWithResult.TryGetValue(match.HomeTeamId,out NationalResultTable homeTeamTabRecord) && teamsWithResult.TryGetValue(match.GuestTeamId, out NationalResultTable guestTeamTabRecord))
                 {
                     homeTeamTabRecord.ScoredGoals += match.HomeTeamGoals;
                     guestTeamTabRecord.ScoredGoals += match.GuestTeamGoals;
