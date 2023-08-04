@@ -70,7 +70,7 @@ namespace BusinessLogicLayer.Scenario
             foreach (var matches in schedule)
             {
                 foreach(var match in matches.Value)
-                {            
+                {
                     _matchGenerator = new MatchGenerator(match);
                     _matchGenerator.StartGenerating();
                     
@@ -90,12 +90,16 @@ namespace BusinessLogicLayer.Scenario
         }
         private void defineTeamsStats(List<Match> matches)
         {
-            var teamsWithResult = _nationalResTabRepository.Retrieve(_seasonValueCreator.GetSeason(_gameDate.Year));
-            string season = _seasonValueCreator.GetSeason(_gameDate.Year);
+            var season = _seasonValueCreator.GetSeason(_gameDate.Year);
+            var teamsWithResult = _nationalResTabRepository.Retrieve(season);
+            if(teamsWithResult.Count == 0)
+            {
+                season = _seasonValueCreator.GetSeason(_gameDate.Year - 1);
+                teamsWithResult = _nationalResTabRepository.Retrieve(season);
+            }
             foreach(var match in matches)
             {
-                if(teamsWithResult.TryGetValue(match.HomeTeamId,out NationalResultTable homeTeamTabRecord)
-                     && teamsWithResult.TryGetValue(match.GuestTeamId, out NationalResultTable guestTeamTabRecord))
+                if(teamsWithResult.TryGetValue(match.HomeTeamId,out NationalResultTable homeTeamTabRecord) && teamsWithResult.TryGetValue(match.GuestTeamId, out NationalResultTable guestTeamTabRecord))
                 {
                     homeTeamTabRecord.ScoredGoals += match.HomeTeamGoals;
                     guestTeamTabRecord.ScoredGoals += match.GuestTeamGoals;
@@ -104,13 +108,13 @@ namespace BusinessLogicLayer.Scenario
                     homeTeamTabRecord.MissedGoals += match.GuestTeamGoals;
 
 
-                    if (homeTeamTabRecord.ScoredGoals > guestTeamTabRecord.ScoredGoals)
+                    if (match.HomeTeamGoals > match.GuestTeamGoals)
                     {
                         homeTeamTabRecord.Wins += 1;
                         guestTeamTabRecord.Loses += 1;
                         homeTeamTabRecord.TotalPoints += 3;
                     }
-                    else if (homeTeamTabRecord.ScoredGoals < guestTeamTabRecord.ScoredGoals)
+                    else if (match.HomeTeamGoals < match.GuestTeamGoals)
                     {
                         homeTeamTabRecord.Loses += 1;
                         guestTeamTabRecord.Wins += 1;
@@ -122,13 +126,10 @@ namespace BusinessLogicLayer.Scenario
                         guestTeamTabRecord.Draws += 1;
                         homeTeamTabRecord.TotalPoints += 1;
                         guestTeamTabRecord.TotalPoints += 1;
-
                     }
-
                 }
             }
             _nationalResTabRepository.Update(teamsWithResult.Values.ToList(), season);
-
         }
 
         private NationalResultTable createResultTable(string teamId)

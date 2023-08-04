@@ -103,8 +103,17 @@ namespace BusinessLogicLayer.Services
         }
         public void StartGenerating()
         {
+            ///////////
             if(!_matchData.IsValidMatch())
             {
+                if(_matchData.HomeTeam.AllPlayers.Count > _matchData.GuestTeam.AllPlayers.Count)
+                {
+                    technicalLoose(_matchData.MatchID,_matchData.HomeTeam.Id);
+                }
+                else
+                {
+                    technicalLoose(_matchData.MatchID, _matchData.GuestTeam.Id);
+                }
                 return;
             }
 
@@ -350,6 +359,22 @@ namespace BusinessLogicLayer.Services
             foreach (var gameEvent in _matchData.MatchHistory)
             {
                 saveEvent(gameEvent);
+            }
+        }
+
+        private void technicalLoose(string matchId, string winnerId)
+        {
+            for(int i = 0; i <= 2; i++)
+            {
+                Goal goal = new Goal()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    MatchId = _matchData.MatchID.ToString(),
+                    PlayerId = "",
+                    TeamId = winnerId,
+                    MatchMinute = 0
+                };
+                _matchData.Goals.Add(goal);
             }
         }
     }
