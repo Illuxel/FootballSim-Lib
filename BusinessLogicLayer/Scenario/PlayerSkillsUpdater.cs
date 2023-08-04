@@ -4,7 +4,7 @@ using DatabaseLayer.Enums;
 namespace BusinessLogicLayer.Scenario
 {
     // Сценарій має запускатись після кожного матчу
-    public class PlayerSkillsUpdater
+    internal class PlayerSkillsUpdater
     {
         PlayerSkillsTrainer _playerSkillsTrainer;
         public PlayerSkillsUpdater()

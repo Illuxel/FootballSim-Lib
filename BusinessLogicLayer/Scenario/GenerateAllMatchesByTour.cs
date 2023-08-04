@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace BusinessLogicLayer.Scenario
 {
-    public class GenerateAllMatchesByTour
+    internal class GenerateAllMatchesByTour
     {
         DateTime _gameDate;
         ScheduleMatchGenerator _scheduleGenerator;
