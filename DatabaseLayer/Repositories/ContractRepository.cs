@@ -4,6 +4,7 @@ using System.Data.SQLite;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.Data;
 
 namespace DatabaseLayer.Repositories
 {
@@ -105,12 +106,67 @@ namespace DatabaseLayer.Repositories
                 if (record == null)
                 {
                     var rowsAffected = connection.Execute(
-                        @"INSERT INTO contract (ID, SeasonFrom, SeasonTo, TeamId, PersonId, Salary) 
-                            VALUES (@Id, @SeasonFrom, @SeasonTo, @TeamId, @PersonId, @Salary)",
+                        @"INSERT INTO contract (ID, SeasonFrom, SeasonTo, DateFrom, DateTo, TeamId, PersonId, Salary) 
+                            VALUES (@Id, @SeasonFrom, @SeasonTo, @DateFromString, @DateToString, @TeamId, @PersonId, @Salary)",
                         contract);
                     result = rowsAffected == 1;
                 }
                 return result;
+            }
+        }
+
+        public bool Update(Contract contract)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                var record = connection.QuerySingleOrDefault<Agent>("SELECT * FROM Contract WHERE ID = @id", new { id = contract.Id });
+                if(record != null)
+                {
+                    var rowsAffected = connection.Execute(
+                    @"UPDATE Contract SET 
+                        SeasonFrom = @SeasonFrom, 
+                        SeasonTo = @SeasonTo, 
+                        DateFrom = @DateFromString, 
+                        DateTo = @DateToString, 
+                        TeamId = @TeamId, 
+                        PersonId = @PersonId, 
+                        Salary = @Salary 
+                        WHERE ID = @Id", contract);
+                    return rowsAffected == 1;
+                }
+                return false;
+            }
+        }
+
+        public bool Update(List<Contract> contract)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                using(IDbTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        var query = @"UPDATE Contract SET 
+                        SeasonFrom = @SeasonFrom, 
+                        SeasonTo = @SeasonTo, 
+                        DateFrom = @DateFromString, 
+                        DateTo = @DateToString, 
+                        TeamId = @TeamId, 
+                        PersonId = @PersonId, 
+                        Salary = @Salary 
+                        WHERE ID = @Id";
+                        var rowsAffected = connection.Execute(query, contract, transaction);
+                        transaction.Commit();
+                        return rowsAffected != 0;
+                    }
+                    catch(Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception(ex.Message);
+                    }
+                }
             }
         }
 
