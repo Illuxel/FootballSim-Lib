@@ -6,26 +6,25 @@ namespace BusinessLogicLayer.Services
     {
         FindOfPlayersRequestor _findOfPlayersRequestor;
         RequestForScout _requestForScout;
-        string _requestId;
         public RequestForManagerToScout()
         {
             _findOfPlayersRequestor = new FindOfPlayersRequestor();
             _requestForScout = new RequestForScout(); 
         }
 
-        public void FindPlayers(string managerId, string teamId, DateTime createDate)
+        public string FindPlayersAndGetRequestId(string managerId, string teamId, DateTime createDate)
         {
             _findOfPlayersRequestor.Create(managerId, teamId, createDate);
-            _requestId = _findOfPlayersRequestor.GetLastRequestId();
+            return _findOfPlayersRequestor.GetLastRequestId();
         }
-        public void RequestForScout(DateTime finishDate, int ageTo, int ratingTo, string positionCode, int bugetLimit, int? ageFrom = null, int? ratingFrom = null)
+        public void RequestForScout(string requestId,DateTime finishDate, int ageTo, int ratingTo, string positionCode, int bugetLimit, int? ageFrom = null, int? ratingFrom = null)
         {
-            _requestForScout.NewRequest(_requestId, finishDate, ageTo, ratingTo, positionCode, bugetLimit, ageFrom, ratingFrom);
+            _requestForScout.NewRequest(requestId, finishDate, ageTo, ratingTo, positionCode, bugetLimit, ageFrom, ratingFrom);
         }
 
-        public void DeclineRequest()
+        public void DeclineRequest(string requestId)
         {
-            _requestForScout.DeclineRequest(_requestId);
+            _requestForScout.DeclineRequest(requestId);
         }
     }
 }

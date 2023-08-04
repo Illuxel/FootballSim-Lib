@@ -11,7 +11,7 @@ namespace DatabaseLayer
         public DateTime Birthday { get; set; }
         public byte[] Icon { get; set; }
 
-        public long CountryID { get; set; }
+        public int CountryID { get; set; }
         public Country Country { get; internal set; }
 
         public int CurrentRoleID { get; set; }

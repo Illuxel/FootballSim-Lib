@@ -104,10 +104,10 @@ namespace DatabaseLayer.Repositories
                     var rowsAffected = connection.Execute(
                         @"INSERT INTO Player (PersonID, PositionCode, ContractId, Speed, Kick, 
                             Endurance, Strike, Physics, Defending, Passing, Dribbling, Rating, IndexPosition, 
-                            CurrentRating, PlayerPositionGroup, InjuredTo) 
+                            CurrentRating, PlayerPositionGroup, IsJunior, InjuredTo) 
                         VALUES (@PersonID, @PositionCode, @ContractId, @Speed, @Kick, 
                             @Endurance, @Strike, @Physics, @Defending, @Passing, @Dribbling, @Rating, @IndexPosition, 
-                            @CurrentPlayerRating, @PlayerPositionGroup, @InjuredTo)",
+                            @Rating, @PlayerPositionGroup, @IsJunior, @InjuredTo)",
                         player);
                     result = rowsAffected == 1;
                 }
