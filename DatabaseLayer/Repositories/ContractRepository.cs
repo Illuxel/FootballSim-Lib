@@ -180,8 +180,7 @@ namespace DatabaseLayer.Repositories
                 return rowsAffected == 1;
             }
         }
-        /// Полів DateFrom та DateTo немає в базі даних, але вони є в класі Contract. Замість них є SeasonFrom та SeasonTo.
-        /// Їх формат - "2023/2024". Якщо немає варінту переробити цей метод, то можна додати в базу даних поля DateFrom та DateTo, де будуть зберігатись дати в форматі string(yyyy-MM-dd).
+
         public List<Contract> Retrieve(DateTime gameDate)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
