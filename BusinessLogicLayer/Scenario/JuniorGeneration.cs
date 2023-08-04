@@ -3,7 +3,7 @@ using System;
 
 namespace BusinessLogicLayer.Scenario
 {
-    public class JuniorGeneration
+    internal class JuniorGeneration
     {
         private static int _countOfCountries = 10;
 
