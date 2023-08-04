@@ -13,13 +13,13 @@ namespace BusinessLogicLayer.Services
         public double DribblingCoef { get; set; }
         internal PlayerCoefImportanceProperty(PlayerPosition position, double strikeCoef, double speedCoef, double physicsCoef, double defendingCoef, double passingCoef, double driblingCoef)
         {
-            this.Position = position;
-            this.StrikeCoef = strikeCoef;
-            this.SpeedCoef = speedCoef;
-            this.PhysicsCoef = physicsCoef;
-            this.DefendingCoef = defendingCoef;
-            this.PassingCoef = passingCoef;
-            this.DribblingCoef= driblingCoef;    
+            Position = position;
+            StrikeCoef = strikeCoef;
+            SpeedCoef = speedCoef;
+            PhysicsCoef = physicsCoef;
+            DefendingCoef = defendingCoef;
+            PassingCoef = passingCoef;
+            DribblingCoef = driblingCoef;
         }
         internal PlayerCoefImportanceProperty()
         {
@@ -27,7 +27,7 @@ namespace BusinessLogicLayer.Services
         }
         internal PlayerCoefImportanceProperty(PlayerPosition position)
         {
-            this.Position = position;
+            Position = position;
         }
     }
 }

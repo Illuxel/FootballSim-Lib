@@ -12,7 +12,7 @@ namespace BusinessLogicLayer.Services
         private TeamRepository _teamRepository;
         private TacticSchemaFactory _tacticSchemaFactory;
         private PlayerFieldPartPositionConvertor _playerFieldPartPositionConvertor;
-        public PlayerPositionDeterminer() 
+        public PlayerPositionDeterminer()
         {
             _teamRepository = new TeamRepository();
             _tacticSchemaFactory = new TacticSchemaFactory();
@@ -29,7 +29,7 @@ namespace BusinessLogicLayer.Services
         public Dictionary<int, TacticPlayerPosition> GetPlayersWithPosition(TacticSchema tacticSchema, string teamId)
         {
             var team = _teamRepository.Retrieve(teamId);
-            if(team != null)
+            if (team != null)
             {
                 var teamTactic = GetPlayersWithPosition(tacticSchema, team.Players);
                 return teamTactic;
@@ -67,7 +67,7 @@ namespace BusinessLogicLayer.Services
                 }
             }
 
-            if(playersWithPositions.Count == 11)
+            if (playersWithPositions.Count == 11)
             {
                 return playersWithPositions;
             }

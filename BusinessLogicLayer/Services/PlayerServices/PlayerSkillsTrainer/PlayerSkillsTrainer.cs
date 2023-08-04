@@ -55,7 +55,7 @@ namespace BusinessLogicLayer.Services
                 }
 
                 defineAge(player, gameDate);
-                
+
                 var ageCoeff = getAgeCoeff();
                 var percent = calculatePercent(ageCoeff, trainingCoeff);
 
@@ -75,7 +75,7 @@ namespace BusinessLogicLayer.Services
                     isEnoughEndurance = isEnoughEnduranceCost(player, enduranceCostPercent);
                 }
 
-                if(isEnoughEndurance)
+                if (isEnoughEndurance)
                 {
                     if (_playerInjuryFinder.IsInjuried(player))
                     {
@@ -84,19 +84,19 @@ namespace BusinessLogicLayer.Services
                     else if (processChance(percent))
                     {
                         changeStats(player);
-                        var oldRating = player.Rating; 
+                        var oldRating = player.Rating;
                         player.Rating = calculatePlayerStats(player);
-                        if(oldRating != player.Rating)
+                        if (oldRating != player.Rating)
                         {
                             OnPlayerGrowUp?.Invoke(player);
                         }
                     }
-                    if(isOldPlayer())
+                    if (isOldPlayer())
                     {
                         var decreaseCoef = oldPlayerDecreaseCoeff();
-                        if(processChance(decreaseCoef))
+                        if (processChance(decreaseCoef))
                         {
-                            changeStats(player,false);
+                            changeStats(player, false);
                             var oldRating = player.Rating;
                             player.Rating = calculatePlayerStats(player);
                             if (oldRating != player.Rating)
@@ -109,18 +109,18 @@ namespace BusinessLogicLayer.Services
                 }
             }
         }
-        
+
         private double oldPlayerDecreaseCoeff()
         {
-            if(_currentPlayerAge >= 31 && _currentPlayerAge <= 32)
+            if (_currentPlayerAge >= 31 && _currentPlayerAge <= 32)
             {
                 return 0.05;
             }
-            else if(_currentPlayerAge >= 33 && _currentPlayerAge < 34)
+            else if (_currentPlayerAge >= 33 && _currentPlayerAge < 34)
             {
                 return 0.15;
             }
-            else if(_currentPlayerAge >= 35 && _currentPlayerAge < 36)
+            else if (_currentPlayerAge >= 35 && _currentPlayerAge < 36)
             {
                 return 0.25;
             }
@@ -135,9 +135,9 @@ namespace BusinessLogicLayer.Services
             return _currentPlayerAge > 30;
         }
 
-        private bool isPlayerInLastGame(string teamId,string playerId)
+        private bool isPlayerInLastGame(string teamId, string playerId)
         {
-            return _playerInvolvementLastMatchChecker.Check(teamId,playerId) == true;
+            return _playerInvolvementLastMatchChecker.Check(teamId, playerId) == true;
         }
 
         private bool processChance(double percent)
@@ -195,7 +195,7 @@ namespace BusinessLogicLayer.Services
                 _ => 0
             };
         }
-        
+
         private double getTrainingCoeff(TrainingMode trainingMode)
         {
             return trainingMode switch
@@ -226,14 +226,14 @@ namespace BusinessLogicLayer.Services
 
             return 0.05;
         }
-        private int defineAge(Player player,DateTime gameDate)
+        private int defineAge(Player player, DateTime gameDate)
         {
             var personId = player.PersonID;
             var person = _personRepository.Retrieve(personId);
             _currentPlayerAge = gameDate.Year - person.Birthday.Year;
             return _currentPlayerAge;
         }
-        private void changeStats(Player player,bool isUpgade = true)
+        private void changeStats(Player player, bool isUpgade = true)
         {
             int updatingValue = isUpgade ? 1 : -1;
             var randomSkill = new Random().Next(0, 5);

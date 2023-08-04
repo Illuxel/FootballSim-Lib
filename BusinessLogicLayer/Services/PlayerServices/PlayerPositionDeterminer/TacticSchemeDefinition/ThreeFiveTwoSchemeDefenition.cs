@@ -28,6 +28,6 @@ namespace BusinessLogicLayer.Services
                 { 21, EnumDescription.GetEnumDescription(PlayerPosition.Forward) }
             };
         }
-       
+
     }
 }

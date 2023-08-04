@@ -8,7 +8,7 @@ namespace BusinessLogicLayer.Services
         private static int _criticalEnduranceLevel = 40;
         private bool isMayBeInjuried(Player player)
         {
-            if(player.Endurance < _criticalEnduranceLevel)
+            if (player.Endurance < _criticalEnduranceLevel)
             {
                 return true;
             }
@@ -16,9 +16,9 @@ namespace BusinessLogicLayer.Services
         }
         public bool IsInjuried(Player player)
         {
-            if(isMayBeInjuried(player))
+            if (isMayBeInjuried(player))
             {
-                if(isWillBeInjuried(player))
+                if (isWillBeInjuried(player))
                 {
                     return true;
                 }
@@ -27,27 +27,27 @@ namespace BusinessLogicLayer.Services
         }
         public bool IsAlreadyInjuried(Player player)
         {
-            if(player.InjuredTo != null)
+            if (player.InjuredTo != null)
             {
                 return true;
             }
             return false;
-        }   
+        }
         private bool isWillBeInjuried(Player player)
         {
             var injuryChance = _criticalEnduranceLevel - player.Endurance;
 
             var randomNum = new Random().Next(0, 100);
-            if(randomNum <= injuryChance)
+            if (randomNum <= injuryChance)
             {
                 return true;
             }
             return false;
         }
 
-        public void SetInjury(Player player,DateTime gameDate)
+        public void SetInjury(Player player, DateTime gameDate)
         {
-            var playerInjuryTerm = getInjuryTermDays(); 
+            var playerInjuryTerm = getInjuryTermDays();
 
             player.InjuredTo = gameDate.AddDays(playerInjuryTerm).ToString("yyyy-MM-dd");
         }

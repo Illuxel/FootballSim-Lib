@@ -3,7 +3,7 @@ using DatabaseLayer.Enums;
 using System.Collections.Generic;
 
 namespace BusinessLogicLayer.Services
-{
+{ 
     internal interface ISchemeDefinition
     {
         Dictionary<int, string> GetPositions();

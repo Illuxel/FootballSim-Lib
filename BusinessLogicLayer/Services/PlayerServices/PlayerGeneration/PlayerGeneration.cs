@@ -8,13 +8,13 @@ namespace BusinessLogicLayer.Services
     public class PlayerGeneration
     {
         private PlayerCoefPropertyFactory _PlayerCoefPropertyFactory;
-        
+
         private int _error = 3, _maxValue = 100, _minValue = 1;
 
         public PlayerGeneration()
         {
             _PlayerCoefPropertyFactory = new PlayerCoefPropertyFactory();
-        }       
+        }
 
         public Player GeneratePlayer(PlayerPosition position, int value)
         {
@@ -34,7 +34,7 @@ namespace BusinessLogicLayer.Services
         private Player generatePlayer(PlayerPosition position, int value = 0)
         {
             Player player = new Player();
-            
+
 
             PlayerPosition playerPosition = position;
             var playersCoef = _PlayerCoefPropertyFactory.Create(position);

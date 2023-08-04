@@ -14,7 +14,7 @@ namespace BusinessLogicLayer.Services
 
         public bool Check(string teamId, string playerId)
         {
-            if(_cache == null)
+            if (_cache == null)
             {
                 fillCache();
             }

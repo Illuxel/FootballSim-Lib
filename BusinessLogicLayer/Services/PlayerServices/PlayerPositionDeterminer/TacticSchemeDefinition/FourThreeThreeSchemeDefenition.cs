@@ -4,13 +4,13 @@ using System.Collections.Generic;
 
 namespace BusinessLogicLayer.Services
 {
-    internal class FourFiveOneSchemeDefenition : ISchemeDefinition
+    internal class FourThreeThreeSchemeDefenition : ISchemeDefinition
     {
         //index by positions:
-        //-------1------
-        //----6-5-3-2----
-        //-16-15-14-13-12-
-        //------22-------
+        //-----1-----
+        //--6-5-3-2--
+        //--16-14-12-
+        //--24-22-20-
         public Dictionary<int, string> GetPositions()
         {
             return new Dictionary<int, string>()
@@ -21,13 +21,13 @@ namespace BusinessLogicLayer.Services
                 { 3, EnumDescription.GetEnumDescription(PlayerPosition.CentralDefender) },
                 { 2, EnumDescription.GetEnumDescription(PlayerPosition.LeftDefender) },
                 { 16, EnumDescription.GetEnumDescription(PlayerPosition.RightMidfielder) },
-                { 15, EnumDescription.GetEnumDescription(PlayerPosition.CentralMidfielder) },
                 { 14, EnumDescription.GetEnumDescription(PlayerPosition.CentralMidfielder) },
-                { 13, EnumDescription.GetEnumDescription(PlayerPosition.CentralMidfielder) },
                 { 12, EnumDescription.GetEnumDescription(PlayerPosition.LeftMidfielder) },
-                { 22, EnumDescription.GetEnumDescription(PlayerPosition.Forward) }
+                { 24, EnumDescription.GetEnumDescription(PlayerPosition.RightOffensive) },
+                { 22, EnumDescription.GetEnumDescription(PlayerPosition.CentralForward) },
+                { 20, EnumDescription.GetEnumDescription(PlayerPosition.LeftOffensive) }
             };
         }
-       
+
     }
 }

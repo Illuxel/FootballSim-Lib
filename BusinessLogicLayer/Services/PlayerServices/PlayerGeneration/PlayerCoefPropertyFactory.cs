@@ -7,7 +7,7 @@ namespace BusinessLogicLayer.Services
         internal PlayerCoefImportanceProperty Create(PlayerPosition position)
         {
             PlayerCoefImportanceProperty playerCoef = new PlayerCoefImportanceProperty();
-            
+
             switch (position)
             {
                 case PlayerPosition.Goalkeeper:

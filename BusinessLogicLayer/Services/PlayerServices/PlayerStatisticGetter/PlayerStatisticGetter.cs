@@ -55,7 +55,7 @@ namespace BusinessLogicLayer.Services
             var startDate = _seasonValueCreator.GetSeasonStartDate(season);
             var endDate = _seasonValueCreator.GetSeasonEndDate(season);
 
-            return _matchRepository.Retrieve(teamId,startDate,endDate).Count;
+            return _matchRepository.Retrieve(teamId, startDate, endDate).Count;
         }
         private int getPlayerInMatchesCount(string playerId)
         {

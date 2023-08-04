@@ -28,7 +28,7 @@ namespace BusinessLogicLayer.Services
             _seasonValueCreator = new SeasonValueCreator();
             _contractRepository = new ContractRepository();
         }
-        public void GenerateNewJuniorPerson(string teamId,int gameYear,DateTime birthDate,int countryId, string? name = null, string? surname = null)
+        public void GenerateNewJuniorPerson(string teamId, int gameYear, DateTime birthDate, int countryId, string? name = null, string? surname = null)
         {
             if (name != null || surname != null)
             {
@@ -44,7 +44,7 @@ namespace BusinessLogicLayer.Services
             }
 
             createNewJuniorPerson(birthDate, countryId);
-            createNewJuniorPlayer(teamId,gameYear);
+            createNewJuniorPlayer(teamId, gameYear);
         }
 
         private void setPositionDict()
@@ -53,38 +53,38 @@ namespace BusinessLogicLayer.Services
             {
                 _positionsByKey = new Dictionary<int, List<PlayerPosition>>
                 {
-                    { 
-                        1, new List< PlayerPosition>() 
-                        { 
+                    {
+                        1, new List< PlayerPosition>()
+                        {
                             PlayerPosition.Goalkeeper
-                        } 
+                        }
                     },
-                    { 
-                        2, new List < PlayerPosition >() 
-                        { 
-                            PlayerPosition.CentralDefender, 
+                    {
+                        2, new List < PlayerPosition >()
+                        {
+                            PlayerPosition.CentralDefender,
                             PlayerPosition.RightDefender ,
                             PlayerPosition.LeftDefender,
                             PlayerPosition.RightFlankDefender,
                             PlayerPosition.LeftFlankDefender
-                        } 
+                        }
                     },
-                    {   3, new List < PlayerPosition >() 
-                        { 
+                    {   3, new List < PlayerPosition >()
+                        {
                             PlayerPosition.CentralDefensiveMidfielder,
                             PlayerPosition.CentralMidfielder,
                             PlayerPosition.RightMidfielder,
                             PlayerPosition.LeftMidfielder,
                             PlayerPosition.CentralAttackingMidfielder
-                        } 
+                        }
                     },
-                    {   4, new List < PlayerPosition >() 
-                        { 
+                    {   4, new List < PlayerPosition >()
+                        {
                             PlayerPosition.Forward,
                             PlayerPosition.CentralForward,
                             PlayerPosition.RightOffensive,
                             PlayerPosition.LeftOffensive
-                        } 
+                        }
                     }
                 };
 
@@ -99,9 +99,9 @@ namespace BusinessLogicLayer.Services
             _personRepository.Insert(_juniorPerson);
         }
 
-        private void createNewJuniorPlayer(string teamID,int gameYear)
+        private void createNewJuniorPlayer(string teamID, int gameYear)
         {
-            int maxRating = 60,minRating= 45;
+            int maxRating = 60, minRating = 45;
 
             var midRating = (maxRating + minRating) / 2;
 
@@ -109,16 +109,16 @@ namespace BusinessLogicLayer.Services
 
             var position = randomPositionProcessing();
 
-            _juniorPlayer = _playerGeneration.GeneratePlayer(position,midRating);
+            _juniorPlayer = _playerGeneration.GeneratePlayer(position, midRating);
             setPlayerPersonId();
             setJuniorStatus();
 
-            createNewContract(teamID,gameYear);
+            createNewContract(teamID, gameYear);
             _playerRepository.Insert(_juniorPlayer);
-        }   
-        private void setPersonNameSurname(string name,string surname)
+        }
+        private void setPersonNameSurname(string name, string surname)
         {
-            _juniorPerson.Name = name; 
+            _juniorPerson.Name = name;
             _juniorPerson.Surname = surname;
         }
 
@@ -136,7 +136,7 @@ namespace BusinessLogicLayer.Services
         {
             _juniorPlayer.IsJunior = 1;
         }
-        
+
         private void setCountryId(int countryId)
         {
             _juniorPerson.CountryID = countryId;
@@ -186,7 +186,7 @@ namespace BusinessLogicLayer.Services
             return positions[randomNum];
         }
 
-        private void createNewContract(string teamId,int gameYear)
+        private void createNewContract(string teamId, int gameYear)
         {
             var contract = new Contract();
             contract.PersonId = _juniorPerson.Id;

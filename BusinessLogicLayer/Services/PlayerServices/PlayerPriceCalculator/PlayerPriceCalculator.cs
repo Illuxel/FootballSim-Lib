@@ -13,29 +13,29 @@ namespace BusinessLogicLayer.Services
             var avaragePlayerRating = player.CurrentPlayerRating;
             if (avaragePlayerRating >= 90)
             {
-                return avaragePlayerRating * (100000 * _coefPrice);
+                return avaragePlayerRating * 100000 * _coefPrice;
             }
             else if (avaragePlayerRating >= 85)
             {
-                return avaragePlayerRating * (65000* _coefPrice);
+                return avaragePlayerRating * 65000 * _coefPrice;
             }
             else if (avaragePlayerRating >= 80)
             {
-                return avaragePlayerRating * (45000* _coefPrice);
+                return avaragePlayerRating * 45000 * _coefPrice;
             }
             else if (avaragePlayerRating >= 75)
             {
-                return avaragePlayerRating * (30000 * _coefPrice);
+                return avaragePlayerRating * 30000 * _coefPrice;
             }
             else if (avaragePlayerRating >= 70)
             {
-                return avaragePlayerRating * (20000 * _coefPrice);
+                return avaragePlayerRating * 20000 * _coefPrice;
             }
             else if (avaragePlayerRating >= 60)
             {
-                return avaragePlayerRating * (7000 * _coefPrice);
+                return avaragePlayerRating * 7000 * _coefPrice;
             }
-            return avaragePlayerRating * (4500 * _coefPrice);
+            return avaragePlayerRating * 4500 * _coefPrice;
         }
 
         public int GetPlayerSalary(Player player)
@@ -49,7 +49,7 @@ namespace BusinessLogicLayer.Services
             Random random = new Random();
             var randomCorrelation = random.NextDouble() * 0.2 - 0.1;
             var priceWithAge = price * _ageCoefficient;
-            var finalPrice = (int)(priceWithAge + (priceWithAge * randomCorrelation));
+            var finalPrice = (int)(priceWithAge + priceWithAge * randomCorrelation);
 
             return finalPrice;
         }
