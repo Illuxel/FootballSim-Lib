@@ -44,7 +44,14 @@ namespace BusinessLogicLayer.Services
             var price = GetPlayerPrice(player) / _coefPrice;
 
             var ageDifference = _age - age;
-            _ageCoefficient += ageDifference * 0.1;
+            if (ageDifference >= 0)
+            {
+                _ageCoefficient += ageDifference * 0.1;
+            }
+            else
+            {
+                _ageCoefficient -= (ageDifference * -1) * 0.1;
+            }
 
             Random random = new Random();
             var randomCorrelation = random.NextDouble() * 0.2 - 0.1;
