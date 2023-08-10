@@ -10,7 +10,7 @@ namespace BusinessLogicLayer.Services
         private int _coefPrice = 25;
         public int GetPlayerPrice(Player player)
         {
-            var avaragePlayerRating = player.CurrentPlayerRating;
+            var avaragePlayerRating = player.Rating;
             if (avaragePlayerRating >= 90)
             {
                 return avaragePlayerRating * 100000 * _coefPrice;
@@ -50,7 +50,7 @@ namespace BusinessLogicLayer.Services
             }
             else
             {
-                _ageCoefficient -= (ageDifference * -1) * 0.1;
+                _ageCoefficient -= ((ageDifference ) * 0.1)+1;
             }
 
             Random random = new Random();
