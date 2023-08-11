@@ -11,45 +11,77 @@ namespace BusinessLogicLayer.Services
         TeamRepository _teamRepository;
         TeamRatingWinCoeffRepository _teamRatingCoeff;
         SeasonValueCreator _seasonValueCreator;
+        NationalResTabRepository _nationalResTabRepository;
         private static int _countYearsForRating = 5;
+        private static string? _currentSeason;
 
         public RatingActualizer()
         {
             _teamRepository = new TeamRepository();
             _teamRatingCoeff = new TeamRatingWinCoeffRepository();
             _seasonValueCreator = new SeasonValueCreator();
+            _nationalResTabRepository = new NationalResTabRepository();
         }
         public void Actualize(DateTime gameDate)
         {
+            _currentSeason = _seasonValueCreator.GetSeason(gameDate.Year - 1);
             var teamsWinCoef = getAverageCoeff(gameDate.Year);
             actualizeRating(teamsWinCoef);
         }
 
-        private Dictionary<string, double> getAverageCoeff(int currentYear)
+        private Dictionary<Team, double> getAverageCoeff(int currentYear)
         {
             var lastSeasons = new List<string>();
-
-            for(int i = currentYear; i > currentYear - _countYearsForRating; i--)
+            for (int i = currentYear; i > currentYear - _countYearsForRating; i--)
             {
                 lastSeasons.Add(_seasonValueCreator.GetSeason(i));
             }
 
-            var teamsRatingDict = new Dictionary<string, double>();
+            var teamsRatingDict = new Dictionary<Team, double>();
             var teamsStatsDict = _teamRatingCoeff.Retrieve(lastSeasons);
 
-            
+            var allTeams = _teamRepository.Retrieve();
+
+            var coefs = new List<TeamRatingWinCoeff>();
+
             foreach (var stat in teamsStatsDict)
             {
-                teamsRatingDict.Add(stat.Key, stat.Value.Average(x => x.WinCoeff));
+                var winCoeffBySeason = stat.Value.FirstOrDefault(x => x.Season == _currentSeason);
+                if (winCoeffBySeason != null && winCoeffBySeason.WinCoeff == 0)
+                {
+                    var resTable = _nationalResTabRepository.Retrieve(stat.Key, _currentSeason);
+
+                    var currentSeasonResTable = resTable.FirstOrDefault(x => x.Season == _currentSeason);
+                    if (currentSeasonResTable != null)
+                    {
+                        winCoeffBySeason.WinCoeff = (double)currentSeasonResTable.Wins / (currentSeasonResTable.Wins + currentSeasonResTable.Loses + currentSeasonResTable.Draws) * 100.0;
+                        coefs.Add(winCoeffBySeason);
+                    }
+                }
+
+                var team = allTeams.FirstOrDefault(t => t.Id == stat.Key);
+                if (team != null)
+                {
+                    teamsRatingDict.Add(team, stat.Value.Average(x => x.WinCoeff));
+                }
             }
 
-            return teamsRatingDict; 
+            _teamRatingCoeff.Update(coefs);
+
+            return teamsRatingDict;
         }
 
-        private void actualizeRating(Dictionary<string, double> teamsRatingDict)
+
+        private void actualizeRating(Dictionary<Team, double> teamsRatingDict)
         {
             var actualRating = new List<Team>();
-            var list = teamsRatingDict.OrderByDescending(x => x.Value).ToList();
+
+            foreach(var team in teamsRatingDict)
+            {
+                team.Key.GlobalPoints = (int)(team.Value * team.Key.League.CurrentRating);
+            }
+
+            var list = teamsRatingDict.Keys.OrderByDescending(x=>x.GlobalPoints).ToList();
          
             foreach (var item in list)
             {
@@ -57,10 +89,9 @@ namespace BusinessLogicLayer.Services
 
                 if (rating != 0)
                 {
-                    var team = _teamRepository.Retrieve(item.Key);
-                    team.CurrentInterlRatingPosition = rating;
+                    item.CurrentInterlRatingPosition = rating;
 
-                    actualRating.Add(team);
+                    actualRating.Add(item);
                 }
             }
             _teamRepository.UpdateRating(actualRating);

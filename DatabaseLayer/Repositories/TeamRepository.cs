@@ -146,6 +146,7 @@ namespace DatabaseLayer.Repositories
                         BaseColor = @BaseColor,
                         ExtId = @ExtId,
                         ExtName = @ExtName,
+                        GlobalRating = @GlobalRating,
                         CurrentInterlRatingPosition = @CurrentInterlRatingPosition
                         WHERE Id = @Id",
                     team);
@@ -178,6 +179,7 @@ namespace DatabaseLayer.Repositories
                         BaseColor = @BaseColor,
                         ExtId = @ExtId,
                         ExtName = @ExtName,
+                        GlobalRating = @GlobalRating,
                         CurrentInterlRatingPosition = @CurrentInterlRatingPosition
                         WHERE Id = @Id",
                         teams,transaction);
@@ -231,7 +233,9 @@ namespace DatabaseLayer.Repositories
                         {
                             var rowsAffected = connection.Execute(
                             @"UPDATE Team 
-                                SET CurrentInterlRatingPosition = @CurrentInterlRatingPosition
+                                SET
+                                GlobalPoints = @GlobalPoints,
+                                CurrentInterlRatingPosition = @CurrentInterlRatingPosition
                                 WHERE Id = @Id",
                                 ratingPosition, transaction);
                             transaction.Commit();

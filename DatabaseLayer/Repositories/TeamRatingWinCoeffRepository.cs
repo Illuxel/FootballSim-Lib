@@ -138,6 +138,32 @@ namespace DatabaseLayer.Repositories
                 return rowsAffected == 1;
             }
         }
+        public bool Update(List<TeamRatingWinCoeff> teamCoeffList)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                using (IDbTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        var rowsAffected = connection.Execute(
+                            @"UPDATE TeamRatingWinCoeff SET 
+                            WinCoeff = @WinCoeff
+                            WHERE TeamId = @TeamId AND Season = @Season",
+                            teamCoeffList);
+                        transaction.Commit();
+                        return rowsAffected == 1;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        transaction.Rollback();
+                        return false;
+                    }
+                }
+            }
+        }
 
         public bool InsertNewTeams(List<string> teamsId, string season)
         {

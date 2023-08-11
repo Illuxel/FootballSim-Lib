@@ -1,6 +1,5 @@
 using DatabaseLayer.Repositories;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace DatabaseLayer
 {
@@ -24,6 +23,7 @@ namespace DatabaseLayer
         public string ExtName { get; set; }
         public string SportsDirectorId { get; set; }
         public TacticSchema TacticSchema { get; set; }
+        public int GlobalPoints { get; set; }
         public int CurrentInterlRatingPosition { get; set; }
 
 
