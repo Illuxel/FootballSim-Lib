@@ -78,10 +78,10 @@ namespace BusinessLogicLayer.Services
 
             foreach(var team in teamsRatingDict)
             {
-                team.Key.GlobalPoints = (int)(team.Value * team.Key.League.CurrentRating);
+                teamsRatingDict[team.Key] = team.Value * team.Key.League.CurrentRating;
             }
 
-            var list = teamsRatingDict.Keys.OrderByDescending(x=>x.GlobalPoints).ToList();
+            var list = teamsRatingDict.OrderByDescending(x=>x.Value).ToList();
          
             foreach (var item in list)
             {
@@ -89,9 +89,9 @@ namespace BusinessLogicLayer.Services
 
                 if (rating != 0)
                 {
-                    item.CurrentInterlRatingPosition = rating;
+                    item.Key.GlobalPosition = rating;
 
-                    actualRating.Add(item);
+                    actualRating.Add(item.Key);
                 }
             }
             _teamRepository.UpdateRating(actualRating);
