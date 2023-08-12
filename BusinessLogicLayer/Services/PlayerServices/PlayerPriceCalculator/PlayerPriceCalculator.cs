@@ -52,7 +52,7 @@ namespace BusinessLogicLayer.Services
             }
             else
             {
-                _ageCoefficient -= (ageDifference ) * 0.1;
+                _ageCoefficient -= ((ageDifference) * 0.1) + 1;
             }
 
             Random random = new Random();
