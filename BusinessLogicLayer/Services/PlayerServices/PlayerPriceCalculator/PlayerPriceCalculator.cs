@@ -5,7 +5,7 @@ namespace BusinessLogicLayer.Services
 {
     public class PlayerPriceCalculator
     {
-        private double _ageCoefficient = 0.8;
+        private double _ageCoefficient;
         private int _age = 25;
         private int _coefPrice = 25;
         public int GetPlayerPrice(Player player)
@@ -40,6 +40,8 @@ namespace BusinessLogicLayer.Services
 
         public int GetPlayerSalary(Player player)
         {
+            _ageCoefficient = 0.8;
+
             var age = Convert.ToInt32((DateTime.Now - player.Person.Birthday).TotalDays / 365.24);
             var price = GetPlayerPrice(player) / _coefPrice;
 
@@ -50,13 +52,13 @@ namespace BusinessLogicLayer.Services
             }
             else
             {
-                _ageCoefficient -= ((ageDifference ) * 0.1)+1;
+                _ageCoefficient -= (ageDifference ) * 0.1;
             }
 
             Random random = new Random();
             var randomCorrelation = random.NextDouble() * 0.2 - 0.1;
             var priceWithAge = price * _ageCoefficient;
-            var finalPrice = (int)(priceWithAge + priceWithAge * randomCorrelation);
+            var finalPrice = (int)(priceWithAge + (priceWithAge * randomCorrelation));
 
             return finalPrice;
         }
