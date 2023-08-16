@@ -17,6 +17,7 @@ namespace BusinessLogicLayer.Scenario
         SeasonValueCreator _seasonValueCreator;
         NationalResTabRepository _nationalResTabRepository;
         TeamRatingWinCoeffRepository _teamRatingWinCoeffRepository;
+        TeamRepository _teamRepository;
 
 
         public GenerateAllMatchesByTour(DateTime gameDate)
@@ -28,6 +29,7 @@ namespace BusinessLogicLayer.Scenario
             _seasonValueCreator = new SeasonValueCreator();
             _nationalResTabRepository = new NationalResTabRepository();
             _teamRatingWinCoeffRepository = new TeamRatingWinCoeffRepository();
+            _teamRepository = new TeamRepository();
         }
 
         public void Generate()
@@ -43,12 +45,14 @@ namespace BusinessLogicLayer.Scenario
                 }
 
                 insertNewRows(matches);
+
+                var teams = _teamRepository.Retrieve();
+                var teamIds = teams.Select(x => x.Id).ToList();
+                _teamRatingWinCoeffRepository.InsertNewTeams(teamIds, _seasonValueCreator.GetSeason(_gameDate));
             }
 
-            var teamsId = getAllTeamsId(matches);
             var allMatches = getMatches(_gameDate);
             generateAllMatches(allMatches);
-            _teamRatingWinCoeffRepository.InsertNewTeams(teamsId,_seasonValueCreator.GetSeason(_gameDate.Year));
         }
 
         private void generateSchedule(DateTime gameDate)
@@ -90,7 +94,7 @@ namespace BusinessLogicLayer.Scenario
         }
         private void defineTeamsStats(List<Match> matches)
         {
-            var season = _seasonValueCreator.GetSeason(_gameDate.Year);
+            var season = _seasonValueCreator.GetSeason(_gameDate);
             var teamsWithResult = _nationalResTabRepository.Retrieve(season);
             if(teamsWithResult.Count == 0)
             {
