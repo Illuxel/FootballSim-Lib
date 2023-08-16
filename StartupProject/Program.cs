@@ -1,8 +1,3 @@
-using BusinessLogicLayer.Scenario;
-using DatabaseLayer;
-using DatabaseLayer.Repositories;
-using System;
-using System.Collections.Generic;
 
 namespace StartupProject
 {
@@ -10,7 +5,7 @@ namespace StartupProject
     {
         public static void Main(string[] args)
         {
-
+            
         }
     }
 }
