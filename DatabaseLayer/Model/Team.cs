@@ -23,7 +23,7 @@ namespace DatabaseLayer
         public string ExtName { get; set; }
         public string SportsDirectorId { get; set; }
         public TacticSchema TacticSchema { get; set; }
-        public int GlobalPosition { get; set; }
+        public int GlobalRating { get; set; }
 
 
         private List<Player> _players;

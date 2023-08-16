@@ -28,6 +28,18 @@ namespace BusinessLogicLayer.Services
             return Convert.ToInt32(season.Split('/')[1]);
         }
 
+        public string GetSeason(DateTime gameDate)
+        {
+            var startSeasonDateByYear = GetSeasonStartDate(gameDate.Year);
+
+            var year = gameDate.Year;
+            if (gameDate < startSeasonDateByYear)
+            {
+                year--;
+            }
+            return getSeason(year);
+        }
+
         public string GetSeason(int year)
         {
             return getSeason(year);

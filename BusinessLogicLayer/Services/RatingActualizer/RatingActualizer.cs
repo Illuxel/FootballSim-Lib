@@ -24,7 +24,7 @@ namespace BusinessLogicLayer.Services
         }
         public void Actualize(DateTime gameDate)
         {
-            _currentSeason = _seasonValueCreator.GetSeason(gameDate.Year - 1);
+            _currentSeason = _seasonValueCreator.GetSeason(gameDate);
             var teamsWinCoef = getAverageCoeff(gameDate.Year);
             actualizeRating(teamsWinCoef);
         }
@@ -39,7 +39,6 @@ namespace BusinessLogicLayer.Services
 
             var teamsRatingDict = new Dictionary<Team, double>();
             var teamsStatsDict = _teamRatingCoeff.Retrieve(lastSeasons);
-
             var allTeams = _teamRepository.Retrieve();
 
             var coefs = new List<TeamRatingWinCoeff>();
@@ -49,9 +48,8 @@ namespace BusinessLogicLayer.Services
                 var winCoeffBySeason = stat.Value.FirstOrDefault(x => x.Season == _currentSeason);
                 if (winCoeffBySeason != null && winCoeffBySeason.WinCoeff == 0)
                 {
-                    var resTable = _nationalResTabRepository.Retrieve(stat.Key, _currentSeason);
+                    var currentSeasonResTable = _nationalResTabRepository.Retrieve(stat.Key, _currentSeason);
 
-                    var currentSeasonResTable = resTable.FirstOrDefault(x => x.Season == _currentSeason);
                     if (currentSeasonResTable != null)
                     {
                         winCoeffBySeason.WinCoeff = (double)currentSeasonResTable.Wins / (currentSeasonResTable.Wins + currentSeasonResTable.Loses + currentSeasonResTable.Draws) * 100.0;
@@ -74,27 +72,11 @@ namespace BusinessLogicLayer.Services
 
         private void actualizeRating(Dictionary<Team, double> teamsRatingDict)
         {
-            var actualRating = new List<Team>();
-
             foreach(var team in teamsRatingDict)
             {
                 teamsRatingDict[team.Key] = team.Value * team.Key.League.CurrentRating;
             }
-
-            var list = teamsRatingDict.OrderByDescending(x=>x.Value).ToList();
-         
-            foreach (var item in list)
-            {
-                var rating = list.IndexOf(item) + 1;
-
-                if (rating != 0)
-                {
-                    item.Key.GlobalPosition = rating;
-
-                    actualRating.Add(item.Key);
-                }
-            }
-            _teamRepository.UpdateRating(actualRating);
+            _teamRepository.UpdateRating(teamsRatingDict.Keys.ToList());
         }
         
     }

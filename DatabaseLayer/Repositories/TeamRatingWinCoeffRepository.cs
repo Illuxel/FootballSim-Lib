@@ -69,6 +69,11 @@ namespace DatabaseLayer.Repositories
             }
         }
 
+        /// <summary>
+        /// Get teams rating by seasons
+        /// </summary>
+        /// <param name="seasons"></param>
+        /// <returns>Dictionary key - teamId, value - seasons rating </returns>
         public Dictionary<string, List<TeamRatingWinCoeff>> Retrieve(List<string> seasons)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
@@ -165,7 +170,7 @@ namespace DatabaseLayer.Repositories
             }
         }
 
-        public bool InsertNewTeams(List<string> teamsId, string season)
+        public bool InsertNewTeams(List<string> teamIds, string season)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -175,7 +180,7 @@ namespace DatabaseLayer.Repositories
                     @"SELECT TeamId FROM TeamRatingWinCoeff WHERE Season = @season",
                     new { season });
 
-                var teamsToInsert = teamsId.Except(existingTeams).ToList();
+                var teamsToInsert = teamIds.Except(existingTeams).ToList();
 
                 if (teamsToInsert.Any())
                 {

@@ -47,8 +47,8 @@ namespace BusinessLogicLayer.Scenario
                 insertNewRows(matches);
 
                 var teams = _teamRepository.Retrieve();
-                var teamsId = teams.Select(x => x.Id).ToList();
-                _teamRatingWinCoeffRepository.InsertNewTeams(teamsId, _seasonValueCreator.GetSeason(_gameDate));
+                var teamIds = teams.Select(x => x.Id).ToList();
+                _teamRatingWinCoeffRepository.InsertNewTeams(teamIds, _seasonValueCreator.GetSeason(_gameDate));
             }
 
             var allMatches = getMatches(_gameDate);
