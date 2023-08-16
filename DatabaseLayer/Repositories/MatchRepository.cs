@@ -127,9 +127,9 @@ namespace DatabaseLayer.Repositories
                     {
                         var rowsAffected = connection.Execute(
                             @"INSERT INTO Match (Id, HomeTeamId, GuestTeamId, MatchDate, HomeTeamGoals, 
-                GuestTeamGoals, TourNumber, LeagueId, IsPlayed)
+                GuestTeamGoals, TourNumber, LeagueId, IsPlayed, Season)
                 VALUES (@Id, @HomeTeamId, @GuestTeamId, @MatchDate, @HomeTeamGoals, 
-                @GuestTeamGoals, @TourNumber, @LeagueId, @IsPlayed)", matches, transaction);
+                @GuestTeamGoals, @TourNumber, @LeagueId, @IsPlayed, @Season)", matches, transaction);
                         transaction.Commit();
                     }
                     catch (Exception ex)
@@ -154,9 +154,9 @@ namespace DatabaseLayer.Repositories
                 {
                     var rowsAffected = connection.Execute(
                         @"INSERT INTO Match (Id, HomeTeamId, GuestTeamId, MatchDate, HomeTeamGoals, 
-                           GuestTeamGoals, TourNumber, LeagueId, IsPlayed)
+                           GuestTeamGoals, TourNumber, LeagueId, IsPlayed, Season)
                          VALUES (@Id, @HomeTeamId, @GuestTeamId, @MatchDate, @HomeTeamGoals, 
-                           @GuestTeamGoals, @TourNumber, @LeagueId, @IsPlayed)",match);
+                           @GuestTeamGoals, @TourNumber, @LeagueId, @IsPlayed, @Season)", match);
                     result = rowsAffected == 1;
                 }
                 return result;
@@ -182,7 +182,8 @@ namespace DatabaseLayer.Repositories
                           GuestTeamGoals = @GuestTeamGoals,
                           TourNumber = @TourNumber,
                           LeagueId = @LeagueId,
-                          IsPlayed = @IsPlayed
+                          IsPlayed = @IsPlayed,
+                          Season = @Season
                       WHERE Id = @Id;",
                      match);
                     result = rowsAffected == 1;
@@ -209,7 +210,8 @@ namespace DatabaseLayer.Repositories
                           GuestTeamGoals = @GuestTeamGoals,
                           TourNumber = @TourNumber,
                           LeagueId = @LeagueId,
-                          IsPlayed = @IsPlayed
+                          IsPlayed = @IsPlayed,
+                          Season = @Season
                       WHERE Id = @Id",
                     matches,transaction) ;
 
