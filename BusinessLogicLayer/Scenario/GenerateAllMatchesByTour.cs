@@ -35,7 +35,7 @@ namespace BusinessLogicLayer.Scenario
         public void Generate()
         {
             var matches = _matchRepository.Retrieve(_gameDate);
-            if (matches.Count == 0 && _gameDate.Month != 1)
+            if (matches.Count == 0)
             {
                 generateSchedule(_gameDate);
                 matches = _matchRepository.Retrieve(_gameDate);
@@ -48,7 +48,7 @@ namespace BusinessLogicLayer.Scenario
 
                 var teams = _teamRepository.Retrieve();
                 var teamsId = teams.Select(x => x.Id).ToList();
-                _teamRatingWinCoeffRepository.InsertNewTeams(teamsId, _seasonValueCreator.GetSeason(_gameDate.Year));
+                _teamRatingWinCoeffRepository.InsertNewTeams(teamsId, _seasonValueCreator.GetSeason(_gameDate));
             }
 
             var allMatches = getMatches(_gameDate);
@@ -94,7 +94,7 @@ namespace BusinessLogicLayer.Scenario
         }
         private void defineTeamsStats(List<Match> matches)
         {
-            var season = _seasonValueCreator.GetSeason(_gameDate.Year);
+            var season = _seasonValueCreator.GetSeason(_gameDate);
             var teamsWithResult = _nationalResTabRepository.Retrieve(season);
             if(teamsWithResult.Count == 0)
             {
