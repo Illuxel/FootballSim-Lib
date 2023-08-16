@@ -1,13 +1,14 @@
 ﻿using DatabaseLayer;
 using System;
+using System.Data;
 
 namespace BusinessLogicLayer.Services
 {
     public class PlayerPriceCalculator
     {
-        private double _ageCoefficient;
+        private const double _ageCoefficient = 0.8;
         private int _age = 25;
-        private int _coefPrice = 25;
+        private const int _coefPrice = 25;
         public int GetPlayerPrice(Player player)
         {
             var avaragePlayerRating = player.Rating;
@@ -40,27 +41,27 @@ namespace BusinessLogicLayer.Services
 
         public int GetPlayerSalary(Player player)
         {
-            _ageCoefficient = 0.8;
+            var ageCoefficient = _ageCoefficient;
 
             var age = Convert.ToInt32((DateTime.Now - player.Person.Birthday).TotalDays / 365.24);
-            var price = GetPlayerPrice(player) / _coefPrice;
+            var basePrice = GetPlayerPrice(player) / _coefPrice;
 
             var ageDifference = _age - age;
             if (ageDifference >= 0)
             {
-                _ageCoefficient += ageDifference * 0.1;
+                ageCoefficient += ageDifference * 0.1;
             }
             else
             {
-                _ageCoefficient -= (ageDifference * 0.1) + 1;
+                ageCoefficient -= (ageDifference * 0.1) + 1;
             }
 
             Random random = new Random();
             var randomCorrelation = random.NextDouble() * 0.2 - 0.1;
-            var priceWithAge = price * _ageCoefficient;
+            var priceWithAge = basePrice * ageCoefficient;
             var finalPrice = (int)(priceWithAge + (priceWithAge * randomCorrelation));
 
-            return finalPrice != 0 ? finalPrice : price;
+            return finalPrice != 0 ? finalPrice : basePrice;
         }
     }
 }
