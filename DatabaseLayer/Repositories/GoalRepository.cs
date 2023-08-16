@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.Linq;
 
 namespace DatabaseLayer.Repositories
 {
@@ -50,8 +49,9 @@ namespace DatabaseLayer.Repositories
                         VALUES (@Id, @MatchId, @PlayerId, @TeamId, @MatchMinute, @AssistPlayerId)",
                             goals);
                         var result = rowsAffected == 1;
-                        transaction.Commit();
+
                         return result;
+
                     }
                     catch (Exception ex)
                     {
@@ -59,74 +59,6 @@ namespace DatabaseLayer.Repositories
                         throw ex;
                     }
                 }
-            }
-        }
-
-        public Dictionary<string, (int GoalsScored, int MatchesPlayed)> GetTopBombardiers(string season, string league, int limit)
-        {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
-            {
-                connection.Open();
-                var data = connection.Query(@"
-                    SELECT
-                        PlayerInMatch.PlayerId,
-                        SUM(CASE WHEN Goal.PlayerId = PlayerInMatch.PlayerId THEN 1 ELSE 0 END) AS GoalsScored,
-                        COUNT(DISTINCT PlayerInMatch.MatchId) AS MatchesPlayed
-                    FROM
-                        PlayerInMatch
-                    JOIN
-                        ""Match"" M ON PlayerInMatch.MatchId = M.Id
-                    LEFT JOIN
-                        Goal ON PlayerInMatch.MatchId = Goal.MatchId AND PlayerInMatch.PlayerId = Goal.PlayerId
-                    WHERE
-                        M.Season = @season AND M.LeagueId = @league
-                    GROUP BY
-                        PlayerInMatch.PlayerId
-                    ORDER BY
-                    GoalsScored DESC,
-                    MatchesPlayed ASC
-                    LIMIT @limit"
-                    , new { season, league, limit })
-                    .ToDictionary(
-                        row => (string)row.PlayerId,
-                        row => (GoalsScored: (int)row.GoalsScored, MatchesPlayed: (int)row.MatchesPlayed)
-                    );
-
-                return data;
-            }
-        }
-
-        public Dictionary<string, (int Assists, int MatchesPlayed)> GetTopAssistents(string season, string league, int limit)
-        {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
-            {
-                connection.Open();
-                var data = connection.Query(@"
-                    SELECT
-                        PlayerInMatch.PlayerId,
-                        SUM(CASE WHEN G.AssistPlayerId = PlayerInMatch.PlayerId THEN 1 ELSE 0 END) AS Assists,
-                        COUNT(DISTINCT PlayerInMatch.MatchId) AS MatchesPlayed
-                    FROM
-                        PlayerInMatch 
-                    JOIN
-                        ""Match"" M ON PlayerInMatch.MatchId = M.Id
-                    LEFT JOIN
-                        Goal G ON PlayerInMatch.MatchId = G.MatchId AND PlayerInMatch.PlayerId = G.AssistPlayerId
-                    WHERE
-                        M.Season = @season AND M.LeagueId = @league
-                    GROUP BY
-                        PlayerInMatch.PlayerId
-                    ORDER BY
-                        Assists DESC,
-                        MatchesPlayed ASC
-                    LIMIT @limit;"
-                    , new { season, league, limit })
-                    .ToDictionary(
-                        row => (string)row.PlayerId,
-                        row => (Assists: (int)row.Assists, MatchesPlayed: (int)row.MatchesPlayed)
-                    );
-
-                return data;
             }
         }
 

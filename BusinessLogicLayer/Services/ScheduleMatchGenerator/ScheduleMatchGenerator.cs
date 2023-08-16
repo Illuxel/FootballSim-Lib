@@ -77,8 +77,8 @@ namespace BusinessLogicLayer.Services
                             GuestTeamId = guestTeam.Id,
                             TourNumber = currentTour,
                             LeagueId = leagueId,
-                            MatchDate = currentDate.ToString("yyyy-MM-dd"),
-                            Season = _seasonCreator.GetSeason(currentDate.Year)
+                            MatchDate = currentDate.ToString("yyyy-MM-dd")
+
                         });
 
                         //матч-відповідь
@@ -89,8 +89,7 @@ namespace BusinessLogicLayer.Services
                             GuestTeamId = homeTeam.Id,
                             TourNumber = (teams.Count - 1) + currentTour,
                             LeagueId = leagueId,
-                            MatchDate = currentDate.AddDays((_countDaysOfRest * (teams.Count - 1))).ToString("yyyy-MM-dd"),
-                            Season = _seasonCreator.GetSeason(currentDate.Year)
+                            MatchDate = currentDate.AddDays((_countDaysOfRest * (teams.Count - 1))).ToString("yyyy-MM-dd")
                         });
                     }
                 }
