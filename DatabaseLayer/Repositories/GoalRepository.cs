@@ -20,41 +20,90 @@ namespace DatabaseLayer.Repositories
             }
         }
 
-        public List<PlayerStatistic> GetTopGoalScorers(string leagueId, string season, string seasonStartDate, string seasonEndDate, int limit = 10)
+        public List<PlayerStatistic> GetTopGoalScorers(string leagueId, string season, DateTime seasonStartDate, DateTime seasonEndDate, int limit = 10)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
                 var result = connection.Query(@"
-            SELECT
-                PIM.PlayerId,
-                SUM(CASE WHEN G.PlayerId = PIM.PlayerId THEN 1 ELSE 0 END) AS CountOfGoals,
-                COUNT(DISTINCT PIM.MatchId) AS CountOfPlayedMatches
-            FROM
-                PlayerInMatch PIM
-            JOIN
-                ""Match"" M ON PIM.MatchId = M.Id
-            LEFT JOIN
-                Goal G ON PIM.MatchId = G.MatchId AND PIM.PlayerId = G.PlayerId
-            WHERE
-                M.LeagueId = @leagueId AND Date(M.MatchDate) >= Date(@seasonStartDate) AND Date(M.MatchDate) < Date(@seasonEndDate)
-            GROUP BY
-                PIM.PlayerId
-            ORDER BY
-                CountOfGoals DESC,
-                CountOfPlayedMatches ASC
-            LIMIT @limit", new { leagueId, seasonStartDate, seasonEndDate, limit });
+                SELECT
+                    PIM.PlayerId,
+                    SUM(CASE WHEN G.PlayerId = PIM.PlayerId THEN 1 ELSE 0 END) AS CountOfGoals,
+                    SUM(CASE WHEN G.AssistPlayerId = PIM.PlayerId THEN 1 ELSE 0 END) AS CountOfAssists,
+                    COUNT(DISTINCT PIM.MatchId) AS CountOfPlayedMatches
+                FROM
+                    PlayerInMatch PIM
+                JOIN
+                    ""Match"" M ON PIM.MatchId = M.Id
+                LEFT JOIN
+                    Goal G ON PIM.MatchId = G.MatchId AND (PIM.PlayerId = G.PlayerId OR PIM.PlayerId = G.AssistPlayerId)
+                WHERE
+                    M.LeagueId = @LeagueId AND Date(M.MatchDate) >= Date(@SeasonStartDate) AND Date(M.MatchDate) < Date(@SeasonEndDate)
+                GROUP BY
+                    PIM.PlayerId
+                ORDER BY
+                    CountOfGoals DESC,
+                    CountOfPlayedMatches ASC
+                LIMIT @Limit", 
+                new { LeagueId = leagueId, SeasonStartDate = seasonStartDate, SeasonEndDate = seasonEndDate, Limit = limit });
 
-                var playerRepository = new PlayerRepository(); // Create only one instance
+                var playerRepository = new PlayerRepository();
                 var players = new List<PlayerStatistic>();
 
                 foreach (var player in result)
                 {
-
-                    var playerStatistic = new PlayerStatistic 
+                    var playerStatistic = new PlayerStatistic
                     {
                         Player = playerRepository.RetrieveOne(player.PlayerId),
                         CountOfGoals = (int)player.CountOfGoals,
+                        CountOfAssists = (int)player.CountOfAssists,
+                        CountOfPlayedMatches = (int)player.CountOfPlayedMatches,
+                        Season = season
+                    };
+
+                    players.Add(playerStatistic);
+                }
+
+                return players;
+            }
+        }
+        public List<PlayerStatistic> GetTopAssistents(string leagueId, string season, DateTime seasonStartDate, DateTime seasonEndDate, int limit = 10)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                var result = connection.Query(@"
+                SELECT
+                    PIM.PlayerId,
+                    SUM(CASE WHEN G.PlayerId = PIM.PlayerId THEN 1 ELSE 0 END) AS CountOfGoals,
+                    SUM(CASE WHEN G.AssistPlayerId = PIM.PlayerId THEN 1 ELSE 0 END) AS CountOfAssists,
+                    COUNT(DISTINCT PIM.MatchId) AS CountOfPlayedMatches
+                FROM
+                    PlayerInMatch PIM
+                JOIN
+                    ""Match"" M ON PIM.MatchId = M.Id
+                LEFT JOIN
+                    Goal G ON PIM.MatchId = G.MatchId AND (PIM.PlayerId = G.PlayerId OR PIM.PlayerId = G.AssistPlayerId)
+                WHERE
+                    M.LeagueId = @LeagueId AND Date(M.MatchDate) >= Date(@SeasonStartDate) AND Date(M.MatchDate) < Date(@SeasonEndDate)
+                GROUP BY
+                    PIM.PlayerId
+                ORDER BY
+                    CountOfAssists DESC,
+                    CountOfPlayedMatches ASC
+                LIMIT @Limit", 
+                new { LeagueId = leagueId, SeasonStartDate = seasonStartDate, SeasonEndDate = seasonEndDate, Limit = limit });
+
+                var playerRepository = new PlayerRepository();
+                var players = new List<PlayerStatistic>();
+
+                foreach (var player in result)
+                {
+                    var playerStatistic = new PlayerStatistic
+                    {
+                        Player = playerRepository.RetrieveOne(player.PlayerId),
+                        CountOfGoals = (int)player.CountOfGoals,
+                        CountOfAssists = (int)player.CountOfAssists,
                         CountOfPlayedMatches = (int)player.CountOfPlayedMatches,
                         Season = season
                     };

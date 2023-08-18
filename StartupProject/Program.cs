@@ -1,9 +1,5 @@
-using BusinessLogicLayer.Scenario;
 using BusinessLogicLayer.Services;
-using DatabaseLayer;
-using DatabaseLayer.Repositories;
 using System;
-using System.Collections.Generic;
 
 namespace StartupProject
 {
@@ -13,13 +9,14 @@ namespace StartupProject
         {
             /*var tourStart = new DateTime(2023, 08, 12);
             for (int i = 0; i < 38; i++)
-            {
+            {û
                 var tourGen = new GenerateGameActionsToNextMatch(tourStart);
                 tourGen.SimulateActions();
                 tourStart = tourStart.AddDays(7);
             }*/
-            GoalRepository goalRep = new GoalRepository();
-            var res = goalRep.GetTopGoalScorers("1", "2023/2024", "2023-08-12", "2024-05-19");
+            var serv = new PlayerGoalAssistsStatsService();
+            var asists= serv.GetTopAssists("2023/2024", "1", 10);
+            var bombardiers = serv.GetTopGoalScorers("2023/2024", "1", 10);
             Console.WriteLine();
         }
     }
