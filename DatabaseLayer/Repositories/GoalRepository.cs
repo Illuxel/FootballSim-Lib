@@ -27,24 +27,25 @@ namespace DatabaseLayer.Repositories
                 connection.Open();
                 var result = connection.Query(@"
                 SELECT
-                    PIM.PlayerId,
-                    SUM(CASE WHEN G.PlayerId = PIM.PlayerId THEN 1 ELSE 0 END) AS CountOfGoals,
-                    SUM(CASE WHEN G.AssistPlayerId = PIM.PlayerId THEN 1 ELSE 0 END) AS CountOfAssists,
-                    COUNT(DISTINCT PIM.MatchId) AS CountOfPlayedMatches
+                G.PlayerId,
+                COUNT(G.PlayerId) as GoalsCount,
+                (
+                    SELECT COUNT(*)
+                    FROM PlayerInMatch PIM
+                    WHERE PIM.PlayerId = G.PlayerId
+                ) AS TotalMatch
                 FROM
-                    PlayerInMatch PIM
+                    Goal G
                 JOIN
-                    ""Match"" M ON PIM.MatchId = M.Id
-                LEFT JOIN
-                    Goal G ON PIM.MatchId = G.MatchId AND (PIM.PlayerId = G.PlayerId OR PIM.PlayerId = G.AssistPlayerId)
+                    ""Match"" M ON G.MatchId = M.Id
                 WHERE
-                    M.LeagueId = @LeagueId AND Date(M.MatchDate) >= Date(@SeasonStartDate) AND Date(M.MatchDate) < Date(@SeasonEndDate)
+                    M.LeagueId = @leagueId AND M.MatchDate BETWEEN @seasonStartDate AND @seasonEndDate AND G.PlayerId NOT IN ('00000000-0000-0000-0000-000000000000', '')
                 GROUP BY
-                    PIM.PlayerId
+                    G.PlayerId
                 ORDER BY
-                    CountOfGoals DESC,
-                    CountOfPlayedMatches ASC
-                LIMIT @Limit", 
+                    GoalsCount DESC,
+                    TotalMatch ASC
+                LIMIT @limit;", 
                 new { LeagueId = leagueId, SeasonStartDate = seasonStartDate, SeasonEndDate = seasonEndDate, Limit = limit });
 
                 var playerRepository = new PlayerRepository();
@@ -55,9 +56,8 @@ namespace DatabaseLayer.Repositories
                     var playerStatistic = new PlayerStatistic
                     {
                         Player = playerRepository.RetrieveOne(player.PlayerId),
-                        CountOfGoals = (int)player.CountOfGoals,
-                        CountOfAssists = (int)player.CountOfAssists,
-                        CountOfPlayedMatches = (int)player.CountOfPlayedMatches,
+                        CountOfGoals = (int)player.GoalsCount,
+                        CountOfPlayedMatches = (int)player.TotalMatch,
                         Season = season
                     };
 
@@ -74,24 +74,25 @@ namespace DatabaseLayer.Repositories
                 connection.Open();
                 var result = connection.Query(@"
                 SELECT
-                    PIM.PlayerId,
-                    SUM(CASE WHEN G.PlayerId = PIM.PlayerId THEN 1 ELSE 0 END) AS CountOfGoals,
-                    SUM(CASE WHEN G.AssistPlayerId = PIM.PlayerId THEN 1 ELSE 0 END) AS CountOfAssists,
-                    COUNT(DISTINCT PIM.MatchId) AS CountOfPlayedMatches
+                G.AssistPlayerId,
+                COUNT(G.AssistPlayerId) as AssistCount,
+                (
+                    SELECT COUNT(*)
+                    FROM PlayerInMatch PIM
+                    WHERE PIM.PlayerId = G.AssistPlayerId
+                ) AS TotalMatch
                 FROM
-                    PlayerInMatch PIM
+                    Goal G
                 JOIN
-                    ""Match"" M ON PIM.MatchId = M.Id
-                LEFT JOIN
-                    Goal G ON PIM.MatchId = G.MatchId AND (PIM.PlayerId = G.PlayerId OR PIM.PlayerId = G.AssistPlayerId)
+                    ""Match"" M ON G.MatchId = M.Id
                 WHERE
-                    M.LeagueId = @LeagueId AND Date(M.MatchDate) >= Date(@SeasonStartDate) AND Date(M.MatchDate) < Date(@SeasonEndDate)
+                    M.LeagueId = @leagueId AND M.MatchDate BETWEEN @seasonStartDate AND @seasonEndDate AND AssistPlayerId NOT IN ('00000000-0000-0000-0000-000000000000', '')
                 GROUP BY
-                    PIM.PlayerId
+                    G.AssistPlayerId
                 ORDER BY
-                    CountOfAssists DESC,
-                    CountOfPlayedMatches ASC
-                LIMIT @Limit", 
+                    AssistCount DESC,
+                    TotalMatch ASC
+                LIMIT @limit;", 
                 new { LeagueId = leagueId, SeasonStartDate = seasonStartDate, SeasonEndDate = seasonEndDate, Limit = limit });
 
                 var playerRepository = new PlayerRepository();
@@ -102,9 +103,8 @@ namespace DatabaseLayer.Repositories
                     var playerStatistic = new PlayerStatistic
                     {
                         Player = playerRepository.RetrieveOne(player.PlayerId),
-                        CountOfGoals = (int)player.CountOfGoals,
-                        CountOfAssists = (int)player.CountOfAssists,
-                        CountOfPlayedMatches = (int)player.CountOfPlayedMatches,
+                        CountOfAssists = (int)player.AssistCount,
+                        CountOfPlayedMatches = (int)player.TotalMatch,
                         Season = season
                     };
 
