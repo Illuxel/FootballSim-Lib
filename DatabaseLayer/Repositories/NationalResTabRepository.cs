@@ -61,7 +61,7 @@ namespace DatabaseLayer.Repositories
             return result;
         }
 
-        public List<NationalResultTable> Retrieve(string teamId, string season)
+        public NationalResultTable Retrieve(string teamId, string season)
         {
             var result = new List<NationalResultTable>();
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
@@ -81,7 +81,7 @@ namespace DatabaseLayer.Repositories
                     splitOn: "ID").AsList();
             }
 
-            return result;
+            return result.FirstOrDefault();
         }
 
         public Dictionary<string, NationalResultTable> Retrieve(string season)

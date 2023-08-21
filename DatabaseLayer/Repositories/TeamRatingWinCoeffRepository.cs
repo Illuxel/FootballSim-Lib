@@ -69,6 +69,11 @@ namespace DatabaseLayer.Repositories
             }
         }
 
+        /// <summary>
+        /// Get teams rating by seasons
+        /// </summary>
+        /// <param name="seasons"></param>
+        /// <returns>Dictionary key - teamId, value - seasons rating </returns>
         public Dictionary<string, List<TeamRatingWinCoeff>> Retrieve(List<string> seasons)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
@@ -138,8 +143,34 @@ namespace DatabaseLayer.Repositories
                 return rowsAffected == 1;
             }
         }
+        public bool Update(List<TeamRatingWinCoeff> teamCoeffList)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                using (IDbTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        var rowsAffected = connection.Execute(
+                            @"UPDATE TeamRatingWinCoeff SET 
+                            WinCoeff = @WinCoeff
+                            WHERE TeamId = @TeamId AND Season = @Season",
+                            teamCoeffList);
+                        transaction.Commit();
+                        return rowsAffected == 1;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        transaction.Rollback();
+                        return false;
+                    }
+                }
+            }
+        }
 
-        public bool InsertNewTeams(List<string> teamsId, string season)
+        public bool InsertNewTeams(List<string> teamIds, string season)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -149,7 +180,7 @@ namespace DatabaseLayer.Repositories
                     @"SELECT TeamId FROM TeamRatingWinCoeff WHERE Season = @season",
                     new { season });
 
-                var teamsToInsert = teamsId.Except(existingTeams).ToList();
+                var teamsToInsert = teamIds.Except(existingTeams).ToList();
 
                 if (teamsToInsert.Any())
                 {

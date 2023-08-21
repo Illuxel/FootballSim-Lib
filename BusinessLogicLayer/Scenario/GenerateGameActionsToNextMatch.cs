@@ -22,12 +22,12 @@ namespace BusinessLogicLayer.Scenario
         {
             _generateAllMatchesByTour.Generate();
 
-            var teams = _teamRepository.Retrieve();
+            /*var teams = _teamRepository.Retrieve();
             //using scenario for teams
             foreach (var team in teams)
             {
                 //TODO: call another scenario using date interval
-            }
+            }*/
         }
     }
 }
