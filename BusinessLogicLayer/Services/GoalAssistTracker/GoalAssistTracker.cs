@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 namespace BusinessLogicLayer.Services
 {
-    public class PlayerGoalAssistsStatsService
+    public class GoalAssistTracker
     {
         GoalRepository _goalRepepository;
         SeasonValueCreator _seasonValueCreator;
-        public PlayerGoalAssistsStatsService()
+        public GoalAssistTracker()
         {
             _goalRepepository = new GoalRepository();
             _seasonValueCreator = new SeasonValueCreator();
