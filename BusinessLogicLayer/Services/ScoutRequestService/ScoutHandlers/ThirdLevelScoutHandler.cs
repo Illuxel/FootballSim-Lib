@@ -7,16 +7,6 @@ namespace BusinessLogicLayer.Services.ScoutRequestService
         public ThirdLevelScoutHandler(PlayerGameData playerGameData) : base(playerGameData)
         {}
 
-        public override int LookForAverageRatingInJuniorAcademy(string teamId)
-        {
-            return base.LookForAverageRatingInJuniorAcademy(teamId);
-        }
-
-        public override int LookForWorstPlayerInJuniorAcademy(string teamId)
-        {
-            return base.LookForWorstPlayerInJuniorAcademy(teamId);
-        }
-
         public virtual int LookForBestPlayerInJuniorAcademy(string teamId)
         {
             var leagueId = defineLeagueId(teamId);
