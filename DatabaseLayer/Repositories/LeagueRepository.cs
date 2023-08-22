@@ -51,6 +51,26 @@ namespace DatabaseLayer.Repositories
                 return results.FirstOrDefault();
             }
         }
+        public int RetrieveLeagueIdByTeamId(string teamId)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                int? leagueId = connection.QuerySingleOrDefault<int>("SELECT LeagueID FROM Team WHERE ID = @teamId", new { teamId });
+                return (int)(leagueId != null ? leagueId : 0);
+            }
+        }
+        public bool IsTeamInLeague(string teamId,List<int> leagueIds)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                var response = connection.QuerySingleOrDefault<int>(@"
+                SELECT 1 FROM Team 
+                WHERE LeagueId IN @LeagueIds AND ID = @teamId;", new { leagueIds,teamId });
+                return response == 1;
+            }
+        }
         internal bool Insert(League league)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
