@@ -1,4 +1,5 @@
 ﻿using DatabaseLayer.Services;
+using System;
 using System.Collections.Generic;
 
 namespace BusinessLogicLayer.Services.ScoutRequestService
@@ -23,14 +24,25 @@ namespace BusinessLogicLayer.Services.ScoutRequestService
 
         public virtual int LookForWorstPlayerInJuniorAcademy(string teamId)
         {
-            var leagueId = defineLeagueId(teamId);
-            var leagueIds = defineValidLeagueIds(leagueId);
-
-            var IsTeamInLeague = _leagueRepository.IsTeamInLeague(teamId, leagueIds);
-            if (IsTeamInLeague)
+            if(isCountOfRequestsPerWeekIsNotExceeded())
             {
-                return _juniorFinder.WorstJuniorPlayerByTeam(teamId).Rating;
+                var leagueId = defineLeagueId(teamId);
+                var leagueIds = defineValidLeagueIds(leagueId);
+
+                var IsTeamInLeague = _leagueRepository.IsTeamInLeague(teamId, leagueIds);
+                if (IsTeamInLeague)
+                {
+                    _playerGameData.CountOfRequestsPerTime++;
+                    var worstPlayer = _juniorFinder.WorstJuniorPlayerByTeam(teamId);
+                    if (worstPlayer != null)
+                    {
+                        return _juniorFinder.WorstJuniorPlayerByTeam(teamId).Rating;
+                    }
+                    return 0;
+                }
             }
+
+            
             return 0;
         }
 
@@ -52,9 +64,33 @@ namespace BusinessLogicLayer.Services.ScoutRequestService
             return leagueIds;
         }
 
-        protected virtual int defineCountOfRequestsPerWeek()
+        protected virtual int _countOfRequestsPerTime
         {
-            return 2;
+            get => 2;
+        }
+
+        protected bool isCountOfRequestsPerWeekIsNotExceeded()
+        {
+            if(_playerGameData.CountOfRequestsPerTime == 0)
+            {
+                _playerGameData.FirstRequstDate = DateTime.Parse(_playerGameData.GameDate);
+                _playerGameData.EndOfLimitsDate = DateTime.Parse(_playerGameData.GameDate).AddDays(7);
+                return true;
+            }
+            else if(DateTime.Parse(_playerGameData.GameDate) > _playerGameData.EndOfLimitsDate)
+            {
+                _playerGameData.CountOfRequestsPerTime = 0;
+                _playerGameData.FirstRequstDate = DateTime.Parse(_playerGameData.GameDate);
+                _playerGameData.EndOfLimitsDate = DateTime.Parse(_playerGameData.GameDate).AddDays(7);
+                return true;
+            }
+            else if(DateTime.Parse(_playerGameData.GameDate) >= _playerGameData.FirstRequstDate 
+                && DateTime.Parse(_playerGameData.GameDate) <= _playerGameData.EndOfLimitsDate)
+            {
+                return _playerGameData.CountOfRequestsPerTime < _countOfRequestsPerTime;
+            }
+
+            return false;
         }
     }
 }

@@ -13,22 +13,34 @@ namespace BusinessLogicLayer.Services
             _playerRepository = new PlayerRepository();
         }
 
-        public Player WorstJuniorPlayerByTeam(string teamId)
+        public Player? WorstJuniorPlayerByTeam(string teamId)
         {
             var players = _playerRepository.RetrieveJuniorsByTeam(teamId);
-            return players.OrderBy(x => x.Rating).First();
+            if(players.Count != 0)
+            {
+                return players.OrderBy(x => x.Rating).First();
+            }
+            return null;
         }
 
-        public Player BestJuniorPlayerByTeam(string teamId)
+        public Player? BestJuniorPlayerByTeam(string teamId)
         {
             var players = _playerRepository.RetrieveJuniorsByTeam(teamId);
-            return players.OrderByDescending(x => x.Rating).First();
+            if (players.Count != 0)
+            {
+                return players.OrderByDescending(x => x.Rating).First();
+            }
+            return null;
         }
 
         public int AverageJuniorRatingByTeam(string teamId)
         {
             var players = _playerRepository.RetrieveJuniorsByTeam(teamId);
-            return (int)players.Average(x => x.Rating);
+            if (players.Count != 0)
+            {
+                return (int)players.Average(x => x.Rating);
+            }
+            return 0;
         }
     }
 }
