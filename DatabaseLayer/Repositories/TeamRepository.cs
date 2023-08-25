@@ -77,7 +77,7 @@ namespace DatabaseLayer.Repositories
                 return team;
             }
         }
-        public List<Player> RetrieveJuniors(string teamId)
+        internal List<Player> RetrieveJuniors(string teamId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {

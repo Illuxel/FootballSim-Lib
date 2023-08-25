@@ -14,9 +14,7 @@ namespace DatabaseLayer.Services
         public double Money { get; set; }
         public UserRole Role { get; set; }
         public ScoutSkillLevel CurrentLevel { get; set; }
-        public int CountOfRequestsPerTime { get; set; }
-        public DateTime FirstRequstDate { get; set; }
-        public DateTime EndOfLimitsDate { get; set; }
+        public int CountAvailableScoutRequests { get; set; }
 
         public PlayerGameData(string playerName, string playerSurname, string clubId, string realDate, string gameDate, double money, UserRole role, ScoutSkillLevel currentLevel)
         {
