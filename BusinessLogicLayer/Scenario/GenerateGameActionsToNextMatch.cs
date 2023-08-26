@@ -25,7 +25,7 @@ namespace BusinessLogicLayer.Scenario
         public void SimulateActions()
         {
             //Define count of available scout requests
-            defineCountOfAvailableScoutRequests();
+            resetCountOfAvailableScoutRequests();
 
             //Generate all matches by tour
             _generateAllMatchesByTour.Generate();
@@ -39,7 +39,7 @@ namespace BusinessLogicLayer.Scenario
             }*/
         }
 
-        private void defineCountOfAvailableScoutRequests()
+        private void resetCountOfAvailableScoutRequests()
         {
             if (_saveInfo.PlayerData.CurrentLevel == ScoutSkillLevel.Level2)
             {
