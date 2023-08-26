@@ -11,9 +11,8 @@ namespace BusinessLogicLayer.Services
         private MatchResult _matchData;
         private TeamForMatchCreator _teamForMatchCreator;
         private PlayerInMatchRepository _playerInMatchRepository;
-        private DateTime _matchDate;
         private Dictionary<string,Player> _playedPlayers;
-        
+        private DateTime _matchDate;
         public MatchResult MatchData { get { return _matchData; } }
 
         public StrategyType HomeTeamStrategy
@@ -62,23 +61,27 @@ namespace BusinessLogicLayer.Services
         public delegate void MatchFinishedHandler(MatchResult result);
         public event MatchFinishedHandler? OnMatchFinished;
 
-        public MatchGenerator(ITeamForMatch homeTeam, ITeamForMatch guestTeam)
+        private int _defaultSparePlayersCount = 7;
+        public MatchGenerator(string matchId)
         {
             _matchData = new MatchResult();
             _playerInMatchRepository = new PlayerInMatchRepository();
             _playerInjuryFinder = new PlayerInjuryFinder();
             _playerRepository = new PlayerRepository();
             _matchRepository = new MatchRepository();
+            _teamForMatchCreator = new TeamForMatchCreator();
+            var match = _matchRepository.RetrieveMatchById(matchId);
 
-            _matchData.MatchID = Guid.NewGuid().ToString();
+            _matchData.MatchID = match.Id;
 
-            _matchData.HomeTeam = homeTeam;
-            _matchData.GuestTeam = guestTeam;
+            _matchDate = match.GetMatchDate();
+            _matchData.HomeTeam = _teamForMatchCreator.Create(match.HomeTeamId,_defaultSparePlayersCount);
+            _matchData.GuestTeam = _teamForMatchCreator.Create(match.GuestTeamId, _defaultSparePlayersCount);
 
             _isMatcFinished = false;
             _isStrategyChanged = false;
 
-            _playedPlayers = new Dictionary<string,Player>();
+            _playedPlayers = new Dictionary<string, Player>();
         }
         public MatchGenerator(Match match)
         {
@@ -103,6 +106,10 @@ namespace BusinessLogicLayer.Services
         }
         public void StartGenerating()
         {
+            if(string.IsNullOrEmpty(_matchData.MatchID))
+            {
+                throw new Exception("Not found match description in DB!");
+            }
             ///////////
             if(!_matchData.IsValidMatch())
             {
@@ -120,8 +127,6 @@ namespace BusinessLogicLayer.Services
             var currentMinute = 0;
             var firstTime = true;
             var strategyEventName = "BallControl";
-            _matchDate = DateTime.Parse(_matchRepository.RetrieveMatchById(_matchData.MatchID).MatchDate);
-            //
 
             while (!_isMatcFinished)
             {

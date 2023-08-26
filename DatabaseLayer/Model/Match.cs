@@ -1,4 +1,6 @@
-﻿namespace DatabaseLayer
+﻿using System;
+
+namespace DatabaseLayer
 {
     public class Match
     {
@@ -18,5 +20,9 @@
         public int LeagueId { get; set; }
         public League League { get; internal set; }
         public bool IsPlayed { get; set; }
+        public DateTime GetMatchDate()
+        {
+            return DateTime.Parse(MatchDate);
+        }
     }
 }

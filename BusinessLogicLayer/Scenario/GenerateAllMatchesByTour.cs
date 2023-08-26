@@ -10,6 +10,7 @@ namespace BusinessLogicLayer.Scenario
     internal class GenerateAllMatchesByTour
     {
         DateTime _gameDate;
+        private string _ownerTeamId;
         ScheduleMatchGenerator _scheduleGenerator;
         MatchGenerator _matchGenerator;
         MatchRepository _matchRepository;
@@ -20,9 +21,10 @@ namespace BusinessLogicLayer.Scenario
         TeamRepository _teamRepository;
 
 
-        public GenerateAllMatchesByTour(DateTime gameDate)
+        public GenerateAllMatchesByTour(DateTime gameDate, string ownerTeamId)
         {
             _gameDate = gameDate;
+            _ownerTeamId = ownerTeamId;
             _scheduleGenerator = new ScheduleMatchGenerator();
             _matchRepository = new MatchRepository();
             _goalRepository = new GoalRepository();
@@ -51,7 +53,19 @@ namespace BusinessLogicLayer.Scenario
                 _teamRatingWinCoeffRepository.InsertNewTeams(teamIds, _seasonValueCreator.GetSeason(_gameDate));
             }
 
+            var ownerTeam = _teamRepository.Retrieve(_ownerTeamId);
+
             var allMatches = getMatches(_gameDate);
+            if(allMatches.TryGetValue(ownerTeam.LeagueID, out List<Match> matchesByOwnerLeague ))
+            {
+                int matchIndexToRemove = matchesByOwnerLeague.FindIndex(match =>
+                match.HomeTeamId == _ownerTeamId || match.GuestTeamId == _ownerTeamId);
+
+                if (matchIndexToRemove >= 0)
+                {
+                    matchesByOwnerLeague.RemoveAt(matchIndexToRemove);
+                }
+            }
             generateAllMatches(allMatches);
         }
 

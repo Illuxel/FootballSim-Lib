@@ -10,12 +10,14 @@ namespace BusinessLogicLayer.Scenario
         private JuniorGeneration _juniorGeneration;
         private PlayerSkillsUpdater _playerSkillsUpdater;
         private TeamRepository _teamRepository;
-        public GenerateGameActionsToNextMatch(DateTime gameDate) 
+        private string _ownerTeamId;
+        public GenerateGameActionsToNextMatch(DateTime gameDate, string ownerTeamId) 
         {
-            _generateAllMatchesByTour = new GenerateAllMatchesByTour(gameDate);
+            _generateAllMatchesByTour = new GenerateAllMatchesByTour(gameDate, ownerTeamId);
             _teamRepository = new TeamRepository();
             _juniorGeneration = new JuniorGeneration();
             _playerSkillsUpdater = new PlayerSkillsUpdater();
+            _ownerTeamId = ownerTeamId;
         }
 
         public void SimulateActions()
