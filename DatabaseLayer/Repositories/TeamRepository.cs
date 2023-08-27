@@ -232,7 +232,7 @@ namespace DatabaseLayer.Repositories
                             var rowsAffected = connection.Execute(
                             @"UPDATE Team 
                                 SET
-                                GlobalPosition = @GlobalPosition
+                                GlobalRating = @GlobalRating
                                 WHERE Id = @Id",
                                 ratingPosition, transaction);
                             transaction.Commit();

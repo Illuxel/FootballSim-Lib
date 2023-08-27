@@ -49,9 +49,8 @@ namespace DatabaseLayer.Repositories
                         VALUES (@Id, @MatchId, @PlayerId, @TeamId, @MatchMinute, @AssistPlayerId)",
                             goals);
                         var result = rowsAffected == 1;
-
+                        transaction.Commit();
                         return result;
-
                     }
                     catch (Exception ex)
                     {
