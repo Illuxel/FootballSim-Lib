@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace DatabaseLayer.Services
 {
-    internal class JuniorFinder
+    public class JuniorFinder
     {
         TeamRepository _teamRepository;
         PersonRepository _personRepository;
