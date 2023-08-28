@@ -24,7 +24,7 @@ namespace BusinessLogicLayer.Services
 
             var baseMatchEvent = MatchEventsJsonParser.GetEvent(eventCode);
 
-            matchEvent.EventCode =          eventCode;
+            matchEvent.EventCode = eventCode;
             matchEvent.EventDescription = baseMatchEvent.EventDescription;
             matchEvent.Duration = baseMatchEvent.Duration;
 
