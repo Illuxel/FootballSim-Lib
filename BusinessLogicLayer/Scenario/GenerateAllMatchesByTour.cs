@@ -34,25 +34,21 @@ namespace BusinessLogicLayer.Scenario
 
         public void Generate()
         {
-            var matches = _matchRepository.Retrieve(_gameDate);
-            if (matches.Count == 0)
+            var nationalResultTabs = _nationalResTabRepository.Retrieve(_seasonValueCreator.GetSeason(_gameDate));
+
+            if (nationalResultTabs.Count == 0)
             {
                 generateSchedule(_gameDate);
-                matches = _matchRepository.Retrieve(_gameDate);
-                if(matches.Count == 0)
-                {
-                    throw new Exception("Error");
-                }
 
-                insertNewRows(matches);
-
-                var teams = _teamRepository.Retrieve();
-                var teamIds = teams.Select(x => x.Id).ToList();
-                _teamRatingWinCoeffRepository.InsertNewTeams(teamIds, _seasonValueCreator.GetSeason(_gameDate));
+                var firstTourMatches = _matchRepository.Retrieve(1);
+                insertNewRowsToDatabase(firstTourMatches);
             }
 
-            var allMatches = getMatches(_gameDate);
-            generateAllMatches(allMatches);
+            var allMatchesByTour = getMatches(_gameDate);
+            if(allMatchesByTour.Count != 0)
+            {
+                generateAllMatches(allMatchesByTour);
+            }
         }
 
         private void generateSchedule(DateTime gameDate)
@@ -152,21 +148,18 @@ namespace BusinessLogicLayer.Scenario
             return resultTable;
         }
 
-        private List<string> getAllTeamsId(Dictionary<int, List<Match>> matches)
+        private List<string> getAllTeamsId(List<Match> matches)
         {
             var teamdsIds = new List<string>();
-            foreach (var matchesByLeague in matches.Values)
+            foreach (var m in matches)
             {
-                foreach(var match in matchesByLeague)
-                {
-                    teamdsIds.Add(match.HomeTeamId);
-                    teamdsIds.Add(match.GuestTeamId);
-                }
+                teamdsIds.Add(m.HomeTeamId);
+                teamdsIds.Add(m.GuestTeamId);
             }
             return teamdsIds.Distinct().ToList();
         }
 
-        private void insertNewRows(Dictionary<int, List<Match>> matches)
+        private void insertNewRowsToDatabase(List<Match> matches)
         {
             var teamsID = getAllTeamsId(matches);
 
@@ -175,6 +168,8 @@ namespace BusinessLogicLayer.Scenario
                 var tab = createResultTable(item);
                 _nationalResTabRepository.Insert(tab);
             }
+
+            _teamRatingWinCoeffRepository.InsertNewTeams(teamsID, _seasonValueCreator.GetSeason(_gameDate));
         }
     }
 }
