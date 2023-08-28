@@ -44,6 +44,14 @@ namespace DatabaseLayer.Services
 
                 int maxIndex = sortedLeagues.Count - 1;
                 int scoutLeagueIndex = sortedLeagues.FindIndex(x => x.Id == scoutLeague.Id);
+                if(scoutLeagueIndex == maxIndex)
+                {
+                    for (int i = maxIndex - (_LeagueRangeForSecondLevel * 2); i<=maxIndex;i++)
+                    {
+                        accessedLeagues.Add(sortedLeagues[i]);
+                    }
+                    return accessedLeagues;
+                }
                 int lastLeftNeighbourIndex = scoutLeagueIndex - _LeagueRangeForSecondLevel;
                 int lastRightNeighbourIndex = scoutLeagueIndex + _LeagueRangeForSecondLevel;
 
