@@ -1,12 +1,13 @@
 # Visual Studio Code/2022
 .vs
-
-# Visual Code Specific
 .vscode
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 *.code-workspace
+
+# Rider
+.idea
 
 # Build results
 **/[Bb]in
