@@ -24,6 +24,15 @@ namespace DatabaseLayer.Repositories
             }
         }
 
+        public Dictionary<string, Player> Retrieve(List<string> playerIds)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                var players = retrieve("Contract.PersonID in @playerIds", new { playerIds });
+                return players.ToDictionary(p => p.PersonID, p => p);
+            }
+        }
+
         public List<Player> RetrieveJuniorsByTeam(string teamId)
         {
             return retrieve("Contract.TeamID = @teamId AND IsJunior = 1", new { teamId });

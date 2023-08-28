@@ -14,7 +14,7 @@ namespace BusinessLogicLayer.Services
             _seasonValueCreator = new SeasonValueCreator();
         }
 
-        public List<PlayerStatistic> GetTopGoalScorers(string season,string leagueId,int count = 10)
+        public List<PlayerStatistic> GetTopGoalScorers(string season,int leagueId,int count = 10)
         {
             var seasonStartDate = _seasonValueCreator.GetSeasonStartDate(season);
             var seasonEndDate = _seasonValueCreator.GetSeasonEndDate(season);
@@ -23,7 +23,7 @@ namespace BusinessLogicLayer.Services
             return topBambardiers;
         }
 
-        public List<PlayerStatistic> GetTopAssists(string season, string leagueId, int count = 10)
+        public List<PlayerStatistic> GetTopAssists(string season, int leagueId, int count = 10)
         {
             var seasonStartDate = _seasonValueCreator.GetSeasonStartDate(season);
             var seasonEndDate = _seasonValueCreator.GetSeasonEndDate(season);
