@@ -19,7 +19,7 @@ namespace BusinessLogicLayer.Services
                 AssistedPlayer = new Guid(HomeTeam.GetPlayer(32, 41, 26, 0).PersonID);
                 if (ScoredPlayer == AssistedPlayer)
                 {
-                    AssistedPlayer = Guid.Empty;
+                    AssistedPlayer = null;
                 }
             }
             
