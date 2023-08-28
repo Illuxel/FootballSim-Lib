@@ -157,7 +157,6 @@ namespace BusinessLogicLayer.Services
                     }
 
                     currentEvent.MatchMinute = currentMinute;
-
                     currentEvent.ProcessEvent();
 
                     if (currentEvent is BallStrikeGoalEvent)
