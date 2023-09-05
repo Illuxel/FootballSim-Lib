@@ -5,13 +5,14 @@ using System.Linq;
 
 namespace DatabaseLayer.Services
 {
-    public class AccessedLeagues
+    public class ScoutLeagueAccessor
     {
         TeamRepository _teamRepository;
         LeagueRepository _leagueRepository;
 
         private static int _LeagueRangeForSecondLevel = 2;
-        public AccessedLeagues()
+        private static int _amountOfLeaguesBelowForTheBestLeague = 4;
+        public ScoutLeagueAccessor()
         {
             _teamRepository = new TeamRepository();
             _leagueRepository = new LeagueRepository();
@@ -46,7 +47,7 @@ namespace DatabaseLayer.Services
                 int scoutLeagueIndex = sortedLeagues.FindIndex(x => x.Id == scoutLeague.Id);
                 if(scoutLeagueIndex == maxIndex)
                 {
-                    for (int i = maxIndex - (_LeagueRangeForSecondLevel * 2); i<=maxIndex;i++)
+                    for (int i = maxIndex - _amountOfLeaguesBelowForTheBestLeague; i<=maxIndex;i++)
                     {
                         accessedLeagues.Add(sortedLeagues[i]);
                     }

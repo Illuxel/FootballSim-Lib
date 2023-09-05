@@ -6,15 +6,15 @@ using System.Collections.Generic;
 
 namespace DatabaseLayer.Services
 {
-    public class JuniorPlayerGetter
+    public class JuniorPreviewTeamGetter
     {
-        AccessedLeagues _accessedLeagues;
+        ScoutLeagueAccessor _accessedLeagues;
         TeamRepository _teamRepository;
         JuniorFinder _juniorFinder;
 
-        public JuniorPlayerGetter()
+        public JuniorPreviewTeamGetter()
         {
-            _accessedLeagues = new AccessedLeagues();
+            _accessedLeagues = new ScoutLeagueAccessor();
             _teamRepository = new TeamRepository();
             _juniorFinder = new JuniorFinder();
         }
@@ -22,9 +22,8 @@ namespace DatabaseLayer.Services
         {
             var allJuniorsTeams = getAllJuniorsTeams(playerGameData);
             var leagueId = _teamRepository.Retrieve(teamId).League.Id;
-            
-            allJuniorsTeams.TryGetValue(leagueId, out var juniorTeamsInLeague);
-            if(juniorTeamsInLeague != null && playerGameData.CountAvailableScoutRequests != 0)
+
+            if(allJuniorsTeams.TryGetValue(leagueId, out var juniorTeamsInLeague) && playerGameData.CountAvailableScoutRequests > 0)
             {
                 playerGameData.CountAvailableScoutRequests -= 1;
                 var juniorTeam = juniorTeamsInLeague.Find(x => x.TeamId == teamId);
@@ -36,7 +35,6 @@ namespace DatabaseLayer.Services
         private Dictionary<int, List<JuniorTeam>> getAllJuniorsTeams(PlayerGameData playerGameData)
         {
             var juniorTeams = new Dictionary<int, List<JuniorTeam>>();
-            var gameDate = DateTime.Parse(playerGameData.GameDate);
             var leagues = _accessedLeagues.DefineAccessedLeagues(playerGameData);
 
             foreach (var league in leagues)
@@ -56,7 +54,7 @@ namespace DatabaseLayer.Services
                     else if(playerGameData.CurrentLevel == ScoutSkillLevel.Level3)
                     {
                         juniorTeam.AverageTeamRating = _juniorFinder.AverageJuniorRatingByTeam(juniorTeam.TeamId);
-                        juniorTeam.BestJunior = _juniorFinder.BestJuniorPlayerByTeam(juniorTeam.TeamId,gameDate);
+                        juniorTeam.BestJunior = _juniorFinder.BestJuniorPlayerByTeam(juniorTeam.TeamId);
                     }
 
                     juniorTeamsInLeague.Add(juniorTeam);
