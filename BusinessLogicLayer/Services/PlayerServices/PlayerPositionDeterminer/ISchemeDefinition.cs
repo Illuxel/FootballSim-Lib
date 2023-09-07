@@ -22,7 +22,7 @@ namespace BusinessLogicLayer.Services
             return GetSamePosition(position);
         }
 
-        private static Dictionary<string, int> GetSamePosition(PlayerPosition position)
+        internal static Dictionary<string, int> GetSamePosition(PlayerPosition position)
         {
             var result = new Dictionary<string, int>();
 
