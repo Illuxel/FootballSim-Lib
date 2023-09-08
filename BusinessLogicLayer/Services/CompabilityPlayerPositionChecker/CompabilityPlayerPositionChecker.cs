@@ -2,8 +2,10 @@
 using DatabaseLayer;
 using DatabaseLayer.Enums;
 using DatabaseLayer.Repositories;
+using DatabaseLayer.Services;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace BusinessLogicLayer.Services
 {
@@ -11,10 +13,18 @@ namespace BusinessLogicLayer.Services
     {
         PlayerRepository _playerRepository;
         PlayerFieldPartPositionConvertor _playerFieldPartPositionConvertor;
+        CreateNewPosition _createNewPosition;
+        TacticSchemaFactory _tacticSchemaFactory;
+        TeamRepository _teamRepository;
+        ContractRepository _contractRepository;
         public CompabilityPlayerPositionChecker()
         {
             _playerRepository = new PlayerRepository();
             _playerFieldPartPositionConvertor = new PlayerFieldPartPositionConvertor();
+            _createNewPosition = new CreateNewPosition();
+            _tacticSchemaFactory = new TacticSchemaFactory();
+            _teamRepository = new TeamRepository();
+            _contractRepository = new ContractRepository();
         }
         public TacticPlayerPosition Check(PlayerPosition playerPosition, string playerId)
         {
@@ -30,9 +40,9 @@ namespace BusinessLogicLayer.Services
                     return new TacticPlayerPosition()
                     {
                         CurrentPlayer = player,
-                        RealPosition = player.Position.Code,
+                        RealPosition = checkedPositionCode,
                         FieldPosition = fieldPartPosition,
-                        //Define index position
+                        IndexPosition = definePositionIndexByContractId(player.Position.Code, player.ContractID)
                     };
                 }
                 var samePositions = TacticSchemeNavigation.GetSamePosition(playerPosition);
@@ -43,6 +53,8 @@ namespace BusinessLogicLayer.Services
 
             return new TacticPlayerPosition();
         }
+
+        
 
         //Key - playerId
         public Dictionary<string, TacticPlayerPosition> Check(PlayerPosition playerPosition, List<string> playerIds)
@@ -70,7 +82,7 @@ namespace BusinessLogicLayer.Services
                             CurrentPlayer = player,
                             RealPosition = player.Position.Code,
                             FieldPosition = fieldPartPosition,
-                            //Define index position
+                            IndexPosition = definePositionIndexByContractId(player.Position.Code, player.ContractID)
                         };
                         result.Add(player.PersonID, tacticPlayerPos);
                     }
@@ -87,8 +99,14 @@ namespace BusinessLogicLayer.Services
             }
             return result;
         }
+
         private TacticPlayerPosition getTacticPlayerPositionOnAnotherPosition(Player player, Dictionary<string, int> samePositions, string checkedPositionCode, PlayerFieldPartPosition fieldPartPosition)
         {
+            //How to get position name without method arguments?
+            var position = _createNewPosition.Create(checkedPositionCode, "test", fieldPartPosition);
+            
+            player.Position = position;
+            player.PositionCode = checkedPositionCode;
 
             if (samePositions.TryGetValue(player.PositionCode, out int rating))
             {
@@ -101,12 +119,37 @@ namespace BusinessLogicLayer.Services
 
             return new TacticPlayerPosition()
             {
-                //?? change player position or TacticPlayerPosition RealPosition, FieldPosition is stay same or change
                 CurrentPlayer = player,
                 RealPosition = checkedPositionCode,
                 FieldPosition = fieldPartPosition,
-                //Define index position
+                IndexPosition = definePositionIndexByContractId(player.Position.Code, player.ContractID)
             };
+        }
+
+        private int definePositionIndexByContractId(string positionCode, string contractId)
+        {
+            var playerContract = _contractRepository.RetrieveOne(contractId);
+            var teamId = playerContract.TeamId;
+            var positionIndexes = getPositionsIndexes(teamId);
+            return defineIndex(positionIndexes, positionCode);
+        }
+
+        private Dictionary<int, string> getPositionsIndexes(string teamId)
+        {
+            var team = _teamRepository.Retrieve(teamId);
+            return _tacticSchemaFactory.GetPlayersPosition(team.TacticSchema);
+        }
+
+        private int defineIndex(Dictionary<int, string> positionsIndexes, string positionCode)
+        {
+            foreach (var position in positionsIndexes)
+            {
+                if (position.Value == positionCode)
+                {
+                    return position.Key;
+                }
+            }
+            return 0;
         }
     }
 }
