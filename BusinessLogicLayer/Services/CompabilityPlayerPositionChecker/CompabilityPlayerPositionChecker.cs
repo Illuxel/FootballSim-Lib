@@ -5,7 +5,6 @@ using DatabaseLayer.Repositories;
 using DatabaseLayer.Services;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 
 namespace BusinessLogicLayer.Services
 {
@@ -13,18 +12,20 @@ namespace BusinessLogicLayer.Services
     {
         PlayerRepository _playerRepository;
         PlayerFieldPartPositionConvertor _playerFieldPartPositionConvertor;
-        CreateNewPosition _createNewPosition;
+        NewPositionCreator _newPositionCreator;
         TacticSchemaFactory _tacticSchemaFactory;
         TeamRepository _teamRepository;
         ContractRepository _contractRepository;
+        PositionNameGetter _positionNameGetter;
         public CompabilityPlayerPositionChecker()
         {
             _playerRepository = new PlayerRepository();
             _playerFieldPartPositionConvertor = new PlayerFieldPartPositionConvertor();
-            _createNewPosition = new CreateNewPosition();
+            _newPositionCreator = new NewPositionCreator();
             _tacticSchemaFactory = new TacticSchemaFactory();
             _teamRepository = new TeamRepository();
             _contractRepository = new ContractRepository();
+            _positionNameGetter = new PositionNameGetter();
         }
         public TacticPlayerPosition Check(PlayerPosition playerPosition, string playerId)
         {
@@ -34,6 +35,7 @@ namespace BusinessLogicLayer.Services
             {
                 var fieldPartPosition = _playerFieldPartPositionConvertor.Convert(playerPosition);
                 var checkedPositionCode = EnumDescription.GetEnumDescription(playerPosition);
+                var positionName = _positionNameGetter.Get(playerPosition);
 
                 if (checkedPositionCode == player.Position.Code)
                 {
@@ -46,7 +48,7 @@ namespace BusinessLogicLayer.Services
                     };
                 }
                 var samePositions = TacticSchemeNavigation.GetSamePosition(playerPosition);
-                var tacticPlayerPos = getTacticPlayerPositionOnAnotherPosition(player, samePositions, checkedPositionCode,fieldPartPosition);
+                var tacticPlayerPos = getTacticPlayerPositionOnAnotherPosition(player, samePositions, checkedPositionCode, positionName, fieldPartPosition);
                 
                 return tacticPlayerPos;
             }
@@ -54,15 +56,20 @@ namespace BusinessLogicLayer.Services
             return new TacticPlayerPosition();
         }
 
-        
 
-        //Key - playerId
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="playerPosition"></param>
+        /// <param name="playerIds"></param>
+        /// <returns>Returns a dictionary where PersonID is the key and TacticPlayerPosition is the value by the given position</returns>
         public Dictionary<string, TacticPlayerPosition> Check(PlayerPosition playerPosition, List<string> playerIds)
         {
             var result = new Dictionary<string, TacticPlayerPosition>();
 
             var fieldPartPosition = _playerFieldPartPositionConvertor.Convert(playerPosition);
             var checkedPositionCode = EnumDescription.GetEnumDescription(playerPosition);
+            var positionName = _positionNameGetter.Get(playerPosition);
 
             var players = _playerRepository.Retrieve(playerIds).Values.ToList();
             var playersOnAnotherPosition = new List<Player>();
@@ -93,17 +100,16 @@ namespace BusinessLogicLayer.Services
                 var samePositions = TacticSchemeNavigation.GetSamePosition(playerPosition);
                 foreach(var player in playersOnAnotherPosition)
                 {
-                    var tacticPlayerPos = getTacticPlayerPositionOnAnotherPosition(player, samePositions, checkedPositionCode, fieldPartPosition);
+                    var tacticPlayerPos = getTacticPlayerPositionOnAnotherPosition(player, samePositions, checkedPositionCode, positionName, fieldPartPosition);
                     result.Add(player.PersonID, tacticPlayerPos);
                 }
             }
             return result;
         }
 
-        private TacticPlayerPosition getTacticPlayerPositionOnAnotherPosition(Player player, Dictionary<string, int> samePositions, string checkedPositionCode, PlayerFieldPartPosition fieldPartPosition)
+        private TacticPlayerPosition getTacticPlayerPositionOnAnotherPosition(Player player, Dictionary<string, int> samePositions, string checkedPositionCode,string positionName, PlayerFieldPartPosition fieldPartPosition)
         {
-            //How to get position name without method arguments?
-            var position = _createNewPosition.Create(checkedPositionCode, "test", fieldPartPosition);
+            var position = _newPositionCreator.Create(checkedPositionCode, positionName, fieldPartPosition);
             
             player.Position = position;
             player.PositionCode = checkedPositionCode;

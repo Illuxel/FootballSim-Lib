@@ -1,6 +1,6 @@
 ﻿namespace DatabaseLayer.Services
 {
-    public class CreateNewPosition
+    public class NewPositionCreator
     {
         public Position Create(string positionCode,string positionName, PlayerFieldPartPosition playerPosition)
         {
