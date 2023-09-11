@@ -18,6 +18,11 @@ namespace DatabaseLayer
         public Role CurrentRole { get; internal set; }
 
         public ICollection<Contract> Contracts { get; internal set; }
+        public int GetAge(DateTime gameDate)
+        {
+            return gameDate.Year - Birthday.Year;
+        }
+
         /*
         public Agent? Agent { get; internal set; }
         public Coach? Coach { get; internal set; }

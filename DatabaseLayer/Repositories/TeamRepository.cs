@@ -77,7 +77,7 @@ namespace DatabaseLayer.Repositories
                 return team;
             }
         }
-        public List<Player> RetrieveJuniors(string teamId)
+        internal List<Player> RetrieveJuniors(string teamId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -232,7 +232,7 @@ namespace DatabaseLayer.Repositories
                             var rowsAffected = connection.Execute(
                             @"UPDATE Team 
                                 SET
-                                GlobalPosition = @GlobalPosition
+                                GlobalRating = @GlobalRating
                                 WHERE Id = @Id",
                                 ratingPosition, transaction);
                             transaction.Commit();
