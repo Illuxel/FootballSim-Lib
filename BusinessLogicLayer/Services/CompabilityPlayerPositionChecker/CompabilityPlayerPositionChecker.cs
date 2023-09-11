@@ -16,7 +16,6 @@ namespace BusinessLogicLayer.Services
         TacticSchemaFactory _tacticSchemaFactory;
         TeamRepository _teamRepository;
         ContractRepository _contractRepository;
-        PositionNameGetter _positionNameGetter;
         public CompabilityPlayerPositionChecker()
         {
             _playerRepository = new PlayerRepository();
@@ -25,7 +24,6 @@ namespace BusinessLogicLayer.Services
             _tacticSchemaFactory = new TacticSchemaFactory();
             _teamRepository = new TeamRepository();
             _contractRepository = new ContractRepository();
-            _positionNameGetter = new PositionNameGetter();
         }
         public TacticPlayerPosition Check(PlayerPosition playerPosition, string playerId)
         {
@@ -35,7 +33,6 @@ namespace BusinessLogicLayer.Services
             {
                 var fieldPartPosition = _playerFieldPartPositionConvertor.Convert(playerPosition);
                 var checkedPositionCode = EnumDescription.GetEnumDescription(playerPosition);
-                var positionName = _positionNameGetter.Get(playerPosition);
 
                 if (checkedPositionCode == player.Position.Code)
                 {
@@ -48,7 +45,7 @@ namespace BusinessLogicLayer.Services
                     };
                 }
                 var samePositions = TacticSchemeNavigation.GetSamePosition(playerPosition);
-                var tacticPlayerPos = getTacticPlayerPositionOnAnotherPosition(player, samePositions, checkedPositionCode, positionName, fieldPartPosition);
+                var tacticPlayerPos = getTacticPlayerPositionOnAnotherPosition(player, samePositions, checkedPositionCode, fieldPartPosition);
                 
                 return tacticPlayerPos;
             }
@@ -69,7 +66,6 @@ namespace BusinessLogicLayer.Services
 
             var fieldPartPosition = _playerFieldPartPositionConvertor.Convert(playerPosition);
             var checkedPositionCode = EnumDescription.GetEnumDescription(playerPosition);
-            var positionName = _positionNameGetter.Get(playerPosition);
 
             var players = _playerRepository.Retrieve(playerIds).Values.ToList();
             var playersOnAnotherPosition = new List<Player>();
@@ -100,16 +96,16 @@ namespace BusinessLogicLayer.Services
                 var samePositions = TacticSchemeNavigation.GetSamePosition(playerPosition);
                 foreach(var player in playersOnAnotherPosition)
                 {
-                    var tacticPlayerPos = getTacticPlayerPositionOnAnotherPosition(player, samePositions, checkedPositionCode, positionName, fieldPartPosition);
+                    var tacticPlayerPos = getTacticPlayerPositionOnAnotherPosition(player, samePositions, checkedPositionCode, fieldPartPosition);
                     result.Add(player.PersonID, tacticPlayerPos);
                 }
             }
             return result;
         }
 
-        private TacticPlayerPosition getTacticPlayerPositionOnAnotherPosition(Player player, Dictionary<string, int> samePositions, string checkedPositionCode,string positionName, PlayerFieldPartPosition fieldPartPosition)
+        private TacticPlayerPosition getTacticPlayerPositionOnAnotherPosition(Player player, Dictionary<string, int> samePositions, string checkedPositionCode, PlayerFieldPartPosition fieldPartPosition)
         {
-            var position = _newPositionCreator.Create(checkedPositionCode, positionName, fieldPartPosition);
+            var position = _newPositionCreator.Create(checkedPositionCode, fieldPartPosition);
             
             player.Position = position;
             player.PositionCode = checkedPositionCode;

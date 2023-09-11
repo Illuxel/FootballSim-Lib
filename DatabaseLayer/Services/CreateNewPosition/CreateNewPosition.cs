@@ -2,12 +2,11 @@
 {
     public class NewPositionCreator
     {
-        public Position Create(string positionCode,string positionName, PlayerFieldPartPosition playerPosition)
+        public Position Create(string positionCode, PlayerFieldPartPosition playerPosition)
         {
             return new Position()
             {
                 Code = positionCode,
-                Name = positionName,
                 Location = playerPosition                
             };
         }
