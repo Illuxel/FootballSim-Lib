@@ -48,7 +48,7 @@ namespace StartupProject
 
         public void GenerateMatch()
         {
-            var teamRepository = new TeamRepository();
+            /*var teamRepository = new TeamRepository();
             var teams = teamRepository.Retrieve(1);
             var homeTeam = teams[0];
             var guestTeam = teams[1];
@@ -101,7 +101,7 @@ namespace StartupProject
 
                 }
                 Console.WriteLine($"{goal.MatchMinute} Scored by: {goalPlayer.Person.Surname}");
-            }
+            }*/
         }
     }
 }

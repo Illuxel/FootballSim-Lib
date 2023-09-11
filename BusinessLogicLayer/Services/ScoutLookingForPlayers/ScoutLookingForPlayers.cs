@@ -1,9 +1,7 @@
-﻿using DatabaseLayer;
-using DatabaseLayer.Enums;
+﻿using DatabaseLayer.Enums;
 using DatabaseLayer.Model;
 using DatabaseLayer.Repositories;
 using System;
-
 
 namespace BusinessLogicLayer.Services
 {

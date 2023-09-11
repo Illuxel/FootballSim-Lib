@@ -39,7 +39,7 @@ namespace DatabaseLayer.Repositories
                         return contract;
                     },
                     param: new { teamId },
-                    splitOn: "TeamID, PersonID");
+                    splitOn: "ID, ID");
 
                 return contracts.ToList();
             }
@@ -64,7 +64,7 @@ namespace DatabaseLayer.Repositories
                         return contract;
                     },
                     param: new { personId },
-                    splitOn: "TeamID, PersonID"); ;
+                    splitOn: "ID, ID"); ;
 
                 return leagues.ToList();
             }
@@ -89,7 +89,7 @@ namespace DatabaseLayer.Repositories
                         return contract;
                     },
                     param: new { contractId },
-                    splitOn: "TeamID, PersonID"); ;
+                    splitOn: "ID, ID"); ;
 
                 return contracts.FirstOrDefault();
             }

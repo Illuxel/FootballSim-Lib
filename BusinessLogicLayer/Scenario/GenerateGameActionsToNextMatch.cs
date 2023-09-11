@@ -13,10 +13,12 @@ namespace BusinessLogicLayer.Scenario
         private JuniorGeneration _juniorGeneration;
         private PlayerSkillsUpdater _playerSkillsUpdater;
         private TeamRepository _teamRepository;
+
         public GenerateGameActionsToNextMatch(SaveInfo saveInfo) 
         {
             _saveInfo = saveInfo;
             _generateAllMatchesByTour = new GenerateAllMatchesByTour(DateTime.Parse(_saveInfo.PlayerData.GameDate));
+
             _teamRepository = new TeamRepository();
             _juniorGeneration = new JuniorGeneration();
             _playerSkillsUpdater = new PlayerSkillsUpdater();

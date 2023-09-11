@@ -10,6 +10,7 @@ namespace BusinessLogicLayer.Scenario
     internal class GenerateAllMatchesByTour
     {
         DateTime _gameDate;
+        private string _ownerTeamId;
         ScheduleMatchGenerator _scheduleGenerator;
         MatchGenerator _matchGenerator;
         MatchRepository _matchRepository;
@@ -20,9 +21,10 @@ namespace BusinessLogicLayer.Scenario
         TeamRepository _teamRepository;
 
 
-        public GenerateAllMatchesByTour(DateTime gameDate)
+        public GenerateAllMatchesByTour(DateTime gameDate, string ownerTeamId)
         {
             _gameDate = gameDate;
+            _ownerTeamId = ownerTeamId;
             _scheduleGenerator = new ScheduleMatchGenerator();
             _matchRepository = new MatchRepository();
             _goalRepository = new GoalRepository();
@@ -43,7 +45,6 @@ namespace BusinessLogicLayer.Scenario
                 var firstTourMatches = _matchRepository.Retrieve(1);
                 insertNewRowsToDatabase(firstTourMatches);
             }
-
             var allMatchesByTour = getMatches(_gameDate);
             if(allMatchesByTour.Count != 0)
             {

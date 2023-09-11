@@ -4,8 +4,6 @@ namespace DatabaseLayer.DBSettings
 {
     public static class DatabaseManager
     {
-        private static string _defaultConnectionString = "Data Source=.\\Database\\FootbalLifeDB.db";
-
         private static string _connectionString;
         internal static string ConnectionString { 
             get
@@ -25,7 +23,8 @@ namespace DatabaseLayer.DBSettings
         internal static string SavePathInfo;
         internal static string OriginalDbFileName = "FootbalLifeDB.db";
         internal static string UserDataFileName = "UserData.json";
-        internal static string OriginalDbFilePath = Path.Combine(".", "Database", OriginalDbFileName);
+        internal static string OriginalDbFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Database", OriginalDbFileName);
+        private static string _defaultConnectionString = "Data Source=" + OriginalDbFilePath;
 
 
         public static string getOriginDataBasePath()
