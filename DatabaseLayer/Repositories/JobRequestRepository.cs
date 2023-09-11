@@ -15,8 +15,7 @@ namespace DatabaseLayer.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
-                var jobRequests = connection.Query<JobRequest>(
-                    @"SELECT * FROM JobRequest WHERE 1 = 1");
+                var jobRequests = connection.Query<JobRequest>(@"SELECT * FROM JobRequest");
 
                 return jobRequests.AsList();
             }
