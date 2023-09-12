@@ -15,7 +15,7 @@ namespace DatabaseLayer.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
-                var jobRequests = connection.Query<JobRequest>(@"SELECT * FROM JobRequest");
+                var jobRequests = connection.Query<JobRequest>("SELECT * FROM JobRequest");
 
                 return jobRequests.AsList();
             }
@@ -28,7 +28,8 @@ namespace DatabaseLayer.Repositories
                 var jobRequests = connection.QuerySingle<JobRequest>(
                     @"  SELECT * FROM JobRequest 
                         WHERE ID = @jobRequestID", 
-                        new { jobRequestID = jobRequestID });
+                        new { jobRequestID = jobRequestID }
+                );
 
                 return jobRequests;
             }
@@ -41,39 +42,26 @@ namespace DatabaseLayer.Repositories
                 var jobRequests = connection.Query<JobRequest>(
                     @"  SELECT * FROM JobRequest 
                         WHERE PersonID = @personID", 
-                    new { PersonID = personID });
+                    new { PersonID = personID }
+                );
 
                 return jobRequests.AsList();
             }
         }
         // returns available job requests for each player
-        public Dictionary<string, List<JobRequest>> RetrieveByTeam(string teamID)
+        public List<JobRequest> RetrieveByTeam(string teamID)
         {
-            var playersJobRequests = new Dictionary<string, List<JobRequest>>();
-            var teamRepo = new TeamRepository();
-            var team = teamRepo.Retrieve(teamID);
-
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
-                team.Players.ForEach(p =>
-                {
-                    var playerJobRequests = connection.Query<JobRequest>(
-                        @"  SELECT * FROM JobRequest 
-                            WHERE PersonID = @personID AND TeamID = @teamID", 
-                            new { 
-                                personID = p.PersonID,
-                                teamID = teamID,
-                            });
+                var playerJobRequests = connection.Query<JobRequest>(
+                    @"  SELECT * FROM JobRequest 
+                        WHERE TeamID = @teamID", 
+                        new { teamID = teamID }
+                );
 
-                    if (playerJobRequests.Count() != 0)
-                    {
-                        playersJobRequests.Add(p.PersonID, playerJobRequests.AsList());
-                    }
-                });
+                return playerJobRequests.AsList();
             }
-
-            return playersJobRequests;
         }
 
         public bool Insert(JobRequest jobRequest)
