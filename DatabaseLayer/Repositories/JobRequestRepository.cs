@@ -78,8 +78,6 @@ namespace DatabaseLayer.Repositories
 
         public bool Insert(JobRequest jobRequest)
         {
-            jobRequest.ID = Guid.NewGuid().ToString(); 
-
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
@@ -94,8 +92,6 @@ namespace DatabaseLayer.Repositories
         }
         public bool Insert(List<JobRequest> jobRequests)
         {
-            jobRequests.ForEach(jobRequest => jobRequest.ID = Guid.NewGuid().ToString());
-
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
