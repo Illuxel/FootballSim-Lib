@@ -167,8 +167,9 @@ namespace BusinessLogicLayer.Services
                             MatchId = _matchData.MatchID.ToString(),
                             PlayerId = currentEvent.ScoredPlayer.Value.ToString(),
                             TeamId = currentEvent.HomeTeam.Id.ToString(),
-                            MatchMinute = currentMinute
-                        };
+                            MatchMinute = currentMinute,
+                            AssistPlayerId = string.Empty
+                    };
                         if(currentEvent.AssistedPlayer.HasValue)
                         {
                             goal.AssistPlayerId = currentEvent.AssistedPlayer.Value.ToString();
@@ -180,7 +181,6 @@ namespace BusinessLogicLayer.Services
                             Where(item => item.MatchMinute == currentMinute - 3 
                             && goalsWithoutAssistEvents.Contains(item.EventCode)).Count() > 0)
                         {
-                            goal.AssistPlayerId = string.Empty;
                             currentEvent.AssistedPlayer = Guid.Empty;
                         }
 
@@ -374,9 +374,10 @@ namespace BusinessLogicLayer.Services
                 {
                     Id = Guid.NewGuid().ToString(),
                     MatchId = _matchData.MatchID.ToString(),
-                    PlayerId = "",
+                    PlayerId = string.Empty,
                     TeamId = winnerId,
-                    MatchMinute = 0
+                    MatchMinute = 0,
+                    AssistPlayerId = string.Empty
                 };
                 _matchData.Goals.Add(goal);
             }
