@@ -2,7 +2,6 @@
 using DatabaseLayer;
 using DatabaseLayer.Enums;
 using DatabaseLayer.Repositories;
-using DatabaseLayer.Services;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,19 +11,21 @@ namespace BusinessLogicLayer.Services
     {
         PlayerRepository _playerRepository;
         PlayerFieldPartPositionConvertor _playerFieldPartPositionConvertor;
-        NewPositionCreator _newPositionCreator;
         TacticSchemaFactory _tacticSchemaFactory;
         TeamRepository _teamRepository;
         ContractRepository _contractRepository;
+        PositionRepository _positionRepository;
+
         public CompabilityPlayerPositionChecker()
         {
             _playerRepository = new PlayerRepository();
             _playerFieldPartPositionConvertor = new PlayerFieldPartPositionConvertor();
-            _newPositionCreator = new NewPositionCreator();
             _tacticSchemaFactory = new TacticSchemaFactory();
             _teamRepository = new TeamRepository();
             _contractRepository = new ContractRepository();
+            _positionRepository = new PositionRepository();
         }
+
         public TacticPlayerPosition Check(PlayerPosition playerPosition, string playerId)
         {
             var player = _playerRepository.RetrieveOne(playerId);
@@ -105,7 +106,7 @@ namespace BusinessLogicLayer.Services
 
         private TacticPlayerPosition getTacticPlayerPositionOnAnotherPosition(Player player, Dictionary<string, int> samePositions, string checkedPositionCode, PlayerFieldPartPosition fieldPartPosition)
         {
-            var position = _newPositionCreator.Create(checkedPositionCode, fieldPartPosition);
+            var position = _positionRepository.Retrieve(checkedPositionCode);
             
             player.Position = position;
             player.PositionCode = checkedPositionCode;
