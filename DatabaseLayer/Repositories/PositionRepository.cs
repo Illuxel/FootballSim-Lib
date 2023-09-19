@@ -51,7 +51,7 @@ namespace DatabaseLayer.Repositories
                 bool result = false;
                 if (record != null)
                 {
-                    var rowsAffected = connection.Execute("UPDATE Position SET Location = @Location, Name =  @Name WHERE Code = @Id",
+                    var rowsAffected = connection.Execute("UPDATE Position SET Location = @Location, Name =  @Name WHERE Code = @Code",
                         position);
                     result = rowsAffected == 1;
                 }
