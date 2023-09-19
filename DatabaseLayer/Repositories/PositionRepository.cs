@@ -21,7 +21,7 @@ namespace DatabaseLayer.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
-                return connection.QueryFirstOrDefault<Position>("SELECT * FROM Position Where ID = @positionCode", new { positionCode });
+                return connection.QueryFirstOrDefault<Position>("SELECT * FROM Position Where Code = @positionCode", new { positionCode });
             }
         }
 
@@ -30,11 +30,11 @@ namespace DatabaseLayer.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
-                var record = connection.QuerySingleOrDefault<Position>("SELECT * FROM Position WHERE ID = @positionCode", new { positionCode = position.Code });
+                var record = connection.QuerySingleOrDefault<Position>("SELECT * FROM Position WHERE Code = @positionCode", new { positionCode = position.Code });
                 bool result = false;
                 if (record == null)
                 {
-                    var rowsAffected = connection.Execute("INSERT INTO Position (ID, Location, Name) VALUES (@Id, @Location, @Name)",
+                    var rowsAffected = connection.Execute("INSERT INTO Position (Code, Location, Name) VALUES (@Code, @Location, @Name)",
                         position);
                     result = rowsAffected == 1;
                 }
@@ -47,11 +47,11 @@ namespace DatabaseLayer.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
-                var record = connection.QuerySingleOrDefault<Position>("SELECT * FROM Position WHERE ID = @positionCode", new { positionCode = position.Code });
+                var record = connection.QuerySingleOrDefault<Position>("SELECT * FROM Position WHERE Code = @positionCode", new { positionCode = position.Code });
                 bool result = false;
                 if (record != null)
                 {
-                    var rowsAffected = connection.Execute("UPDATE Position SET Location = @Location, Name =  @Name WHERE ID = @Id",
+                    var rowsAffected = connection.Execute("UPDATE Position SET Location = @Location, Name =  @Name WHERE Code = @Code",
                         position);
                     result = rowsAffected == 1;
                 }
@@ -63,7 +63,7 @@ namespace DatabaseLayer.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
-                var rowsAffected = connection.Execute("DELETE FROM Position WHERE ID = @positionCode ",
+                var rowsAffected = connection.Execute("DELETE FROM Position WHERE Code = @positionCode ",
                     new { positionCode });
                 return rowsAffected == 1;
             }
