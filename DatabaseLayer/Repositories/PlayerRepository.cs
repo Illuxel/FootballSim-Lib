@@ -183,6 +183,46 @@ namespace DatabaseLayer.Repositories
                 return result;
             }
         }
+
+        public bool Update(List<Player> players)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                using (IDbTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        connection.Execute(@"UPDATE Player 
+                        SET PositionCode = @PositionCode, 
+                            ContractId = @ContractId, 
+                            Speed = @Speed, 
+                            Kick = @Kick, 
+                            Endurance = @Endurance, 
+                            Strike = @Strike, 
+                            Physics = @Physics, 
+                            Defending = @Defending, 
+                            Passing = @Passing,
+                            Dribbling = @Dribbling,
+                            Rating = @Rating,
+                            IndexPosition = @IndexPosition, 
+                            CurrentRating = @CurrentPlayerRating, 
+                            PlayerPositionGroup = @PlayerPositionGroup,
+                            InjuredTo = @InjuredTo
+                        WHERE PersonID = @PersonID",
+                        players);
+                        transaction.Commit();
+                        return true;
+                    }
+                    catch(Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception(ex.Message);
+                    }
+                }
+            }
+        }
+
         public bool UpdateEndurance(List<Player> players)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))

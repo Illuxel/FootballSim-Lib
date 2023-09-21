@@ -1,8 +1,10 @@
 ﻿using BusinessLogicLayer.Rules;
+using BusinessLogicLayer.Services.PlayerServices;
 using DatabaseLayer;
 using DatabaseLayer.Enums;
 using DatabaseLayer.Repositories;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BusinessLogicLayer.Services
@@ -36,78 +38,145 @@ namespace BusinessLogicLayer.Services
             _playerInvolvementLastMatchChecker = new PlayerInvolvementLastMatchChecker();
         }
 
-        public void TrainPlayers(string teamId, TrainingMode trainingMode)
+        public List<IPlayerTrainingPreview> GetPlayersPreview(string teamId, TrainingMode trainingMode)
         {
-            var gameDate = defineDate(teamId);
             var players = _playerRepository.Retrieve(teamId);
-            var enduranceCostPercent = defineEnduranceCost(trainingMode);
-            var enduranceCostPercentForPlayersInLastMatch = defineEnduranceCostForLastGamePlayers(trainingMode);
-
-            var trainingCoeff = getTrainingCoeff(trainingMode);
-            bool isEnoughEndurance;
-
+            var playerPreview = new List<IPlayerTrainingPreview>();
+            var defaultEnduranceCost = defineEnduranceCost(trainingMode);
+            var enduranceCostForLastGamePlayers = defineEnduranceCostForLastGamePlayers(trainingMode);
 
             foreach (var player in players)
             {
-                if (_playerInjuryFinder.IsAlreadyInjuried(player))
+                //If player is not injuried, we can train him and we don't show him in preview
+                if (!_playerInjuryFinder.IsAlreadyInjuried(player))
                 {
-                    break;
-                }
+                    int enduranceCostPercentForPlayer = defaultEnduranceCost;
 
-                defineAge(player, gameDate);
-
-                var ageCoeff = getAgeCoeff();
-                var percent = calculatePercent(ageCoeff, trainingCoeff);
-
-                if (trainingMode == TrainingMode.SimplifiedForLastGamePlayers || trainingMode == TrainingMode.AdvancedForLastGameBench)
-                {
-                    if (isPlayerInLastGame(teamId, player.PersonID))
+                    if (isPlayerHaveSpecificEnduranceCost(player, teamId, trainingMode))
                     {
-                        isEnoughEndurance = isEnoughEnduranceCost(player, enduranceCostPercentForPlayersInLastMatch);
+                        enduranceCostPercentForPlayer = enduranceCostForLastGamePlayers;
                     }
-                    else
-                    {
-                        isEnoughEndurance = isEnoughEnduranceCost(player, enduranceCostPercent);
-                    }
-                }
-                else
-                {
-                    isEnoughEndurance = isEnoughEnduranceCost(player, enduranceCostPercent);
-                }
 
-                if (isEnoughEndurance)
+                    var enduranceAfterTrain = calculateEnduranceAfterTraining(player, enduranceCostPercentForPlayer);
+
+                    //If not enough endurance, player can't train, so we don't show him in preview
+                    if (enduranceAfterTrain >= 0)
+                    {
+                        var playerData = _personRepository.Retrieve(player.PersonID);
+                        var playerName = playerData.Name == null ? playerData.Surname : $"{playerData.Name} {playerData.Surname}";
+
+                        var preview = new PlayerTrainingPreview()
+                        {
+                            PersonID = player.PersonID,
+                            Name = playerName,
+                            Position = player.Position,
+                            Overall = player.Rating,
+                            CurrentEndurance = player.Endurance,
+                            AfterTrainEndurance = enduranceAfterTrain
+                            //Maybee we need to add here TrainingMode field, `cuz in TrainPlayers(List<IPlayerTrainingPreview>) method we need to know which training mode we use
+                        };
+
+                        playerPreview.Add(preview);
+                    }
+                }
+            }
+
+            return playerPreview;
+        }
+        public void TrainPlayers(string teamId, List<IPlayerTrainingPreview> playersPreviews, TrainingMode trainingMode)
+        {
+            var players = _playerRepository.Retrieve(teamId);
+            var trainingCoeff = getTrainingCoeff(trainingMode);
+            var gameDate = defineDate(teamId);
+
+            var trainedPlayers = getTrainedPlayers(playersPreviews, players, trainingCoeff, gameDate);
+
+            _playerRepository.Update(trainedPlayers);
+        }
+    
+        public void TrainPlayers(string teamId, TrainingMode trainingMode)
+        {
+            var playersPreviews = GetPlayersPreview(teamId, trainingMode);
+            var players = _playerRepository.Retrieve(teamId);
+            var trainingCoeff = getTrainingCoeff(trainingMode);
+            var gameDate = defineDate(teamId);
+
+            var trainedPlayers = getTrainedPlayers(playersPreviews, players, trainingCoeff, gameDate);
+
+            _playerRepository.Update(trainedPlayers);
+        }
+
+        private List<Player> getTrainedPlayers(List<IPlayerTrainingPreview> playersPreviews, List<Player> players, double trainingCoeff, DateTime gameDate)
+        {
+            var trainedPlayers = new List<Player>();
+            foreach (var playerPreview in playersPreviews)
+            {
+                var player = players.FirstOrDefault(x => x.PersonID == playerPreview.PersonID);
+
+                if (player != null)
                 {
+                    defineAge(player, gameDate);
+
+                    var ageCoeff = getAgeCoeff();
+                    var percent = calculatePercent(ageCoeff, trainingCoeff);
+
                     if (_playerInjuryFinder.IsInjuried(player))
                     {
                         _playerInjuryFinder.SetInjury(player, gameDate);
                     }
                     else if (processChance(percent))
                     {
-                        changeStats(player);
-                        var oldRating = player.Rating;
-                        player.Rating = calculatePlayerStats(player);
-                        if (oldRating != player.Rating)
-                        {
-                            OnPlayerGrowUp?.Invoke(player);
-                        }
+                        player = successTrain(player, playerPreview.AfterTrainEndurance);
                     }
-                    if (isOldPlayer())
+                    else if (isOldPlayer())
                     {
                         var decreaseCoef = oldPlayerDecreaseCoeff();
+
                         if (processChance(decreaseCoef))
                         {
-                            changeStats(player, false);
-                            var oldRating = player.Rating;
-                            player.Rating = calculatePlayerStats(player);
-                            if (oldRating != player.Rating)
-                            {
-                                OnPlayerGrowUp?.Invoke(player);
-                            }
+                            player = decreaseStatsTraining(player);
                         }
                     }
-                    _playerRepository.Update(player);
+                    trainedPlayers.Add(player);
                 }
             }
+            return trainedPlayers;
+        }
+
+        private Player successTrain(Player player, int afterTrainEndurance)
+        {
+            changeStats(player);
+            var oldRating = player.Rating;
+            player.Rating = calculatePlayerStats(player);
+            player.Endurance = afterTrainEndurance;
+            if (oldRating != player.Rating)
+            {
+                OnPlayerGrowUp?.Invoke(player);
+            }
+            return player;
+        }
+        private Player decreaseStatsTraining(Player player)
+        {
+            changeStats(player, false);
+            var oldRating = player.Rating;
+            player.Rating = calculatePlayerStats(player);
+            if (oldRating != player.Rating)
+            {
+                OnPlayerGrowDown?.Invoke(player);
+            }
+            return player;
+        }
+        private bool isPlayerHaveSpecificEnduranceCost(Player player,string teamId,TrainingMode trainingMode)
+        {
+            if (trainingMode == TrainingMode.SimplifiedForLastGamePlayers || trainingMode == TrainingMode.AdvancedForLastGameBench)
+            {
+                if (isPlayerInLastGame(teamId, player.PersonID))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private double oldPlayerDecreaseCoeff()
@@ -152,17 +221,10 @@ namespace BusinessLogicLayer.Services
             return _playerGeneration.CalculateAverageRating(player, importancePropertyCoef);
         }
 
-        private bool isEnoughEnduranceCost(Player player, int enduranceCostPercent)
+        private int calculateEnduranceAfterTraining(Player player, int enduranceCostPercent)
         {
             var enduranceCost = player.Endurance * enduranceCostPercent / 100;
-            var restEndurance = player.Endurance -= enduranceCost;
-
-            if (restEndurance >= 0)
-            {
-                player.Endurance = restEndurance;
-                return true;
-            }
-            return false;
+            return player.Endurance -= enduranceCost;
         }
 
         private DateTime defineDate(string teamId)
