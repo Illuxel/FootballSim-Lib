@@ -74,10 +74,6 @@ namespace BusinessLogicLayer.Services
 
                         playerPreview.Add(preview);
                     }
-                    else
-                    {
-                        Console.WriteLine(player.Endurance);
-                    }
                 }
             }
 
