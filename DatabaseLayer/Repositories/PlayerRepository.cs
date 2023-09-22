@@ -210,7 +210,7 @@ namespace DatabaseLayer.Repositories
                             PlayerPositionGroup = @PlayerPositionGroup,
                             InjuredTo = @InjuredTo
                         WHERE PersonID = @PersonID",
-                        players);
+                        players, transaction);
                         transaction.Commit();
                         return true;
                     }

@@ -47,7 +47,6 @@ namespace BusinessLogicLayer.Services
 
             foreach (var player in players)
             {
-                //If player is not injuried, we can train him and we don't show him in preview
                 if (!_playerInjuryFinder.IsAlreadyInjuried(player))
                 {
                     int enduranceCostPercentForPlayer = defaultEnduranceCost;
@@ -56,10 +55,8 @@ namespace BusinessLogicLayer.Services
                     {
                         enduranceCostPercentForPlayer = enduranceCostForLastGamePlayers;
                     }
-
+                    var currentEndurance = player.Endurance;
                     var enduranceAfterTrain = calculateEnduranceAfterTraining(player, enduranceCostPercentForPlayer);
-
-                    //If not enough endurance, player can't train, so we don't show him in preview
                     if (enduranceAfterTrain >= 0)
                     {
                         var playerData = _personRepository.Retrieve(player.PersonID);
@@ -71,12 +68,15 @@ namespace BusinessLogicLayer.Services
                             Name = playerName,
                             Position = player.Position,
                             Overall = player.Rating,
-                            CurrentEndurance = player.Endurance,
+                            CurrentEndurance = currentEndurance,
                             AfterTrainEndurance = enduranceAfterTrain
-                            //Maybee we need to add here TrainingMode field, `cuz in TrainPlayers(List<IPlayerTrainingPreview>) method we need to know which training mode we use
                         };
 
                         playerPreview.Add(preview);
+                    }
+                    else
+                    {
+                        Console.WriteLine(player.Endurance);
                     }
                 }
             }
@@ -115,6 +115,8 @@ namespace BusinessLogicLayer.Services
 
                 if (player != null)
                 {
+                    player.Endurance = playerPreview.AfterTrainEndurance;
+
                     defineAge(player, gameDate);
 
                     var ageCoeff = getAgeCoeff();
@@ -231,8 +233,16 @@ namespace BusinessLogicLayer.Services
         {
             var matches = _matchRepository.Retrieve(teamId);
             var lastPlayedTour = matches.Where(x => x.IsPlayed).Max(x => x.TourNumber);
-            var stringDate = matches.Where(x => x.TourNumber == lastPlayedTour).FirstOrDefault();
-            return DateTime.Parse(stringDate.MatchDate);
+            var stringDate = matches.FirstOrDefault(x => x.TourNumber == lastPlayedTour && !string.IsNullOrEmpty(x.MatchDate)).MatchDate;
+
+            if (stringDate != null && DateTime.TryParse(stringDate, out DateTime parsedDate))
+            {
+                return parsedDate;
+            }
+            else
+            {
+                return DateTime.MinValue;
+            }
         }
 
         private int defineEnduranceCost(TrainingMode trainingMode)
