@@ -17,7 +17,7 @@ namespace BusinessLogicLayer.Scenario
         public GenerateGameActionsToNextMatch(SaveInfo saveInfo) 
         {
             _saveInfo = saveInfo;
-            _generateAllMatchesByTour = new GenerateAllMatchesByTour(DateTime.Parse(_saveInfo.PlayerData.GameDate));
+            _generateAllMatchesByTour = new GenerateAllMatchesByTour(DateTime.Parse(_saveInfo.PlayerData.GameDate), _saveInfo.PlayerData.ClubId);
 
             _teamRepository = new TeamRepository();
             _juniorGeneration = new JuniorGeneration();

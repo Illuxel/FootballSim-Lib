@@ -111,10 +111,10 @@ namespace DatabaseLayer.Repositories
                 if (record == null)
                 {
                     var rowsAffected = connection.Execute(
-                        @"INSERT INTO Player (PersonID, PositionCode, ContractId, Speed, Kick, 
+                        @"INSERT INTO Player (PersonID, PositionCode, ContractId, Speed, 
                             Endurance, Strike, Physics, Defending, Passing, Dribbling, Rating, IndexPosition, 
                             CurrentRating, PlayerPositionGroup, IsJunior, InjuredTo) 
-                        VALUES (@PersonID, @PositionCode, @ContractId, @Speed, @Kick, 
+                        VALUES (@PersonID, @PositionCode, @ContractId, @Speed,
                             @Endurance, @Strike, @Physics, @Defending, @Passing, @Dribbling, @Rating, @IndexPosition, 
                             @Rating, @PlayerPositionGroup, @IsJunior, @InjuredTo)",
                         player);
@@ -134,10 +134,10 @@ namespace DatabaseLayer.Repositories
                     try
                     {
                         var rowsAffected = connection.Execute(
-                        @"INSERT INTO Player (PersonID, PositionCode, ContractId, Speed, Kick, 
+                        @"INSERT INTO Player (PersonID, PositionCode, ContractId, Speed, 
                             Endurance, Strike, Physics, Defending, Passing, Dribbling, Rating,  
                             IndexPosition, CurrentPlayerRating, PlayerPositionGroup, InjuredTo) 
-                        VALUES (@PersonID, @PositionCode, @ContractId, @Speed, @Kick, 
+                        VALUES (@PersonID, @PositionCode, @ContractId, @Speed, 
                             @Endurance, @Strike, @Physics, @Defending, @Passing, @Dribbling, Rating,
                             @IndexPosition, @CurrentPlayerRating, @PlayerPositionGroup @InjuredTo)",
                         players, transaction);
@@ -164,7 +164,6 @@ namespace DatabaseLayer.Repositories
                         SET PositionCode = @PositionCode, 
                             ContractId = @ContractId, 
                             Speed = @Speed, 
-                            Kick = @Kick, 
                             Endurance = @Endurance, 
                             Strike = @Strike, 
                             Physics = @Physics, 
@@ -196,7 +195,6 @@ namespace DatabaseLayer.Repositories
                                     SET PositionCode = @PositionCode, 
                                         ContractId = @ContractId, 
                                         Speed = @Speed, 
-                                        Kick = @Kick, 
                                         Endurance = @Endurance, 
                                         Strike = @Strike, 
                                         Physics = @Physics, 

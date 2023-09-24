@@ -10,7 +10,6 @@ namespace DatabaseLayer
 
         public string ContractID { get; set; }
 
-        public int Kick { get; set; }
         public int Rating { get; set; }
 
         //real rating with another position
