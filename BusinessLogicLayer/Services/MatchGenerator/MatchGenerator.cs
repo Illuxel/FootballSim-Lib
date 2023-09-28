@@ -98,7 +98,7 @@ namespace BusinessLogicLayer.Services
             _matchData.HomeTeam = _teamForMatchCreator.Create(match.HomeTeamId);
             _matchData.GuestTeam = _teamForMatchCreator.Create(match.GuestTeamId);
 
-
+            _matchDate = match.GetMatchDate();
             _isMatcFinished = false;
             _isStrategyChanged = false;
             
@@ -323,7 +323,7 @@ namespace BusinessLogicLayer.Services
         {
             if (_playedPlayers.TryGetValue(currentPlayer.ContractID, out var playerObject))
             {
-                if(_playerInjuryFinder.IsAlreadyInjuried(playerObject) == false)
+                if(!_playerInjuryFinder.IsAlreadyInjuried(playerObject))
                 {
                     var enduranceCost = defineEnduranceCost(playerObject);
                     playerObject.Endurance -= enduranceCost;
@@ -331,7 +331,7 @@ namespace BusinessLogicLayer.Services
             }
             else
             {
-                if(_playerInjuryFinder.IsAlreadyInjuried(currentPlayer) == false)
+                if(!_playerInjuryFinder.IsAlreadyInjuried(currentPlayer))
                 {
                     _playedPlayers.Add(currentPlayer.ContractID, currentPlayer);
                     var enduranceCost = defineEnduranceCost(_playedPlayers[currentPlayer.ContractID]);
