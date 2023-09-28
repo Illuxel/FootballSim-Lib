@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace DatabaseLayer
 {
@@ -22,7 +23,16 @@ namespace DatabaseLayer
         public bool IsPlayed { get; set; }
         public DateTime GetMatchDate()
         {
-            return DateTime.Parse(MatchDate);
+            var format = "yyyy-MM-dd";
+            DateTime dateTime;
+
+            if (DateTime.TryParseExact(MatchDate, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+            {
+                return dateTime;
+            }
+
+            return DateTime.MinValue;
         }
+
     }
 }
