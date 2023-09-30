@@ -31,7 +31,7 @@ namespace BusinessLogicLayer.Scenario
 
             //Generate all matches by tour
             _generateAllMatchesByTour.Generate();
-
+            _playerSkillsUpdater.StartTraining(_saveInfo.PlayerData.ClubId, _saveInfo.PlayerData.SelectedTrainingMode);
 
             /*var teams = _teamRepository.Retrieve();
             //using scenario for teams

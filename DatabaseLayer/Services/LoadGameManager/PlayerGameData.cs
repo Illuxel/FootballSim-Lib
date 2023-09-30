@@ -16,7 +16,8 @@ namespace DatabaseLayer.Services
         public ScoutSkillLevel CurrentLevel { get; set; }
         public int CountAvailableScoutRequests { get; set; }
 
-        public PlayerGameData(string playerName, string playerSurname, string clubId, string realDate, string gameDate, double money, UserRole role, ScoutSkillLevel currentLevel)
+        public TrainingMode SelectedTrainingMode { get; set; }
+        public PlayerGameData(string playerName, string playerSurname, string clubId, string realDate, string gameDate, double money, UserRole role, ScoutSkillLevel currentLevel, TrainingMode selectedTrainingMode)
         {
             this.PlayerName = playerName;
             this.PlayerSurname = playerSurname;
@@ -26,6 +27,8 @@ namespace DatabaseLayer.Services
             this.Money = money;
             this.Role = role;
             this.CurrentLevel = currentLevel;
+            this.SelectedTrainingMode = selectedTrainingMode;
+
         }
         public PlayerGameData()
         {
