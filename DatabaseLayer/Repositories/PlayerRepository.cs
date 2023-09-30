@@ -196,7 +196,6 @@ namespace DatabaseLayer.Repositories
                         SET PositionCode = @PositionCode, 
                             ContractId = @ContractId, 
                             Speed = @Speed, 
-                            Kick = @Kick, 
                             Endurance = @Endurance, 
                             Strike = @Strike, 
                             Physics = @Physics, 
