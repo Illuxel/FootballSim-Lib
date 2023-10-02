@@ -1,7 +1,6 @@
 ﻿using DatabaseLayer;
 using DatabaseLayer.Repositories;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace BusinessLogicLayer.Services
 {
@@ -36,13 +35,6 @@ namespace BusinessLogicLayer.Services
         public List<PlayerStatistic> GetPlayerStatistic(string playerId)
         {
             return _goalRepepository.GetPlayerStatistic(playerId);
-        }
-
-        public List<PlayerStatistic> GetPlayerStatistic(string playerId, string season)
-        {
-            var seasonStartDate = _seasonValueCreator.GetSeasonStartDate(season);
-            var seasonEndDate = _seasonValueCreator.GetSeasonEndDate(season);
-            return new List<PlayerStatistic>();
         }
     }
 }

@@ -21,46 +21,41 @@ namespace DatabaseLayer.Repositories
 			}
 		}
 
-		public List<PlayerStatistic> GetPlayerStatistic(string playerId)
-		{
-			using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
-			{
-				connection.Open();
-				var playerStatistics = connection.Query<PlayerStatistic>(@"
+        public List<PlayerStatistic> GetPlayerStatistic(string playerId)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                var playerStatistics = connection.Query<PlayerStatistic>(@"
 				SELECT
-				PIM.PlayerId,
-				PIM.TeamId,
-				(
-					SELECT COUNT(*)
-					FROM Goal
-					WHERE Goal.PlayerId = PIM.PlayerId AND Goal.TeamId = PIM.TeamId
-				) AS CountOfGoals,
-				(
-					SELECT COUNT(*)
-					FROM Goal
-					WHERE Goal.AssistPlayerId = PIM.PlayerId AND Goal.TeamId = PIM.TeamId
-				) AS CountOfAssists,
-				(
-					SELECT COUNT(*)
-					FROM PlayerInMatch
-					WHERE PlayerInMatch.PlayerId = PIM.PlayerId AND PlayerInMatch.TeamId = PIM.TeamId
-				) AS CountOfPlayedMatches
-				FROM
-					Goal G
-				JOIN
-					PlayerInMatch PIM ON G.PlayerId = PIM.PlayerId OR G.AssistPlayerId = PIM.PlayerId
-				WHERE
-					(G.PlayerId = PIM.PlayerId OR G.AssistPlayerId = PIM.PlayerId)
-					AND PIM.PlayerId = @playerId
-				GROUP BY
-				PIM.PlayerId,PIM.TeamId"
-				, playerId).AsList();
+                C.PersonID as PlayerId,
+                C.TeamID,
+                C.SeasonFrom,
+                C.SeasonTo,
+                COUNT(G.Id) AS CountOfGoals,
+                COUNT(A.Id) AS CountOfAssists,
+                COUNT(PIM.MatchId) AS CountOfPlayedMatches
+				FROM Contract C
+				JOIN Match M ON M.MatchDate BETWEEN DATE(C.DateFrom) AND DATE(C.DateTo) AND (M.GuestTeamId = C.TeamId OR M.HomeTeamId = C.TeamId)
+				JOIN PlayerInMatch PIM ON PIM.PlayerId = C.PersonID AND PIM.MatchId = M.Id
+				LEFT JOIN Goal G ON G.PlayerId = C.PersonID AND G.TeamId = C.TeamId AND G.MatchId = M.Id
+				LEFT JOIN Goal A ON A.AssistPlayerId = C.PersonID AND A.TeamId = C.TeamId AND A.MatchId = M.Id
+				WHERE C.PersonID = @playerId
+				GROUP BY C.PersonID, C.TeamID, C.SeasonFrom, C.SeasonTo", new { playerId }).AsList();
 
-				return playerStatistics;
-			}
-		}
+                var playerRepository = new PlayerRepository();
+				var player = playerRepository.RetrieveOne(playerId);
+				foreach(var obj in playerStatistics)
+				{
+					obj.Player = player;
+				}
 
-		public List<PlayerStatistic> GetTopGoalScorers(int leagueId, string season, DateTime seasonStartDate, DateTime seasonEndDate, int limit = 10)
+                return playerStatistics;
+            }
+        }
+
+
+        public List<PlayerStatistic> GetTopGoalScorers(int leagueId, string season, DateTime seasonStartDate, DateTime seasonEndDate, int limit = 10)
 		{
 			using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
 			{
@@ -68,6 +63,7 @@ namespace DatabaseLayer.Repositories
 				var playerStatistics = connection.Query<PlayerStatistic>(@"
 				SELECT
 				G.PlayerId,
+				G.TeamId,
 				COUNT(G.PlayerId) as CountOfGoals,
 				0 as CountOfAssists,
 				(
@@ -112,6 +108,7 @@ namespace DatabaseLayer.Repositories
 				var playerStatistics = connection.Query<PlayerStatistic>(@"
 				SELECT
 				G.AssistPlayerId as PlayerId,
+				G.TeamId,
 				0 as CountOfGoals,
 				COUNT(G.AssistPlayerId) as CountOfAssists,
 				(
@@ -156,7 +153,7 @@ namespace DatabaseLayer.Repositories
 			{
 				connection.Open();
 				goal.Id = Guid.NewGuid().ToString();
-					var rowsAffected = connection.Execute(
+				var rowsAffected = connection.Execute(
 						@"INSERT INTO Goal (Id, MatchId, PlayerId, TeamId, MatchMinute, AssistPlayerId)
 						VALUES (@Id, @MatchId, @PlayerId, @TeamId, @MatchMinute, @AssistPlayerId)",
 						goal);

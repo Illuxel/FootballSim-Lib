@@ -9,5 +9,7 @@
         public int CountOfAssists { get; set; }
         public int CountOfPlayedMatches { get; set; }
         public string Season { get; set; }
+        public string SeasonFrom { get; set; }
+        public string SeasonTo { get; set; }
     }
 }
