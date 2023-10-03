@@ -39,6 +39,9 @@ namespace BusinessLogicLayer.Scenario
             {
                 //TODO: call another scenario using date interval
             }*/
+
+
+            //Increase gameDate and update real date
         }
 
         private void resetCountOfAvailableScoutRequests()

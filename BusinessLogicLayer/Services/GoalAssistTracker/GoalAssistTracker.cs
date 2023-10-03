@@ -6,11 +6,11 @@ namespace BusinessLogicLayer.Services
 {
     public class GoalAssistTracker
     {
-        GoalRepository _goalRepepository;
+        GoalRepository _goalRepository;
         SeasonValueCreator _seasonValueCreator;
         public GoalAssistTracker()
         {
-            _goalRepepository = new GoalRepository();
+            _goalRepository = new GoalRepository();
             _seasonValueCreator = new SeasonValueCreator();
         }
 
@@ -18,7 +18,7 @@ namespace BusinessLogicLayer.Services
         {
             var seasonStartDate = _seasonValueCreator.GetSeasonStartDate(season);
             var seasonEndDate = _seasonValueCreator.GetSeasonEndDate(season);
-            var topBambardiers = _goalRepepository.GetTopGoalScorers(leagueId, season, seasonStartDate, seasonEndDate,count);
+            var topBambardiers = _goalRepository.GetTopGoalScorers(leagueId, season, seasonStartDate, seasonEndDate,count);
 
             return topBambardiers;
         }
@@ -27,9 +27,14 @@ namespace BusinessLogicLayer.Services
         {
             var seasonStartDate = _seasonValueCreator.GetSeasonStartDate(season);
             var seasonEndDate = _seasonValueCreator.GetSeasonEndDate(season);
-            var topAssists = _goalRepepository.GetTopAssistents(leagueId, season, seasonStartDate, seasonEndDate,count);
+            var topAssists = _goalRepository.GetTopAssistents(leagueId, season, seasonStartDate, seasonEndDate,count);
 
             return topAssists;
+        }
+
+        public List<PlayerStatistic> GetPlayerStatistic(string playerId)
+        {
+            return _goalRepository.GetPlayerStatistic(playerId);
         }
     }
 }
