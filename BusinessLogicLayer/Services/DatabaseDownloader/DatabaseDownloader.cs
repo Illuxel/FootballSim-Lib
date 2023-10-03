@@ -9,9 +9,19 @@ namespace BusinessLogicLayer.Services
         private string _fileUrl = "http://54.160.153.24:5000/download";
         public async Task Download()
         {
-            var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "Database");
+            await download(Directory.GetCurrentDirectory());
+        }
+
+        public async Task Download(string path)
+        {
+            download(path);
+        }
+
+        private async Task download(string path)
+        {
+            var directoryPath = Path.Combine(path, "Database");
             string filePath = Path.Combine(directoryPath, "FootbalLifeDB.db");
-            if(!Directory.Exists(directoryPath))
+            if (!Directory.Exists(directoryPath))
             {
                 Directory.CreateDirectory(directoryPath);
             }
