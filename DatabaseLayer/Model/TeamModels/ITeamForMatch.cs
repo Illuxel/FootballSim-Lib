@@ -1,7 +1,6 @@
-﻿using DatabaseLayer;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace BusinessLogicLayer.Services
+namespace DatabaseLayer
 {
     public interface ITeamForMatch
     {

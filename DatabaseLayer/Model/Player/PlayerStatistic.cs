@@ -1,9 +1,4 @@
-﻿using DatabaseLayer.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DatabaseLayer
+﻿namespace DatabaseLayer
 {
     public class PlayerStatistic
     {

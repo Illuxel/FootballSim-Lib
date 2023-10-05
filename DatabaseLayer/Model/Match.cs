@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DatabaseLayer.Model;
+using System;
 
 namespace DatabaseLayer
 {

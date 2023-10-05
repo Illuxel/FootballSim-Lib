@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Data;
 using System;
+using DatabaseLayer.Model;
 
 namespace DatabaseLayer.Repositories
 {
