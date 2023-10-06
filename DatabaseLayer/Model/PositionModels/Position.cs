@@ -7,7 +7,7 @@ namespace DatabaseLayer
         public string Code { get; internal set; }
         public PlayerFieldPartPosition Location { get; set; }
         public string Name { get; set; }
-        public ICollection<Player> Players { get; internal set; } 
+        public ICollection<Player> Players { get; internal set; }
 
         public Position()
         {

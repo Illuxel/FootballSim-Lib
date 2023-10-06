@@ -5,6 +5,7 @@ using Dapper;
 using System;
 using DatabaseLayer.Enums;
 using System.Data;
+using System.Transactions;
 
 namespace DatabaseLayer.Repositories
 {
@@ -247,6 +248,56 @@ namespace DatabaseLayer.Repositories
             }
         }
 
+        public bool UpdatePlayerRole(ITeamForMatch teamForMatch)
+        {
+            if(teamForMatch != null)
+            {
+                var players = teamForMatch.AllPlayers;
+                using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+                {
+                    connection.Open();
+                    using (IDbTransaction transaction = connection.BeginTransaction())
+                    {
+                        try
+                        {
+                            var rowsAffected = connection.Execute(
+                                @"UPDATE Player 
+                                SET
+                                PlayerPositionGroup = @PlayerPositionGroup
+                                WHERE PersonID = @PersonID", players, transaction);
+                            transaction.Commit();
+                            return true;
+                        }
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback();
+                            throw new Exception(ex.Message);
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public bool UpdatePlayerRole(string personId, PlayerPositionGroup playerPositionGroup)
+        {
+            if (personId != null)
+            {
+                using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+                {
+                    connection.Open();
+                    var rowsAffected = connection.Execute(
+                    @"UPDATE Player 
+                    SET
+                    PlayerPositionGroup = @playerPositionGroup
+                    WHERE PersonID = @PersonID", new {playerPositionGroup, personId});
+                    return rowsAffected == 1;
+                }
+            }
+
+            return false;
+        }
     }
 }
 

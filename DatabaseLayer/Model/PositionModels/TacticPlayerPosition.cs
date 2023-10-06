@@ -1,6 +1,4 @@
-﻿using DatabaseLayer;
-
-namespace BusinessLogicLayer.Services
+﻿namespace DatabaseLayer
 {
     public class TacticPlayerPosition
     {

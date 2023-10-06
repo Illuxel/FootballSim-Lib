@@ -1,6 +1,6 @@
 ﻿using BusinessLogicLayer.Rules;
 using DatabaseLayer;
-using DatabaseLayer.Enums;
+using DatabaseLayer.Model;
 using DatabaseLayer.Repositories;
 using System.Collections.Generic;
 using System.Linq;

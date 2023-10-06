@@ -51,6 +51,6 @@ namespace DatabaseLayer
         public ICollection<NationalResultTable> NationalResultTables { get; internal set; } = new List<NationalResultTable>();
         */
         // returns first player that have playerPostion
-       
+
     }
 }

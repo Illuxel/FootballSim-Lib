@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Dapper;
 using System.Data.SQLite;
 
-
 namespace DatabaseLayer.Repositories
 {
     public class PositionRepository
