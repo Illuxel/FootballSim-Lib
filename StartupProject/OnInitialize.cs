@@ -9,8 +9,6 @@ namespace StartupProject
         {
             var dbDownloader = new RemoteDownloader();
             await dbDownloader.DatabaseDownload();
-            /*await dbDownloader.DbLayerDownload();
-            await dbDownloader.BlLayerDownload();*/
             Program.Main(args);
         }
     }
