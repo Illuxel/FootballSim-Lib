@@ -1,5 +1,4 @@
-﻿using DatabaseLayer.Model;
-using DatabaseLayer.Repositories;
+﻿using DatabaseLayer.Repositories;
 using System;
 using System.Linq;
 

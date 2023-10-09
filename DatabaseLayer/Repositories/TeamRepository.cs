@@ -5,7 +5,6 @@ using Dapper;
 using System;
 using DatabaseLayer.Enums;
 using System.Data;
-using System.Transactions;
 
 namespace DatabaseLayer.Repositories
 {
