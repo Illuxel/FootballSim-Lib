@@ -119,7 +119,7 @@ namespace StartupProject
 
                         saveInfo.PlayerData.Money = Convert.ToInt32(input);
 
-                        savesManager.Save(saveInfo);
+                        savesManager.SaveGame(saveInfo);
                         saveInfo = savesManager.Continue();
 
                         Console.WriteLine($"Last save new money {saveInfo.PlayerData.Money}");

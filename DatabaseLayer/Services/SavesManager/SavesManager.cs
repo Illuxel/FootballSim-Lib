@@ -133,7 +133,7 @@ namespace DatabaseLayer.Services
             };
 
             // saving new data
-            Save(saveInfo);
+            SaveGame(saveInfo);
 
             _saves.Add(saveInfo);
             _saves.Sort();
@@ -145,7 +145,7 @@ namespace DatabaseLayer.Services
         /// Updates game progress in specified save. 
         /// If there is no save creates new save (like new game)
         /// </summary>
-        public void Save(SaveInfo saveInfo)
+        public void SaveGame(SaveInfo saveInfo)
         {
             var saveFolderPath = Path.Combine(SavesSettings.SavesFolderPath, saveInfo.SaveName);
             var saveFolderInfo = new DirectoryInfo(saveFolderPath);
