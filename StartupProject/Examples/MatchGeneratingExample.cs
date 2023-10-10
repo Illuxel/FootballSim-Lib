@@ -1,13 +1,13 @@
-﻿using BusinessLogicLayer.Services;
-using DatabaseLayer.Repositories;
-using DatabaseLayer;
-using System;
+﻿using System;
 using System.Linq;
-using System.Diagnostics;
+
+using DatabaseLayer;
+using DatabaseLayer.Repositories;
+using BusinessLogicLayer.Services;
 
 namespace StartupProject
 {
-    internal class MatchGeneratingExampleUsing
+    internal class MatchGeneratingExample
     {
         public static void OnMatchGoal(Goal goal)
         {
@@ -48,7 +48,7 @@ namespace StartupProject
 
         public void GenerateMatch()
         {
-            /*var teamRepository = new TeamRepository();
+            var teamRepository = new TeamRepository();
             var teams = teamRepository.Retrieve(1);
             var homeTeam = teams[0];
             var guestTeam = teams[1];
@@ -62,7 +62,7 @@ namespace StartupProject
             Console.WriteLine("\n-----" + homeTeamForMatch.Name + "-----/n");
             foreach (var player in homeTeamForMatch.MainPlayers)
             {
-                Console.WriteLine(player.Value.RealPosition + " : " + player.Value.CurrentPlayer.Person.Surname + "("+ player.Value.CurrentPlayer.CurrentPlayerRating + ")");
+                Console.WriteLine(player.Value.RealPosition + " : " + player.Value.CurrentPlayer.Person.Surname + "(" + player.Value.CurrentPlayer.CurrentPlayerRating + ")");
             }
 
             Console.WriteLine("\n-----" + guestTeamForMatch.Name + "-----/n");
@@ -72,7 +72,7 @@ namespace StartupProject
             }
 
             Console.WriteLine();
-            var match = new MatchGenerator(homeTeamForMatch, guestTeamForMatch);
+            var match = new MatchGenerator(Guid.NewGuid().ToString());
 
             match.OnMatchGoal += OnMatchGoal;
 
@@ -101,7 +101,7 @@ namespace StartupProject
 
                 }
                 Console.WriteLine($"{goal.MatchMinute} Scored by: {goalPlayer.Person.Surname}");
-            }*/
+            }
         }
     }
 }
