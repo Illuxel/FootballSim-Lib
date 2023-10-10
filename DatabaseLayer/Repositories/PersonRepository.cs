@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
-using DatabaseLayer.DBSettings;
-using System.Data.SQLite;
-using Dapper;
+﻿using System;
 using System.Linq;
-using System;
 using System.Data;
+using System.Data.SQLite;
+using System.Collections.Generic;
+
+using Dapper;
+
+using DatabaseLayer.Settings;
 
 namespace DatabaseLayer.Repositories
 {
@@ -12,7 +14,7 @@ namespace DatabaseLayer.Repositories
     {
         public List<Person> Retrieve()
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 var query = @"SELECT Person.*, Role.*, Country.*
                       FROM Person
@@ -31,7 +33,7 @@ namespace DatabaseLayer.Repositories
         }
         public Person Retrieve(string personId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 var query = @"SELECT Person.*, Role.*, Country.*
                       FROM Person 
@@ -54,7 +56,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Insert(Person person)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 person.Id = Guid.NewGuid().ToString();
@@ -75,7 +77,7 @@ namespace DatabaseLayer.Repositories
                 person.Id = Guid.NewGuid().ToString();
             }
 
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 using (IDbTransaction transaction = connection.BeginTransaction())
@@ -99,7 +101,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Update(Person person)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<Agent>("SELECT * FROM Person WHERE ID = @personID", new { personID = person.Id });
@@ -123,7 +125,7 @@ namespace DatabaseLayer.Repositories
         }
         public bool Delete(string personId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var rowsAffected = connection.Execute("DELETE FROM Person WHERE Id = @personID ",

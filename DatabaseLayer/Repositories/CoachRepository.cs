@@ -1,8 +1,10 @@
-﻿using DatabaseLayer.DBSettings;
-using System.Collections.Generic;
-using Dapper;
+﻿using System.Linq;
 using System.Data.SQLite;
-using System.Linq;
+using System.Collections.Generic;
+
+using Dapper;
+
+using DatabaseLayer.Settings;
 
 namespace DatabaseLayer.Repositories
 {
@@ -10,7 +12,7 @@ namespace DatabaseLayer.Repositories
     {
         public List<Coach> Retrieve()
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
 
@@ -30,7 +32,7 @@ namespace DatabaseLayer.Repositories
         }
         public Coach Retrieve(string personId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var agent = connection.QueryFirstOrDefault<Coach>("SELECT * FROM Coach WHERE PersonID = @personId", new { personId });
@@ -48,7 +50,7 @@ namespace DatabaseLayer.Repositories
         //TODO: Дописати Modify, продумати які параметри будуть у агента
         public bool Modify(Coach coach)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<Agent>(
@@ -74,7 +76,7 @@ namespace DatabaseLayer.Repositories
         }
         public bool Delete(string personId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var rowsAffected = connection.Execute("DELETE FROM Coach WHERE PersonID = @personID ",

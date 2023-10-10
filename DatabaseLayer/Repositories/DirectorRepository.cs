@@ -1,8 +1,10 @@
-﻿using DatabaseLayer.DBSettings;
-using System.Collections.Generic;
-using Dapper;
+﻿using System.Linq;
 using System.Data.SQLite;
-using System.Linq;
+using System.Collections.Generic;
+
+using Dapper;
+
+using DatabaseLayer.Settings;
 
 namespace DatabaseLayer.Repositories
 {
@@ -13,7 +15,7 @@ namespace DatabaseLayer.Repositories
         public List<Director> Retrieve()
         {
 
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
 
@@ -33,7 +35,7 @@ namespace DatabaseLayer.Repositories
         }
         public Director Retrieve(string personId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var director = connection.QueryFirstOrDefault<Director>("SELECT * FROM Director WHERE PersonID = @personId", new { personId });
@@ -53,7 +55,7 @@ namespace DatabaseLayer.Repositories
         //TODO: Дописати Modify, продумати які параметри будуть у агента
         public bool Modify(Director director)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<Director>("SELECT * FROM Director WHERE PersonID = @personID", new { personID = director.PersonID });
@@ -78,7 +80,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Delete(string personId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var rowsAffected = connection.Execute("DELETE FROM Director WHERE PersonID = @personID ",

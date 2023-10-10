@@ -1,10 +1,12 @@
-﻿using Dapper;
-using DatabaseLayer.DBSettings;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.Linq;
 using System.Data;
 using System.Data.SQLite;
-using System.Linq;
+using System.Collections.Generic;
+
+using Dapper;
+
+using DatabaseLayer.Settings;
 
 namespace DatabaseLayer.Repositories
 {
@@ -12,8 +14,8 @@ namespace DatabaseLayer.Repositories
 	{
 		public List<Goal> Retrieve(string matchId)
 		{
-			using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
-			{
+			using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
+			{	
 				connection.Open();
 				var goals = connection.Query<Goal>("SELECT * FROM Goal WHERE MatchId = @matchId", matchId).AsList();
 
@@ -23,7 +25,7 @@ namespace DatabaseLayer.Repositories
 
         public List<PlayerStatistic> GetPlayerStatistic(string playerId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var playerStatistics = connection.Query<PlayerStatistic>(@"
@@ -56,9 +58,9 @@ namespace DatabaseLayer.Repositories
 
 
         public List<PlayerStatistic> GetTopGoalScorers(int leagueId, string season, DateTime seasonStartDate, DateTime seasonEndDate, int limit = 10)
-		{
-			using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
-			{
+        {
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
+            {
 				connection.Open();
 				var playerStatistics = connection.Query<PlayerStatistic>(@"
 				SELECT
@@ -102,7 +104,7 @@ namespace DatabaseLayer.Repositories
 		}
 		public List<PlayerStatistic> GetTopAssistents(int leagueId, string season, DateTime seasonStartDate, DateTime seasonEndDate, int limit = 10)
 		{
-			using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+			using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
 			{
 				connection.Open();
 				var playerStatistics = connection.Query<PlayerStatistic>(@"
@@ -134,7 +136,6 @@ namespace DatabaseLayer.Repositories
 				var playerRepository = new PlayerRepository();
 				var players = playerRepository.Retrieve(playerStatistics.Select(p => p.PlayerId).ToList());
 
-
 				foreach (var playerStat in playerStatistics)
 				{
 					if (players.TryGetValue(playerStat.PlayerId, out Player player))
@@ -149,7 +150,7 @@ namespace DatabaseLayer.Repositories
 
 		public bool Insert(Goal goal)
 		{
-			using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+			using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
 			{
 				connection.Open();
 				goal.Id = Guid.NewGuid().ToString();
@@ -164,7 +165,7 @@ namespace DatabaseLayer.Repositories
 		}
 		public bool Insert(List<Goal> goals)
 		{
-			using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+			using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
 			{
 				connection.Open();
 				using (IDbTransaction transaction = connection.BeginTransaction())

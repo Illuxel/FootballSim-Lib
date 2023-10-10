@@ -1,8 +1,10 @@
-﻿using Dapper;
-using DatabaseLayer.DBSettings;
+﻿using System.Linq;
 using System.Data.SQLite;
 using System.Collections.Generic;
-using System.Linq;
+
+using Dapper;
+
+using DatabaseLayer.Settings;
 using DatabaseLayer.Enums;
 
 namespace DatabaseLayer.Repositories
@@ -11,7 +13,7 @@ namespace DatabaseLayer.Repositories
     {
         public List<League> Retrieve()
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 var sql = @"SELECT League.*, Country.*
                     FROM League 
@@ -32,7 +34,7 @@ namespace DatabaseLayer.Repositories
         }
         public League Retrieve(long leagueId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 var sql = @"SELECT l.*, c.*
                     FROM League l
@@ -53,7 +55,7 @@ namespace DatabaseLayer.Repositories
         }
         internal bool Insert(League league)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<League>("SELECT * FROM League WHERE ID = @leagueId", new { leagueId = league.Id });
@@ -70,7 +72,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Update(League league)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<League>("SELECT * FROM League WHERE ID = @leagueId", new { leagueId = league.Id });
@@ -87,7 +89,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Delete(int leagueId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var rowsAffected = connection.Execute("DELETE FROM League  WHERE Id = @leagueId ",

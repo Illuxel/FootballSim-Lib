@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
-using DatabaseLayer.DBSettings;
-using System.Data.SQLite;
+﻿using System.Data.SQLite;
+using System.Collections.Generic;
+
 using Dapper;
+
+using DatabaseLayer.Settings;
 
 namespace DatabaseLayer.Repositories
 {
@@ -9,7 +11,7 @@ namespace DatabaseLayer.Repositories
     {
         public List<PersonName> RetrieveNames()
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.Query<PersonName>("SELECT * FROM PersonName").AsList();
@@ -18,7 +20,7 @@ namespace DatabaseLayer.Repositories
 
         public List<PersonSurname> RetrieveSurnames()
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.Query<PersonSurname>("SELECT * FROM PersonSurname").AsList();
@@ -26,7 +28,7 @@ namespace DatabaseLayer.Repositories
         }
         public List<PersonName> RetrieveNames(int countryId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.Query<PersonName>("SELECT * FROM PersonName WHERE CountryId = @countryId", new { countryId }).AsList();
@@ -35,7 +37,7 @@ namespace DatabaseLayer.Repositories
 
         public List<PersonSurname> RetrieveSurnames(int countryId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.Query<PersonSurname>("SELECT * FROM PersonSurname WHERE CountryId = @countryId", new { countryId }).AsList();

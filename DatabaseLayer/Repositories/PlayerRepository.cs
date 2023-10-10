@@ -1,11 +1,11 @@
-﻿using Dapper;
-using DatabaseLayer.DBSettings;
-using System.Data.SQLite;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Data;
-using System;
-using DatabaseLayer.Model;
+using System.Data.SQLite;
+using System.Collections.Generic;
+
+using Dapper;
+using DatabaseLayer.Settings;
 
 namespace DatabaseLayer.Repositories
 {
@@ -19,7 +19,7 @@ namespace DatabaseLayer.Repositories
 
         public List<Player> Retrieve(string teamId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 return retrieve("Contract.TeamID = @teamId", new { teamId });
             }
@@ -27,7 +27,7 @@ namespace DatabaseLayer.Repositories
 
         public Dictionary<string, Player> Retrieve(List<string> playerIds)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 var players = retrieve("Contract.PersonID in @playerIds", new { playerIds });
                 return players.ToDictionary(p => p.PersonID, p => p);
@@ -41,7 +41,7 @@ namespace DatabaseLayer.Repositories
 
         private List<Player> retrieve(string condition, object queryParams = null)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 var query = string.Format(@"SELECT Player.*, Person.*, Position.*
                     FROM Player
@@ -72,14 +72,14 @@ namespace DatabaseLayer.Repositories
 
         public List<Player> RetrieveByScout(string personId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 return retrieve("PLAYER.FINDBYSCOUT = @personId", new { personId });
             }
         }
         public Player RetrieveOne(string personId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 var query = @"SELECT Player.*, Person.*, Position.*
                     FROM Player
@@ -104,7 +104,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Insert(Player player)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<Agent>("SELECT * FROM Player WHERE PersonID = @personID", new { personID = player.PersonID });
@@ -127,7 +127,7 @@ namespace DatabaseLayer.Repositories
 
         public void Insert(List<Player> players)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 using (IDbTransaction transaction = connection.BeginTransaction())
@@ -154,7 +154,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Update(Player player)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<Agent>("SELECT * FROM Player WHERE PersonID = @personID", new { personID = player.PersonID });
@@ -186,7 +186,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Update(List<Player> players)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 using (IDbTransaction transaction = connection.BeginTransaction())
@@ -224,7 +224,7 @@ namespace DatabaseLayer.Repositories
 
         public bool UpdateEndurance(List<Player> players)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 using (IDbTransaction transaction = connection.BeginTransaction())
@@ -262,7 +262,7 @@ namespace DatabaseLayer.Repositories
         }
         public bool Delete(string personId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var rowsAffected = connection.Execute("DELETE FROM Player WHERE PersonID = @personID ",

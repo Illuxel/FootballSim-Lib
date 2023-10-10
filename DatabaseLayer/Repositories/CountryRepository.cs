@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
-using DatabaseLayer.DBSettings;
+﻿using System;
 using System.Data.SQLite;
+using System.Collections.Generic;
+
 using Dapper;
-using System;
+
+using DatabaseLayer.Settings;
 
 namespace DatabaseLayer.Repositories
 {
@@ -10,7 +12,7 @@ namespace DatabaseLayer.Repositories
     {
         public List<Country> Retrieve()
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.Query<Country>("SELECT * FROM Country").AsList();
@@ -18,7 +20,7 @@ namespace DatabaseLayer.Repositories
         }
         public Country Retrieve(int countryId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.QueryFirstOrDefault<Country>("SELECT * FROM Country WHERE ID = @countryId", new { countryId });
@@ -27,7 +29,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Insert(Country country)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
 
                 connection.Open();
@@ -46,7 +48,7 @@ namespace DatabaseLayer.Repositories
 
         internal bool Update(Country country)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<Country>("SELECT * FROM Country WHERE ID = @countryId", new { countryId = country.Id });
@@ -63,7 +65,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Delete(int countryId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var rowsAffected = connection.Execute("DELETE FROM Country WHERE ID = @countryId ",

@@ -1,10 +1,12 @@
-﻿using Dapper;
-using DatabaseLayer.DBSettings;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.Linq;
 using System.Data;
 using System.Data.SQLite;
-using System.Linq;
+using System.Collections.Generic;
+
+using Dapper;
+
+using DatabaseLayer.Settings;
 
 namespace DatabaseLayer.Repositories
 {
@@ -12,7 +14,7 @@ namespace DatabaseLayer.Repositories
     {
         public Dictionary<string, List<TeamRatingWinCoeff>> Retrieve()
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
 
@@ -37,7 +39,7 @@ namespace DatabaseLayer.Repositories
             {
                 return null;
             }
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var response = connection.Query<TeamRatingWinCoeff>(
@@ -48,7 +50,7 @@ namespace DatabaseLayer.Repositories
         }
         public TeamRatingWinCoeff Retrieve(string teamId, string season)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.QueryFirstOrDefault<TeamRatingWinCoeff>(
@@ -59,7 +61,7 @@ namespace DatabaseLayer.Repositories
         }
         public List<TeamRatingWinCoeff> Retrieve(string teamId,List<string> seasons)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.Query<TeamRatingWinCoeff>(
@@ -76,7 +78,7 @@ namespace DatabaseLayer.Repositories
         /// <returns>Dictionary key - teamId, value - seasons rating </returns>
         public Dictionary<string, List<TeamRatingWinCoeff>> Retrieve(List<string> seasons)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var response = connection.Query<TeamRatingWinCoeff>(
@@ -100,7 +102,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Insert(TeamRatingWinCoeff teamCoeff)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 
@@ -131,7 +133,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Update(TeamRatingWinCoeff teamCoeff)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
 
@@ -145,7 +147,7 @@ namespace DatabaseLayer.Repositories
         }
         public bool Update(List<TeamRatingWinCoeff> teamCoeffList)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 using (IDbTransaction transaction = connection.BeginTransaction())
@@ -172,7 +174,7 @@ namespace DatabaseLayer.Repositories
 
         public bool InsertNewTeams(List<string> teamIds, string season)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
 

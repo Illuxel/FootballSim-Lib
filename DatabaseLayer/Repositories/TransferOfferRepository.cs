@@ -1,8 +1,10 @@
-﻿using Dapper;
-using DatabaseLayer.DBSettings;
-using DatabaseLayer.Model;
+﻿using System.Data.SQLite;
 using System.Collections.Generic;
-using System.Data.SQLite;
+
+using Dapper;
+
+using DatabaseLayer.Settings;
+using DatabaseLayer.Model;
 
 namespace DatabaseLayer.Repositories
 {
@@ -10,7 +12,7 @@ namespace DatabaseLayer.Repositories
     {
         public List<TransferOffer> Retrieve()
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.Query<TransferOffer>("SELECT * FROM TransferOffer").AsList();
@@ -18,7 +20,7 @@ namespace DatabaseLayer.Repositories
         }
         public TransferOffer Retrieve(string idTransfer)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.QueryFirstOrDefault<TransferOffer>("SELECT * FROM TransferOffer Where ID = @idTransfer", new { idTransfer });
@@ -27,7 +29,7 @@ namespace DatabaseLayer.Repositories
 
         public List<TransferOffer> RetrieveByTeamSeller(string teamId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.Query<TransferOffer>(@"SELECT TOF.* FROM TransferOffer TOF 
@@ -38,7 +40,7 @@ namespace DatabaseLayer.Repositories
 
         public List<TransferOffer> RetrieveByTeamBuyer(string teamId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.Query<TransferOffer>(@"SELECT * FROM TransferOffer 
@@ -47,7 +49,7 @@ namespace DatabaseLayer.Repositories
         }
         public bool Insert(TransferOffer transfer)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<TransferOffer>("SELECT * FROM TransferOffer WHERE ID = @id", new { id = transfer.Id });
@@ -64,7 +66,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Update(TransferOffer transfer)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<TransferOffer>("SELECT * FROM TransferOffer WHERE ID = @transfer", new { transfer = transfer.Id });
@@ -80,7 +82,7 @@ namespace DatabaseLayer.Repositories
         }
         public bool Delete(string transfer)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var rowsAffected = connection.Execute("DELETE FROM TransferOffer WHERE ID = @transfer ",

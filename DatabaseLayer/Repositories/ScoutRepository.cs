@@ -1,8 +1,10 @@
-﻿using Dapper;
-using DatabaseLayer.DBSettings;
+﻿using System.Linq;
 using System.Data.SQLite;
 using System.Collections.Generic;
-using System.Linq;
+
+using Dapper;
+
+using DatabaseLayer.Settings;
 
 namespace DatabaseLayer.Repositories
 {
@@ -10,7 +12,7 @@ namespace DatabaseLayer.Repositories
     {
         public List<Scout> Retrieve()
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var scouts = connection.Query<Scout>("SELECT * FROM Scout").AsList();
@@ -29,7 +31,7 @@ namespace DatabaseLayer.Repositories
         }
         public Scout Retrieve(string personId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var agent = connection.QueryFirstOrDefault<Scout>("SELECT * FROM Scout WHERE PersonID = @personId", new { personId });
@@ -47,7 +49,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Modify(Scout scout)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<Scout>("SELECT * FROM Scout WHERE PersonID = @personID",
@@ -74,7 +76,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Delete(string personId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var rowsAffected = connection.Execute("DELETE FROM Scout WHERE PersonID = @personID ",

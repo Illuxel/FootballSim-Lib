@@ -1,7 +1,8 @@
-﻿using DatabaseLayer.DBSettings;
+﻿using System.Data.SQLite;
 using System.Collections.Generic;
+
 using Dapper;
-using System.Data.SQLite;
+using DatabaseLayer.Settings;
 
 namespace DatabaseLayer.Repositories
 {
@@ -9,7 +10,7 @@ namespace DatabaseLayer.Repositories
     {
         public List<Position> Retrieve()
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.Query<Position>("SELECT * FROM Position").AsList();
@@ -17,7 +18,7 @@ namespace DatabaseLayer.Repositories
         }
         public Position Retrieve(string positionCode)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.QueryFirstOrDefault<Position>("SELECT * FROM Position Where Code = @positionCode", new { positionCode });
@@ -26,7 +27,7 @@ namespace DatabaseLayer.Repositories
 
         internal bool Insert(Position position)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<Position>("SELECT * FROM Position WHERE Code = @positionCode", new { positionCode = position.Code });
@@ -43,7 +44,7 @@ namespace DatabaseLayer.Repositories
 
         internal bool Update(Position position)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<Position>("SELECT * FROM Position WHERE Code = @positionCode", new { positionCode = position.Code });
@@ -59,7 +60,7 @@ namespace DatabaseLayer.Repositories
         }
         public bool Delete(string positionCode)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var rowsAffected = connection.Execute("DELETE FROM Position WHERE Code = @positionCode ",

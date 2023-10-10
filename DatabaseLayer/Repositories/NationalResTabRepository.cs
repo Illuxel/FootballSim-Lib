@@ -1,11 +1,12 @@
-﻿using Dapper;
-using DatabaseLayer.DBSettings;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.Linq;
 using System.Data;
 using System.Data.SQLite;
-using System.Linq;
-using System.Net;
+using System.Collections.Generic;
+
+using Dapper;
+
+using DatabaseLayer.Settings;
 
 namespace DatabaseLayer.Repositories
 {
@@ -13,7 +14,7 @@ namespace DatabaseLayer.Repositories
     {
         public List<NationalResultTable> Retrieve()
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.Query<NationalResultTable>("SELECT * FROM NationalResultTable").AsList();
@@ -22,7 +23,7 @@ namespace DatabaseLayer.Repositories
         public List<NationalResultTable> Retrieve(long leagueId, string season)
         {
             var result = new List<NationalResultTable>();
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 result = connection.Query<NationalResultTable, Team, NationalResultTable>(
@@ -45,7 +46,7 @@ namespace DatabaseLayer.Repositories
         public bool Update(NationalResultTable model)
         {
             bool result = false;
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
 
@@ -64,7 +65,7 @@ namespace DatabaseLayer.Repositories
         public NationalResultTable Retrieve(string teamId, string season)
         {
             var result = new List<NationalResultTable>();
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 result = connection.Query<NationalResultTable, Team, NationalResultTable>(
@@ -88,7 +89,7 @@ namespace DatabaseLayer.Repositories
         {
             var results = new Dictionary<string, NationalResultTable>();
 
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
 
@@ -113,7 +114,7 @@ namespace DatabaseLayer.Repositories
         public bool Insert(NationalResultTable model)
         {
             bool result = false;
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
 
@@ -130,7 +131,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Delete(string teamId, string season)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var rowAffected = connection.Execute("DELETE FROM NationalResultTable WHERE TeamID = @TeamId AND Season = @Season",
@@ -141,7 +142,7 @@ namespace DatabaseLayer.Repositories
         }
         public bool Update(NationalResultTable homeTeam, NationalResultTable guestTeam, string season)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
 
@@ -195,7 +196,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Update(List<NationalResultTable> teamResultTab, string season)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 using (IDbTransaction transaction = connection.BeginTransaction())

@@ -1,10 +1,8 @@
-using System;
-using System.Linq;
 using System.Data.SQLite;
 using System.Collections.Generic;
 
 using Dapper;
-using DatabaseLayer.DBSettings;
+using DatabaseLayer.Settings;
 
 namespace DatabaseLayer.Repositories
 {
@@ -12,7 +10,7 @@ namespace DatabaseLayer.Repositories
     {
         public List<JobRequest> Retrieve()
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var jobRequests = connection.Query<JobRequest>("SELECT * FROM JobRequest");
@@ -22,7 +20,7 @@ namespace DatabaseLayer.Repositories
         }
         public JobRequest Retrieve(string jobRequestID)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var jobRequests = connection.QuerySingle<JobRequest>(
@@ -36,7 +34,7 @@ namespace DatabaseLayer.Repositories
         }
         public List<JobRequest> RetrieveByPerson(string personID)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var jobRequests = connection.Query<JobRequest>(
@@ -51,7 +49,7 @@ namespace DatabaseLayer.Repositories
         // returns available job requests for each player
         public List<JobRequest> RetrieveByTeam(string teamID)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var playerJobRequests = connection.Query<JobRequest>(
@@ -66,7 +64,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Insert(JobRequest jobRequest)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var result = connection.Execute(
@@ -80,7 +78,7 @@ namespace DatabaseLayer.Repositories
         }
         public bool Insert(List<JobRequest> jobRequests)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 using (var transaction = connection.BeginTransaction())

@@ -1,7 +1,9 @@
-﻿using Dapper;
-using DatabaseLayer.DBSettings;
+﻿using System.Data.SQLite;
 using System.Collections.Generic;
-using System.Data.SQLite;
+
+using Dapper;
+
+using DatabaseLayer.Settings;
 
 namespace DatabaseLayer.Repositories
 {
@@ -9,14 +11,14 @@ namespace DatabaseLayer.Repositories
     {
         public List<Sponsor> Retrieve()
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 return connection.Query<Sponsor>("SELECT * FROM Sponsor").AsList();
             }
         }
         public Sponsor Retrieve(int ID)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 return connection.QueryFirstOrDefault<Sponsor>(
                     @"SELECT * FROM Sponsor
@@ -25,7 +27,7 @@ namespace DatabaseLayer.Repositories
         }
         public bool Insert(string Name)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var rowsAffected = connection.Execute(
@@ -36,7 +38,7 @@ namespace DatabaseLayer.Repositories
         }
         public bool Delete(int ID)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var rowsAffected = connection.Execute("DELETE FROM Sponsor WHERE ID = @ID",

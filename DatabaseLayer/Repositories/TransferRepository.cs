@@ -1,8 +1,10 @@
-﻿using Dapper;
-using DatabaseLayer.DBSettings;
-using DatabaseLayer.Model;
+﻿using System.Data.SQLite;
 using System.Collections.Generic;
-using System.Data.SQLite;
+
+using Dapper;
+
+using DatabaseLayer.Settings;
+using DatabaseLayer.Model;
 
 namespace DatabaseLayer.Repositories
 {
@@ -10,7 +12,7 @@ namespace DatabaseLayer.Repositories
     {
         public List<TransferJournal> Retrieve()
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.Query<TransferJournal>("SELECT * FROM TransferJournal").AsList();
@@ -18,7 +20,7 @@ namespace DatabaseLayer.Repositories
         }
         public TransferJournal Retrieve(int idTransfer)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.QueryFirstOrDefault<TransferJournal>("SELECT * FROM TransferJournal Where ID = @idTransfer", new { idTransfer });
@@ -27,7 +29,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Insert(TransferJournal transfer)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<TransferJournal>("SELECT * FROM TransferJournal WHERE ID = @id", new { id = transfer.Id });
@@ -44,7 +46,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Update(TransferJournal transfer)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<TransferJournal>("SELECT * FROM TransferJournal WHERE ID = @transfer", new { transfer = transfer.Id });
@@ -60,7 +62,7 @@ namespace DatabaseLayer.Repositories
         }
         public bool Delete(int transfer)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var rowsAffected = connection.Execute("DELETE FROM TransferJournal WHERE ID = @transfer ",

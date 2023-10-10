@@ -1,7 +1,9 @@
-﻿using Dapper;
-using DatabaseLayer.DBSettings;
+﻿using System.Data.SQLite;
 using System.Collections.Generic;
-using System.Data.SQLite;
+
+using Dapper;
+
+using DatabaseLayer.Settings;
 using DatabaseLayer.Model;
 
 namespace DatabaseLayer.Repositories
@@ -10,7 +12,7 @@ namespace DatabaseLayer.Repositories
     {
         public List<TransferMarket> Retrieve()
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.Query<TransferMarket>("SELECT * FROM TransferMarket").AsList();
@@ -19,7 +21,7 @@ namespace DatabaseLayer.Repositories
 
         public List<TransferMarket> RetrieveByPlayer(string playerId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.Query<TransferMarket>("SELECT * FROM TransferMarket Where IDPlayer = @playerId", new { playerId }).AsList();
@@ -28,7 +30,7 @@ namespace DatabaseLayer.Repositories
 
         public List<TransferMarket> RetrieveByParameters(TransferMarketSearchParams transfer)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
 
@@ -45,7 +47,7 @@ namespace DatabaseLayer.Repositories
         }
         public TransferMarket Retrieve(string id)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.QueryFirstOrDefault<TransferMarket>("SELECT * FROM TransferMarket Where ID = @id", new { id });
@@ -54,7 +56,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Insert(TransferMarket transfer)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<TransferMarket>("SELECT * FROM TransferMarket WHERE ID = @id", new { id = transfer.Id });
@@ -71,7 +73,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Update(TransferMarket transfer)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<TransferMarket>("SELECT * FROM TransferMarket WHERE ID = @transfer", new { transfer = transfer.Id });
@@ -87,7 +89,7 @@ namespace DatabaseLayer.Repositories
         }
         public bool Delete(string transfer)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var rowsAffected = connection.Execute("DELETE FROM TransferMarket WHERE ID = @transfer ",

@@ -1,7 +1,9 @@
-﻿using Dapper;
-using DatabaseLayer.DBSettings;
-using System.Data.SQLite;
+﻿using System.Data.SQLite;
 using System.Collections.Generic;
+
+using Dapper;
+
+using DatabaseLayer.Settings;
 
 namespace DatabaseLayer.Repositories
 {
@@ -9,7 +11,7 @@ namespace DatabaseLayer.Repositories
     {
         public List<Role> Retrieve()
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.Query<Role>("SELECT * FROM Role").AsList();
@@ -17,7 +19,7 @@ namespace DatabaseLayer.Repositories
         }
         public Role Retrieve(int roleId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.QueryFirstOrDefault<Role>("SELECT * FROM Role Where ID = @roleId", new { roleId });
@@ -26,7 +28,7 @@ namespace DatabaseLayer.Repositories
 
         internal bool Insert(Role role)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<Role>("SELECT * FROM Role WHERE ID = @roleId", new { roleId = role.Id });
@@ -44,7 +46,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Update(Role role)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<Role>("SELECT * FROM Role WHERE ID = @roleId", new { roleId = role.Id });
@@ -61,7 +63,7 @@ namespace DatabaseLayer.Repositories
         }
         public bool Delete(int roleId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var rowsAffected = connection.Execute("DELETE FROM Role WHERE PersonID = @roleId ",

@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
-using System;
-using DatabaseLayer.DBSettings;
-using System.Data.SQLite;
-using Dapper;
+﻿using System;
 using System.Linq;
 using System.Data;
+using System.Data.SQLite;
+using System.Collections.Generic;
+
+using Dapper;
+
+using DatabaseLayer.Settings;
 
 namespace DatabaseLayer.Repositories
 {
@@ -12,7 +14,7 @@ namespace DatabaseLayer.Repositories
     {
         public Match RetrieveMatchById(string matchId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var result = connection.QueryFirstOrDefault<Match>(
@@ -23,7 +25,7 @@ namespace DatabaseLayer.Repositories
         }
         public List<Match> Retrieve(string teamId, DateTime seasonStartDate, DateTime seasonEndDate)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
 
@@ -39,7 +41,7 @@ namespace DatabaseLayer.Repositories
         public List<Match> Retrieve(string teamId)
         {
             List<Match> result = new List<Match>();
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 result = connection.Query<Match>(
@@ -52,7 +54,7 @@ namespace DatabaseLayer.Repositories
 
         public List<Match> Retrieve(string firstTeamId, string secondTeamId, DateTime seasonStartDate, DateTime seasonEndDate)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
 
@@ -72,7 +74,7 @@ namespace DatabaseLayer.Repositories
         public List<Match> Retrieve(int leagueId, int tourNumber = 0)
         {
             List<Match> result = new List<Match>();
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var sql = "SELECT * FROM Match WHERE LeagueId = @leagueId";
@@ -90,7 +92,7 @@ namespace DatabaseLayer.Repositories
 
         public List<Match> Retrieve(int tourNumber)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var result = connection.Query<Match>(
@@ -102,7 +104,7 @@ namespace DatabaseLayer.Repositories
         
         public Dictionary<int, List<Match>> Retrieve(DateTime gameDate)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var result = connection.Query<Match>(
@@ -118,7 +120,7 @@ namespace DatabaseLayer.Repositories
         }
         public void Insert(List<Match> matches)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 using (IDbTransaction transaction = connection.BeginTransaction())
@@ -127,9 +129,9 @@ namespace DatabaseLayer.Repositories
                     {
                         var rowsAffected = connection.Execute(
                             @"INSERT INTO Match (Id, HomeTeamId, GuestTeamId, MatchDate, HomeTeamGoals, 
-                GuestTeamGoals, TourNumber, LeagueId, IsPlayed)
-                VALUES (@Id, @HomeTeamId, @GuestTeamId, @MatchDate, @HomeTeamGoals, 
-                @GuestTeamGoals, @TourNumber, @LeagueId, @IsPlayed)", matches, transaction);
+                            GuestTeamGoals, TourNumber, LeagueId, IsPlayed)
+                            VALUES (@Id, @HomeTeamId, @GuestTeamId, @MatchDate, @HomeTeamGoals, 
+                            @GuestTeamGoals, @TourNumber, @LeagueId, @IsPlayed)", matches, transaction);
                         transaction.Commit();
                     }
                     catch (Exception ex)
@@ -143,7 +145,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Insert(Match match)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 match.Id = Guid.NewGuid().ToString();
@@ -165,7 +167,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Update(Match match)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<Match>("SELECT * FROM Match WHERE Id = @id",
@@ -192,7 +194,7 @@ namespace DatabaseLayer.Repositories
         }
         public bool Update(List<Match> matches)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var rowsAffected = 0;
@@ -226,7 +228,7 @@ namespace DatabaseLayer.Repositories
         }
         public int GetTourNumber(DateTime gameDate, int leagueId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 {

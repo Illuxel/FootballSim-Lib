@@ -1,8 +1,10 @@
-﻿using DatabaseLayer.DBSettings;
-using System.Collections.Generic;
-using Dapper;
+﻿using System.Linq;
 using System.Data.SQLite;
-using System.Linq;
+using System.Collections.Generic;
+
+using Dapper;
+
+using DatabaseLayer.Settings;
 
 namespace DatabaseLayer.Repositories
 {
@@ -11,7 +13,7 @@ namespace DatabaseLayer.Repositories
         //TODO: Чи потрібні всі агенти?
         public List<Agent> Retrieve()
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var agents = connection.Query<Agent>("SELECT * FROM Agent").AsList();
@@ -30,7 +32,7 @@ namespace DatabaseLayer.Repositories
         }
         public Agent Retrieve(string personId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var agent = connection.QueryFirstOrDefault<Agent>("SELECT * FROM Agent WHERE PersonID = @personId", new { personId });
@@ -49,7 +51,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Insert(Agent agent)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<Agent>("SELECT * FROM Agent WHERE PersonID = @personID", new { personID = agent.PersonID });
@@ -66,7 +68,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Update(Agent agent)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<Agent>("SELECT * FROM Agent WHERE PersonID = @personID", new { personID = agent.PersonID });
@@ -84,7 +86,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Delete(string personId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var rowsAffected = connection.Execute("DELETE FROM Agent WHERE PersonID = @personID ",

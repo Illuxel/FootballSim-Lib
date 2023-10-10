@@ -1,10 +1,12 @@
-﻿using DatabaseLayer.Model;
-using System.Collections.Generic;
+﻿using System;
 using System.Data.SQLite;
-using DatabaseLayer.DBSettings;
+using System.Collections.Generic;
+
 using Dapper;
-using System;
+
+using DatabaseLayer.Settings;
 using DatabaseLayer.Enums;
+using DatabaseLayer.Model;
 
 namespace DatabaseLayer.Repositories
 {
@@ -12,7 +14,7 @@ namespace DatabaseLayer.Repositories
     {
         public List<SponsorCreateRequest> Retrieve()
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.Query<SponsorCreateRequest>("SELECT * FROM ActiveSponsorContract").AsList();
@@ -21,7 +23,7 @@ namespace DatabaseLayer.Repositories
 
         public List<SponsorCreateRequest> Retrieve(string TeamID) 
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.Query<SponsorCreateRequest>(
@@ -32,7 +34,7 @@ namespace DatabaseLayer.Repositories
 
         public List<Sponsor> RetrieveFreeSponsor(string teamId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 return connection.Query<Sponsor>(@"SELECT sponsor.* 
@@ -45,25 +47,21 @@ namespace DatabaseLayer.Repositories
             }
         }
             
-
-
         public bool Insert(SponsorCreateRequest contract)
         {
             var result = false;
             if (string.IsNullOrEmpty(contract.ID))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 contract.ID = Guid.NewGuid().ToString();
-                using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
-                {
-                    connection.Open();
+                connection.Open();
 
-                    var rowsAffected = connection.Execute(
-                        @"INSERT INTO ActiveSponsorContract 
-                        (ID,TeamID,SeasonFrom,SeasonTo,Value,SponsorID,State) 
-                        VALUES(@ID,@TeamID,@SeasonFrom,@SeasonTo,@Value,@SponsorID,@State)",
-                        contract);
-                    result = rowsAffected == 1;
-                }
+                var rowsAffected = connection.Execute(
+                    @"INSERT INTO ActiveSponsorContract 
+                    (ID,TeamID,SeasonFrom,SeasonTo,Value,SponsorID,State) 
+                    VALUES(@ID,@TeamID,@SeasonFrom,@SeasonTo,@Value,@SponsorID,@State)",
+                    contract);
+                result = rowsAffected == 1;
             }
 
             return result;
@@ -71,7 +69,7 @@ namespace DatabaseLayer.Repositories
 
         public bool UpdateState(SponsorCreateRequest contract)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<SponsorCreateRequest>(
@@ -92,7 +90,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Delete(string ID)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var rowsAffected = connection.Execute(
@@ -107,7 +105,7 @@ namespace DatabaseLayer.Repositories
         public bool DeleteExpired(string expiredSeason)
         {
             
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var rowsAffected = connection.Execute(
@@ -121,7 +119,7 @@ namespace DatabaseLayer.Repositories
 
         public bool DeleteCanceled(string teamId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var rowsAffected = connection.Execute(

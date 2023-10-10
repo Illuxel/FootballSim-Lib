@@ -1,9 +1,11 @@
-﻿using Dapper;
-using DatabaseLayer.DBSettings;
-using DatabaseLayer.Model;
-using System.Collections.Generic;
+﻿using System.Linq;
 using System.Data.SQLite;
-using System.Linq;
+using System.Collections.Generic;
+
+using Dapper;
+
+using DatabaseLayer.Model;
+using DatabaseLayer.Settings;
 
 namespace DatabaseLayer.Repositories
 {
@@ -11,7 +13,7 @@ namespace DatabaseLayer.Repositories
     {
         public List<ManagerRequestOfPlayers> Retrieve()
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var response = connection.Query<ManagerRequestOfPlayers>("SELECT * FROM ManagerRequestOfPlayers").ToList();
@@ -21,7 +23,7 @@ namespace DatabaseLayer.Repositories
 
         public List<ManagerRequestOfPlayers> Retrieve(string TeamId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var response = connection.Query<ManagerRequestOfPlayers>(
@@ -32,7 +34,7 @@ namespace DatabaseLayer.Repositories
         }
         public ManagerRequestOfPlayers RetrieveById(string Id)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var response = connection.Query<ManagerRequestOfPlayers>(
@@ -44,7 +46,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Insert(ManagerRequestOfPlayers request)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 var createdDate = request.CreatedDate.ToString("yyyy-MM-dd");
                 var finishDate = request.FinishDate.ToString("yyyy-MM-dd");
@@ -70,7 +72,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Update(ManagerRequestOfPlayers request)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 var createdDate = request.CreatedDate.ToString("yyyy-MM-dd");
                 var finishDate = request.FinishDate.ToString("yyyy-MM-dd");

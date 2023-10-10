@@ -1,10 +1,12 @@
-﻿using Dapper;
-using DatabaseLayer.DBSettings;
+﻿using System;
+using System.Linq;
+using System.Data;
 using System.Data.SQLite;
 using System.Collections.Generic;
-using System.Linq;
-using System;
-using System.Data;
+
+using Dapper;
+
+using DatabaseLayer.Settings;
 
 namespace DatabaseLayer.Repositories
 {
@@ -12,7 +14,7 @@ namespace DatabaseLayer.Repositories
     {
         public List<Contract> Retrieve()
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var response = connection.Query<Contract>("SELECT * FROM Contract").AsList();
@@ -22,7 +24,7 @@ namespace DatabaseLayer.Repositories
 
         public List<Contract> RetrieveByTeam(string teamId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 var query = @"SELECT Contract.*, Team.*, Person.*
                     FROM Contract
@@ -47,7 +49,7 @@ namespace DatabaseLayer.Repositories
 
         public List<Contract> Retrieve(string personId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 var query = @"SELECT Contract.*, Team.*, Person.*
                     FROM Contract
@@ -72,7 +74,7 @@ namespace DatabaseLayer.Repositories
 
         public Contract RetrieveOne(string contractId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 var query = @"SELECT Contract.*, Team.*, Person.*
                     FROM Contract
@@ -97,10 +99,9 @@ namespace DatabaseLayer.Repositories
 
         public bool Insert(Contract contract)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
-                contract.Id = Guid.NewGuid().ToString();
                 var record = connection.QuerySingleOrDefault<Agent>("SELECT * FROM contract WHERE ID = @id", new { id = contract.Id });
                 bool result = false;
                 if (record == null)
@@ -117,7 +118,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Update(Contract contract)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<Agent>("SELECT * FROM Contract WHERE ID = @id", new { id = contract.Id });
@@ -141,7 +142,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Update(List<Contract> contract)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 using(IDbTransaction transaction = connection.BeginTransaction())
@@ -172,7 +173,7 @@ namespace DatabaseLayer.Repositories
 
         public bool Delete(string contractId)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 var rowsAffected = connection.Execute("DELETE FROM Contract WHERE ID = @contractId ",
@@ -183,7 +184,7 @@ namespace DatabaseLayer.Repositories
 
         public List<Contract> Retrieve(DateTime gameDate)
         {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
             {
                 connection.Open();
                 string formattedDate = gameDate.ToString("yyyy-MM-dd");
