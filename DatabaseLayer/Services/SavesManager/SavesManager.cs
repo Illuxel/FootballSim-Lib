@@ -13,8 +13,8 @@ namespace DatabaseLayer.Services
 {
     public class SaveInfo : IComparable<SaveInfo>
     {
-        public string SaveName { get; internal set; }
-        public DateTime SaveDate { get; internal set; }
+        public string SaveName { get; set; }
+        public DateTime SaveDate { get; set; }
         public string SavePath 
         {
             get 
