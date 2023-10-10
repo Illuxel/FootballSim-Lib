@@ -1,5 +1,8 @@
-﻿using BusinessLogicLayer.Services;
+﻿using System.IO;
 using System.Threading.Tasks;
+
+using DatabaseLayer.Settings;
+using BusinessLogicLayer.Services;
 
 namespace StartupProject
 {
@@ -7,6 +10,8 @@ namespace StartupProject
     {
         public static async Task Main(string[] args)
         {
+            GameSettings.BaseGamePath = Directory.GetCurrentDirectory();
+
             var dbDownloader = new RemoteDownloader();
             await dbDownloader.DatabaseDownload();
             Program.Main(args);
