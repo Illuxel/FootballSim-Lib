@@ -11,5 +11,9 @@
         public Country Country { get; internal set; }
 
         //public ICollection<Team> Teams { get; internal set; } = new List<Team>();
+        public int GetCountryId()
+        {
+            return CountryId;
+        }
     }
 }
