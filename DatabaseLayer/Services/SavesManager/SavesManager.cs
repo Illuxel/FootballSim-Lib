@@ -8,6 +8,7 @@ using DatabaseLayer.Repositories;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Data;
 
 namespace DatabaseLayer.Services
 {
@@ -15,6 +16,7 @@ namespace DatabaseLayer.Services
     {
         public string SaveName { get; set; }
         public DateTime SaveDate { get; set; }
+        public DateTime SaveRecentActivity { get; set; }
         public string SavePath 
         {
             get 
@@ -228,10 +230,12 @@ namespace DatabaseLayer.Services
 
             foreach (var savePath in savesPaths)
             {
+                var savePathInfo = new DirectoryInfo(savePath);
                 var saveInfo = new SaveInfo()
                 {
-                    SaveName = Path.GetFileNameWithoutExtension(savePath),
-                    SaveDate = Directory.GetLastWriteTime(savePath),
+                    SaveName = savePathInfo.Name,
+                    SaveDate = savePathInfo.CreationTime,
+                    SaveRecentActivity = savePathInfo.LastWriteTime
                 };
 
                 var jsonUserGameDataPath = Path.Combine(savePath, SavesSettings.UserGameDataFileName);
