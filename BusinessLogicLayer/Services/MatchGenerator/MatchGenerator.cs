@@ -6,10 +6,8 @@ using System.Linq;
 
 namespace BusinessLogicLayer.Services
 {
-    public class MatchGenerator
+    internal class MatchGenerator
     {
-        internal MatchGenSettings _settings;
-
         private MatchResult _matchData;
         private TeamForMatchCreator _teamForMatchCreator;
         private PlayerInMatchRepository _playerInMatchRepository;
@@ -64,9 +62,8 @@ namespace BusinessLogicLayer.Services
         public event MatchFinishedHandler? OnMatchFinished;
 
         private int _defaultSparePlayersCount = 7;
-        public MatchGenerator(string matchId, MatchGenSettings matchGenSettings)
+        public MatchGenerator(string matchId)
         {
-            _settings = matchGenSettings;
             _matchData = new MatchResult();
             _playerInMatchRepository = new PlayerInMatchRepository();
             _playerInjuryFinder = new PlayerInjuryFinder();
@@ -86,9 +83,8 @@ namespace BusinessLogicLayer.Services
 
             _playedPlayers = new Dictionary<string, Player>();
         }
-        public MatchGenerator(Match match, MatchGenSettings matchGenSettings)
+        public MatchGenerator(Match match)
         {
-            _settings = matchGenSettings;
             _matchData = new MatchResult();
             _teamForMatchCreator = new TeamForMatchCreator();
             _playerInMatchRepository = new PlayerInMatchRepository();
@@ -108,8 +104,6 @@ namespace BusinessLogicLayer.Services
             
             _playedPlayers = new Dictionary<string,Player>();
         }
-
-
         public void StartGenerating()
         {
             if(string.IsNullOrEmpty(_matchData.MatchID))

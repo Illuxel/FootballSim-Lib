@@ -20,7 +20,6 @@ namespace BusinessLogicLayer.Scenario
         TeamRatingWinCoeffRepository _teamRatingWinCoeffRepository;
         TeamRepository _teamRepository;
 
-
         public GenerateAllMatchesByTour(DateTime gameDate, string ownerTeamId)
         {
             _gameDate = gameDate;
@@ -68,7 +67,7 @@ namespace BusinessLogicLayer.Scenario
         {
             List<Match> allMatches = new List<Match>();
             List<Goal> goalList = new List<Goal>();
-            /*foreach (var matches in schedule)
+            foreach (var matches in schedule)
             {
                 foreach(var match in matches.Value)
                 {
@@ -83,7 +82,7 @@ namespace BusinessLogicLayer.Scenario
                     match.IsPlayed = true;
                     allMatches.Add(match);
                 }
-            }*/
+            }
             
             _matchRepository.Update(allMatches);
             defineTeamsStats(allMatches);

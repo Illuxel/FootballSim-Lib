@@ -1,5 +1,8 @@
+using BusinessLogicLayer.Scenario;
 using BusinessLogicLayer.Services;
 using DatabaseLayer.Services;
+using System.IO;
+using System;
 
 namespace StartupProject
 {
@@ -7,11 +10,16 @@ namespace StartupProject
     {
         public static void Main(string[] args)
         {
-            var save = LoadGameManager.GetInstance().Load("test");
-            var matchGenSettings = new MatchGenSettings("D:\\FootbalLife-Lib\\StartupProject\\bin\\Debug\\net7.0\\");
+            var settings = new GenerateGameActionsToNextMatchSettings(Directory.GetCurrentDirectory());
 
-            var matchGen = new MatchGenerator("d5389dcd-9b56-453f-a019-0a43c0c022a2",matchGenSettings);
-            matchGen.StartGenerating();
+            var playerGameData = new PlayerGameData();
+            playerGameData.GameDate = new DateTime(2023, 8, 12).ToString("yyyy-MM-dd");
+            playerGameData.RealDate = DateTime.Now.ToString("yyyy-MM-dd");
+            playerGameData.CurrentLevel = DatabaseLayer.Enums.ScoutSkillLevel.Level4;
+            playerGameData.ClubId = "015834FD9556AAEC44DE54CDE350235B";
+            var saveInfo = new SaveInfo(playerGameData, "test1");
+
+            new GenerateGameActionsToNextMatch(saveInfo, settings).SimulateActions();
         }
     }
 }

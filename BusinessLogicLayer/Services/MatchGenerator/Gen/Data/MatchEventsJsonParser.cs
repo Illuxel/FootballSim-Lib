@@ -47,7 +47,7 @@ namespace BusinessLogicLayer.Services
         {
             _cachedEvents = null;
         }
-        //TO Do 
+
         private static bool loadEventsFromFile()
         {
             if (_cachedEvents != null)
@@ -57,8 +57,7 @@ namespace BusinessLogicLayer.Services
             _cachedEvents = new Dictionary<string, BaseMatchEventModel>();
             try
             {
-                var settings = new MatchGenerator._settings;
-                string? jsonString = File.ReadAllText(settings.EventsPath);
+                string? jsonString = File.ReadAllText(MatchGenSettings.EventsFilePath);
                 if (jsonString == null)
                 {
                     return false;
