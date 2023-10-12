@@ -14,9 +14,9 @@ namespace DatabaseLayer.Services
 {
     public class SaveInfo : IComparable<SaveInfo>
     {
-        public string SaveName { get; set; }
-        public DateTime SaveDate { get; set; }
-        public DateTime SaveRecentActivity { get; set; }
+        public string SaveName { get; internal set; }
+        public DateTime SaveCreationTime { get; internal set; }
+        public DateTime SaveLastActivity { get; internal set; }
         public string SavePath 
         {
             get 
@@ -29,7 +29,7 @@ namespace DatabaseLayer.Services
 
         public int CompareTo(SaveInfo other)
         {
-            return DateTime.Compare(other.SaveDate, SaveDate);
+            return DateTime.Compare(other.SaveLastActivity, SaveLastActivity);
         }
     }
 
@@ -130,7 +130,7 @@ namespace DatabaseLayer.Services
             var saveInfo = new SaveInfo
             {
                 SaveName = saveName,
-                SaveDate = DateTime.Now,
+                SaveCreationTime = DateTime.Now,
                 PlayerData = playerData
             };
 
@@ -234,8 +234,8 @@ namespace DatabaseLayer.Services
                 var saveInfo = new SaveInfo()
                 {
                     SaveName = savePathInfo.Name,
-                    SaveDate = savePathInfo.CreationTime,
-                    SaveRecentActivity = savePathInfo.LastWriteTime
+                    SaveCreationTime = savePathInfo.CreationTime,
+                    SaveLastActivity = savePathInfo.LastWriteTime
                 };
 
                 var jsonUserGameDataPath = Path.Combine(savePath, SavesSettings.UserGameDataFileName);

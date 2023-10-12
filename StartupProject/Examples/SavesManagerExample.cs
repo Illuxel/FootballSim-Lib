@@ -41,7 +41,7 @@ namespace StartupProject
                         {
                             foreach (var save in saves)
                             {
-                                Console.WriteLine($"Save {save.SaveName} - {save.SaveDate}");
+                                Console.WriteLine($"Save {save.SaveName} - {save.SaveCreationTime}");
                             }
                         }
                         else
@@ -56,7 +56,7 @@ namespace StartupProject
 
                         if (saveInfo != null)
                         {
-                            Console.WriteLine($"Loaded latest save {saveInfo.SaveName} ({saveInfo.PlayerData.Money}$) - {saveInfo.SaveDate}");
+                            Console.WriteLine($"Loaded latest save {saveInfo.SaveName} ({saveInfo.PlayerData.Money}$) - {saveInfo.SaveCreationTime}");
                         }
                         else
                         {
@@ -73,7 +73,7 @@ namespace StartupProject
 
                         if (saveInfo != null)
                         {
-                            Console.WriteLine($"Loaded latest save {saveInfo.SaveName} ({saveInfo.PlayerData.Money}$) - {saveInfo.SaveDate}");
+                            Console.WriteLine($"Loaded latest save {saveInfo.SaveName} ({saveInfo.PlayerData.Money}$) - {saveInfo.SaveCreationTime}");
                         }
                         else
                         {
@@ -104,7 +104,7 @@ namespace StartupProject
 
                         if (saveInfo != null)
                         {
-                            Console.WriteLine($"Created save {saveInfo.SaveName} ({saveInfo.PlayerData.Money}$) - {saveInfo.SaveDate}");
+                            Console.WriteLine($"Created save {saveInfo.SaveName} ({saveInfo.PlayerData.Money}$) - {saveInfo.SaveCreationTime}");
                         }
                         else
                         {
