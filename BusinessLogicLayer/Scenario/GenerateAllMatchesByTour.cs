@@ -68,7 +68,7 @@ namespace BusinessLogicLayer.Scenario
         {
             List<Match> allMatches = new List<Match>();
             List<Goal> goalList = new List<Goal>();
-            foreach (var matches in schedule)
+            /*foreach (var matches in schedule)
             {
                 foreach(var match in matches.Value)
                 {
@@ -83,7 +83,7 @@ namespace BusinessLogicLayer.Scenario
                     match.IsPlayed = true;
                     allMatches.Add(match);
                 }
-            }
+            }*/
             
             _matchRepository.Update(allMatches);
             defineTeamsStats(allMatches);
