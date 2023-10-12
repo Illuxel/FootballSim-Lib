@@ -5,6 +5,7 @@ using Dapper;
 using System;
 using DatabaseLayer.Enums;
 using System.Data;
+using DatabaseLayer.Model;
 
 namespace DatabaseLayer.Repositories
 {
@@ -101,6 +102,23 @@ namespace DatabaseLayer.Repositories
                 return results.AsList();
             }
         }
+
+        public List<TeamSuccessHistory> GetHistory(string teamId)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                var response = connection.Query<TeamSuccessHistory>(@"SELECT NationalResultTable.TeamId, 
+                    NationalResultTable.Season,
+	                NationalResultTable.TotalPosition,
+	                T.LeagueId
+                    FROM NationalResultTable 
+                    JOIN Team T on T.Id = NationalResultTable.TeamId
+                    WHERE NationalResultTable.TeamId = @teamId", new { teamId }).AsList();
+                return response;
+            }
+        }
+
         internal bool Insert(Team team)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
