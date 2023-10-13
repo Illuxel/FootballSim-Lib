@@ -10,7 +10,7 @@ namespace BusinessLogicLayer.Scenario
     {
         private SaveInfo _saveInfo;
         private GenerateAllMatchesByTour _generateAllMatchesByTour;
-        private JuniorGeneration _juniorGeneration;
+        private JuniorProcessing _juniorProcessing;
         private PlayerSkillsUpdater _playerSkillsUpdater;
         private TeamRepository _teamRepository;
 
@@ -20,7 +20,7 @@ namespace BusinessLogicLayer.Scenario
             _generateAllMatchesByTour = new GenerateAllMatchesByTour(DateTime.Parse(_saveInfo.PlayerData.GameDate), _saveInfo.PlayerData.ClubId);
 
             _teamRepository = new TeamRepository();
-            _juniorGeneration = new JuniorGeneration();
+            _juniorProcessing = new JuniorProcessing();
             _playerSkillsUpdater = new PlayerSkillsUpdater();
         }
 

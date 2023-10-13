@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Data;
 using System;
-using DatabaseLayer.Model;
 
 namespace DatabaseLayer.Repositories
 {
@@ -37,6 +36,11 @@ namespace DatabaseLayer.Repositories
         public List<Player> RetrieveJuniorsByTeam(string teamId)
         {
             return retrieve("Contract.TeamID = @teamId AND IsJunior = 1", new { teamId });
+        }
+
+        public List<Player> RetrieveAllJuniors()
+        {
+            return retrieve("IsJunior = 1");
         }
 
         private List<Player> retrieve(string condition, object queryParams = null)
@@ -136,11 +140,11 @@ namespace DatabaseLayer.Repositories
                     {
                         var rowsAffected = connection.Execute(
                         @"INSERT INTO Player (PersonID, PositionCode, ContractId, Speed, 
-                            Endurance, Strike, Physics, Defending, Passing, Dribbling, Rating,  
-                            IndexPosition, CurrentPlayerRating, PlayerPositionGroup, InjuredTo) 
-                        VALUES (@PersonID, @PositionCode, @ContractId, @Speed, 
-                            @Endurance, @Strike, @Physics, @Defending, @Passing, @Dribbling, Rating,
-                            @IndexPosition, @CurrentPlayerRating, @PlayerPositionGroup @InjuredTo)",
+                            Endurance, Strike, Physics, Defending, Passing, Dribbling, Rating, IndexPosition, 
+                            CurrentRating, PlayerPositionGroup, IsJunior, InjuredTo) 
+                        VALUES (@PersonID, @PositionCode, @ContractId, @Speed,
+                            @Endurance, @Strike, @Physics, @Defending, @Passing, @Dribbling, @Rating, @IndexPosition, 
+                            @Rating, @PlayerPositionGroup, @IsJunior, @InjuredTo)",
                         players, transaction);
                     }
                     catch (Exception ex)
@@ -175,7 +179,8 @@ namespace DatabaseLayer.Repositories
                             IndexPosition = @IndexPosition, 
                             CurrentRating = @CurrentPlayerRating, 
                             PlayerPositionGroup = @PlayerPositionGroup,
-                            InjuredTo = @InjuredTo
+                            InjuredTo = @InjuredTo,
+                            IsJunior = @IsJunior    
                         WHERE PersonID = @PersonID",
                         player);
                     result = rowsAffected == 1;
@@ -207,7 +212,8 @@ namespace DatabaseLayer.Repositories
                             IndexPosition = @IndexPosition, 
                             CurrentRating = @CurrentPlayerRating, 
                             PlayerPositionGroup = @PlayerPositionGroup,
-                            InjuredTo = @InjuredTo
+                            InjuredTo = @InjuredTo,
+                            IsJunior = @IsJunior
                         WHERE PersonID = @PersonID",
                         players, transaction);
                         transaction.Commit();
@@ -221,45 +227,7 @@ namespace DatabaseLayer.Repositories
                 }
             }
         }
-
-        public bool UpdateEndurance(List<Player> players)
-        {
-            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
-            {
-                connection.Open();
-                using (IDbTransaction transaction = connection.BeginTransaction())
-                {
-                    try
-                    {
-                        string sqlQuery = @"UPDATE Player 
-                                    SET PositionCode = @PositionCode, 
-                                        ContractId = @ContractId, 
-                                        Speed = @Speed, 
-                                        Endurance = @Endurance, 
-                                        Strike = @Strike, 
-                                        Physics = @Physics, 
-                                        Defending = @Defending, 
-                                        Passing = @Passing,
-                                        Dribbling = @Dribbling,
-                                        Rating = @Rating,
-                                        IndexPosition = @IndexPosition, 
-                                        CurrentRating = @CurrentPlayerRating, 
-                                        PlayerPositionGroup = @PlayerPositionGroup,
-                                        InjuredTo = @InjuredTo
-                                    WHERE PersonID = @PersonID";
-
-                        connection.Execute(sqlQuery, players, transaction);
-                        transaction.Commit();
-                        return true;
-                    }
-                    catch (Exception ex)
-                    {
-                        transaction.Rollback();
-                        throw new Exception(ex.Message);
-                    }
-                }
-            }
-        }
+        
         public bool Delete(string personId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
