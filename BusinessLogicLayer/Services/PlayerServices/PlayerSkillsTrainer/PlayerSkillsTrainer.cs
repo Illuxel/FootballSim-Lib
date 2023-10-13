@@ -57,7 +57,7 @@ namespace BusinessLogicLayer.Services
                     }
                     var currentEndurance = player.Endurance;
                     var enduranceAfterTrain = calculateEnduranceAfterTraining(player, enduranceCostPercentForPlayer);
-                    if (enduranceAfterTrain >= 0)
+                    if (enduranceAfterTrain >= 1)
                     {
                         var playerData = _personRepository.Retrieve(player.PersonID);
                         var playerName = playerData.Name == null ? playerData.Surname : $"{playerData.Name} {playerData.Surname}";

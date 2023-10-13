@@ -22,14 +22,7 @@ namespace BusinessLogicLayer.Services
             var recoveryDays = defineRecoveryDays(teamId, gameDate);
             var players = _playerRepository.Retrieve(teamId);
 
-            var recoveredPlayers = new List<Player>();  
-
-            foreach (var player in players)
-            { 
-                var recoveredEnduranceAmount = getRecoveredEnduranceAmount(player, gameDate, recoveryDays);
-                player.Endurance += recoveredEnduranceAmount;
-                recoveredPlayers.Add(player);
-            }
+            var recoveredPlayers = getRecoveredPlayers(players, gameDate, recoveryDays);
 
             _playerRepository.Update(recoveredPlayers);
         }
@@ -43,15 +36,32 @@ namespace BusinessLogicLayer.Services
                 var recoveryDays = defineRecoveryDays(teamId, gameDate);
                 var players = _playerRepository.Retrieve(teamId);
 
-                foreach (var player in players)
+                var recoveredPlayersFromTeam = getRecoveredPlayers(players, gameDate, recoveryDays);
+                
+                recoveredPlayers.AddRange(recoveredPlayersFromTeam);
+            }
+
+            _playerRepository.Update(recoveredPlayers);
+        }
+
+        private List<Player> getRecoveredPlayers(List<Player> players, DateTime gameDate, int recoveryDays)
+        {
+            var recoveredPlayers = new List<Player>();
+            foreach (var player in players)
+            {
+                if (player.Endurance != 100)
                 {
                     var recoveredEnduranceAmount = getRecoveredEnduranceAmount(player, gameDate, recoveryDays);
                     player.Endurance += recoveredEnduranceAmount;
+                    if (player.Endurance > 100)
+                    {
+                        player.Endurance = 100;
+                    }
                     recoveredPlayers.Add(player);
                 }
             }
 
-            _playerRepository.Update(recoveredPlayers);
+            return recoveredPlayers;
         }
 
         private int getRecoveredEnduranceAmount(Player player, DateTime gameDate, int recoveryDays)
@@ -85,7 +95,7 @@ namespace BusinessLogicLayer.Services
         private int defineRecoveryDays(string teamId, DateTime gameDate)
         {
             var nextMatchDate = _matchRepository.GetNextMatchDate(teamId);
-            if (nextMatchDate == null)
+            if (nextMatchDate == null || nextMatchDate < gameDate)
             {
                 return 0;
             }
