@@ -19,7 +19,7 @@ namespace BusinessLogicLayer.Scenario
         NationalResTabRepository _nationalResTabRepository;
         TeamRatingWinCoeffRepository _teamRatingWinCoeffRepository;
         TeamRepository _teamRepository;
-
+        EnduranceRecoveryService _enduranceRecoveryService;
 
         public GenerateAllMatchesByTour(DateTime gameDate, string ownerTeamId)
         {
@@ -32,6 +32,7 @@ namespace BusinessLogicLayer.Scenario
             _nationalResTabRepository = new NationalResTabRepository();
             _teamRatingWinCoeffRepository = new TeamRatingWinCoeffRepository();
             _teamRepository = new TeamRepository();
+            _enduranceRecoveryService = new EnduranceRecoveryService();
         }
 
         public void Generate()
@@ -49,6 +50,11 @@ namespace BusinessLogicLayer.Scenario
             if(allMatchesByTour.Count != 0)
             {
                 generateAllMatches(allMatchesByTour);
+
+                var matchesCollection = allMatchesByTour.Values.SelectMany(x=>x).ToList();
+                var teamIds = getAllTeamsId(matchesCollection);
+
+                _enduranceRecoveryService.RecoverEndurance(teamIds, _gameDate);
             }
         }
 

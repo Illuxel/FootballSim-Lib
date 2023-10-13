@@ -240,6 +240,24 @@ namespace DatabaseLayer.Repositories
                 }
             }
         }
+        
+        public DateTime GetNextMatchDate(string teamId)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+
+                var response = connection.QueryFirstOrDefault<DateTime>(
+                    @"SELECT Match.MatchDate
+                    FROM Match
+                    WHERE (Match.HomeTeamId = @teamId OR Match.GuestTeamId = @teamId) 
+                    AND Match.IsPlayed = 0
+                    ORDER BY Match.MatchDate ASC
+                    LIMIT 1", new { teamId });
+
+                return response;
+            }
+        }
     }
 }
 

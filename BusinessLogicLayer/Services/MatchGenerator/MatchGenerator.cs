@@ -355,7 +355,7 @@ namespace BusinessLogicLayer.Services
 
         private void updateEnduranceValuesForPlayers(List<Player> players)
         {
-            _playerRepository.UpdateEndurance(players);
+            _playerRepository.Update(players);
         }
 
         private void finalizeGeneration()
