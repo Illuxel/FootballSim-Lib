@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace BusinessLogicLayer.Services
 {
-    internal class MatchGenerator
+    public class MatchGenerator
     {
         private MatchResult _matchData;
         private TeamForMatchCreator _teamForMatchCreator;

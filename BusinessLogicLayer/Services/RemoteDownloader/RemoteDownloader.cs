@@ -31,7 +31,15 @@ namespace BusinessLogicLayer.Services
             }
             string fullUrl = _url + endpoint;
 
-            var fileName = endpoint + (isDb ? ".db" : ".dll");
+            var fileName = string.Empty;
+            if (isDb)
+            {
+                fileName = "FootbalLifeDB.db";
+            }
+            else
+            {
+                fileName = endpoint +  ".dll";
+            }
             string filePath = Path.Combine(path, fileName);
 
             if (!Directory.Exists(path))
