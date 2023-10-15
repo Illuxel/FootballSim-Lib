@@ -2,15 +2,15 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace BusinessLogicLayer.Services
+namespace RemoteAccessFiles
 {
     public class RemoteDownloader
     {
         private string _url = "http://54.160.153.24:5000/";
-        
+
         public async Task DatabaseDownload(string path = null)
         {
-            await download("database", true, path );
+            await download("database", true, path);
         }
 
         public async Task DbLayerDownload(string path = null)
@@ -38,7 +38,7 @@ namespace BusinessLogicLayer.Services
             }
             else
             {
-                fileName = endpoint +  ".dll";
+                fileName = endpoint + ".dll";
             }
             string filePath = Path.Combine(path, fileName);
 

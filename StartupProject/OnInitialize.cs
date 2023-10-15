@@ -1,4 +1,4 @@
-﻿using BusinessLogicLayer.Services;
+﻿using RemoteAccessFiles;
 using System.Threading.Tasks;
 
 namespace StartupProject
@@ -8,7 +8,7 @@ namespace StartupProject
         public static async Task Main(string[] args)
         {
             var dbDownloader = new RemoteDownloader();
-            /*await dbDownloader.DatabaseDownload();*/
+            await dbDownloader.DatabaseDownload();
             Program.Main(args);
         }
     }
