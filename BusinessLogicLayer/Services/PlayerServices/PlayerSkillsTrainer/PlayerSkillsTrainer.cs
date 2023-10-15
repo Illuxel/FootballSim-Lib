@@ -228,7 +228,8 @@ namespace BusinessLogicLayer.Services
         private DateTime defineDate(string teamId)
         {
             var matches = _matchRepository.Retrieve(teamId);
-            var lastPlayedTour = matches.Where(x => x.IsPlayed).Max(x => x.TourNumber);
+            var playedMatches = matches.Where(x => x.IsPlayed);
+            var lastPlayedTour = playedMatches.Count() == 0 ? 0 : playedMatches.Max(x => x.TourNumber);
             var stringDate = matches.FirstOrDefault(x => x.TourNumber == lastPlayedTour && !string.IsNullOrEmpty(x.MatchDate)).MatchDate;
 
             if (stringDate != null && DateTime.TryParse(stringDate, out DateTime parsedDate))

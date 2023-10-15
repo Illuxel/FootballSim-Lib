@@ -13,8 +13,9 @@ namespace BusinessLogicLayer.Scenario
         private JuniorGeneration _juniorGeneration;
         private PlayerSkillsUpdater _playerSkillsUpdater;
         private TeamRepository _teamRepository;
+        private GenerateGameActionsToNextMatchSettings _settings;
 
-        public GenerateGameActionsToNextMatch(SaveInfo saveInfo) 
+        public GenerateGameActionsToNextMatch(SaveInfo saveInfo, GenerateGameActionsToNextMatchSettings settings)
         {
             _saveInfo = saveInfo;
             _generateAllMatchesByTour = new GenerateAllMatchesByTour(DateTime.Parse(_saveInfo.PlayerData.GameDate), _saveInfo.PlayerData.ClubId);
@@ -22,6 +23,7 @@ namespace BusinessLogicLayer.Scenario
             _teamRepository = new TeamRepository();
             _juniorGeneration = new JuniorGeneration();
             _playerSkillsUpdater = new PlayerSkillsUpdater();
+            _settings = settings;
         }
 
         public void SimulateActions()
