@@ -9,8 +9,6 @@ namespace DatabaseLayer
         public string Name { get; set; }
         public string BaseColor { get; set; }
         public StrategyType Strategy { get; set; }
-
-        //ââåäåòüñÿ âèêëþ÷íî â ªâðî
         public double Budget { get; set; }
         public int IsNationalTeam { get; set; }
 

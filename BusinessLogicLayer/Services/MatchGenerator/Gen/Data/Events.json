@@ -289,21 +289,21 @@
           "HomePart": [
             { "YellowCard": 10 },
             { "RedCard": 6 },
-            { "PlayerInjury": 2 }
+            { "PlayerInjury": 0.5 }
           ]
         },
         {
           "Center": [
             { "YellowCard": 7 },
             { "RedCard": 3 },
-            { "PlayerInjury": 3 }
+            { "PlayerInjury": 0.5 }
           ]
         },
         {
           "GuestPart": [
             { "YellowCard": 7 },
             { "RedCard": 2 },
-            { "PlayerInjury": 2 }
+            { "PlayerInjury": 0.5 }
           ]
         }
       ]

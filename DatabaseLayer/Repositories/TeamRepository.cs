@@ -1,12 +1,11 @@
-﻿using System;
-using System.Data;
+﻿using System.Collections.Generic;
+using DatabaseLayer.DBSettings;
 using System.Data.SQLite;
-using System.Collections.Generic;
-
 using Dapper;
-
-using DatabaseLayer.Settings;
+using System;
 using DatabaseLayer.Enums;
+using System.Data;
+using DatabaseLayer.Model;
 
 namespace DatabaseLayer.Repositories
 {
@@ -14,7 +13,7 @@ namespace DatabaseLayer.Repositories
     {
         public List<Team> Retrieve()
         {
-            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 var sql = @"SELECT Team.*, League.*
                     FROM Team 
@@ -36,7 +35,7 @@ namespace DatabaseLayer.Repositories
         
         public List<Team> Retrieve(List<string> teamsId)
         {
-            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
                 var teams = connection.Query<Team>(@"SELECT * FROM TEAM WHERE ID IN @teamsId", new { teamsId }).AsList();
@@ -46,7 +45,7 @@ namespace DatabaseLayer.Repositories
 
         public List<Team> Retrieve(int leagueId)
         {
-            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 var sql = @"SELECT Team.*
                     FROM Team 
@@ -65,7 +64,7 @@ namespace DatabaseLayer.Repositories
             {
                 return null;
             }
-            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
                 var query = @"SELECT * FROM TEAM
@@ -81,7 +80,7 @@ namespace DatabaseLayer.Repositories
         }
         internal List<Player> RetrieveJuniors(string teamId)
         {
-            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 var sql = @"SELECT P.*, PR.*, PS.*
                     FROM PLAYER P
@@ -103,9 +102,26 @@ namespace DatabaseLayer.Repositories
                 return results.AsList();
             }
         }
+
+        public List<TeamSuccessHistory> GetHistory(string teamId)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                var response = connection.Query<TeamSuccessHistory>(@"SELECT NationalResultTable.TeamId, 
+                    NationalResultTable.Season,
+	                NationalResultTable.TotalPosition,
+	                T.LeagueId
+                    FROM NationalResultTable 
+                    JOIN Team T on T.Id = NationalResultTable.TeamId
+                    WHERE NationalResultTable.TeamId = @teamId", new { teamId }).AsList();
+                return response;
+            }
+        }
+
         internal bool Insert(Team team)
         {
-            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<Team>("SELECT * FROM Team WHERE ID = @teamId", new { teamId = team.Id });
@@ -127,7 +143,7 @@ namespace DatabaseLayer.Repositories
         public bool Update(Team team)
         {
 
-            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
                 var record = connection.QuerySingleOrDefault<Team>("SELECT * FROM Team WHERE ID = @teamId", new { teamId = team.Id });
@@ -159,7 +175,7 @@ namespace DatabaseLayer.Repositories
         }
         public bool Update(List<Team> teams)
         {
-            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
                 using (IDbTransaction transaction = connection.BeginTransaction())
@@ -195,7 +211,7 @@ namespace DatabaseLayer.Repositories
         }
         public bool Delete(string teamId)
         {
-            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
                 var rowsAffected = connection.Execute("DELETE FROM Team WHERE Id = @teamId",
@@ -207,7 +223,7 @@ namespace DatabaseLayer.Repositories
 
         public void UpdateRating(string teamId, double rating)
         {
-            using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
                 connection.Execute(
@@ -224,7 +240,7 @@ namespace DatabaseLayer.Repositories
         {
             if (ratingPosition != null)
             {
-                using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
+                using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
                 {
                     connection.Open();
                     using (IDbTransaction transaction = connection.BeginTransaction())
@@ -254,7 +270,7 @@ namespace DatabaseLayer.Repositories
             if(teamForMatch != null)
             {
                 var players = teamForMatch.AllPlayers;
-                using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
+                using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
                 {
                     connection.Open();
                     using (IDbTransaction transaction = connection.BeginTransaction())
@@ -285,7 +301,7 @@ namespace DatabaseLayer.Repositories
         {
             if (personId != null)
             {
-                using (var connection = new SQLiteConnection(DatabaseSettings.ConnectionString))
+                using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
                 {
                     connection.Open();
                     var rowsAffected = connection.Execute(

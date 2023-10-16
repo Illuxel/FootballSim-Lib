@@ -8,39 +8,40 @@ namespace BusinessLogicLayer.Services
     {
         private string _url = "http://54.160.153.24:5000/";
         
-        public async Task DatabaseDownload()
+        public async Task DatabaseDownload(string path = null)
         {
-            const string fileName = "FootbalLifeDB.db";
-            await download(fileName);
+            await download("database", true, path );
         }
 
-        public async Task DbLayerDownload()
+        public async Task DbLayerDownload(string path = null)
         {
-            const string fileName = "DatabaseLayer.dll";
-            await download(fileName);
+            await download("databaseLayer", false, path);
         }
 
-        public async Task BlLayerDownload()
+        public async Task BlLayerDownload(string path = null)
         {
-            const string fileName = "BusinessLogicLayer.dll";
-            await download(fileName);
+            await download("businessLogicLayer", false, path);
         }
 
-        private async Task download(string fileName)
+        private async Task download(string endpoint, bool isDb, string path = null)
         {
-            string url = defineUrl(fileName);
-
-            string directoryPath = definePath(fileName);
-            string filePath = Path.Combine(directoryPath, fileName);
-
-            if (!Directory.Exists(directoryPath))
+            if (string.IsNullOrEmpty(path))
             {
-                Directory.CreateDirectory(directoryPath);
+                path = Directory.GetCurrentDirectory();
+            }
+            string fullUrl = _url + endpoint;
+
+            var fileName = endpoint + (isDb ? ".db" : ".dll");
+            string filePath = Path.Combine(path, fileName);
+
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
             }
             using (HttpClient client = new HttpClient())
             {
                 //byte[] fileBytes = await client.GetByteArrayAsync(fileUrl);
-                HttpResponseMessage response = await client.GetAsync(url);
+                HttpResponseMessage response = await client.GetAsync(fullUrl);
 
                 // Перевірка статус коду відповіді
                 if (response.IsSuccessStatusCode)
@@ -54,37 +55,6 @@ namespace BusinessLogicLayer.Services
                         await fileStream.CopyToAsync(outputFileStream);
                     }
                 }
-            }
-
-        }
-
-        private string defineUrl(string fileName)
-        {
-            switch (fileName)
-            {
-                case "BusinessLogicLayer.dll":
-                    return _url + "businessLogicLayer";
-                case "DatabaseLayer.dll":
-                    return _url + "databaseLayer";
-                case "FootbalLifeDB.db":
-                    return _url + "database";
-                default:
-                    return null;
-            }
-        }
-
-        private string definePath(string fileName)
-        {
-            switch (fileName)
-            {
-                case "BusinessLogicLayer.dll":
-                    return Path.Combine(Directory.GetCurrentDirectory(), "BusinessLogicLayer");
-                case "DatabaseLayer.dll":
-                    return Path.Combine(Directory.GetCurrentDirectory(), "DatabaseLayer");
-                case "FootbalLifeDB.db":
-                    return Path.Combine(Directory.GetCurrentDirectory(), "Database");
-                default:
-                    return null;
             }
         }
     }
