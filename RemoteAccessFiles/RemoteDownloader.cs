@@ -10,17 +10,17 @@ namespace RemoteAccessFiles
 
         public async Task DatabaseDownload(string path = null)
         {
-            await download("database", true, path);
+            await download("Database", true, path);
         }
 
         public async Task DbLayerDownload(string path = null)
         {
-            await download("databaseLayer", false, path);
+            await download("DatabaseLayer", false, path);
         }
 
         public async Task BlLayerDownload(string path = null)
         {
-            await download("businessLogicLayer", false, path);
+            await download("BusinessLogicLayer", false, path);
         }
 
         private async Task download(string endpoint, bool isDb, string path = null)
