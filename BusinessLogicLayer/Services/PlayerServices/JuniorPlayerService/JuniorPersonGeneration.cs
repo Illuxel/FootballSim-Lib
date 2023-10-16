@@ -90,7 +90,7 @@ namespace BusinessLogicLayer.Services
         private int defineCountryIdByTeamId(string teamId)
         {
             var team = _teamRepository.Retrieve(teamId);
-            return team.League.GetCountryId();
+            return team.League.CountryId;
         }
 
         private void definePersonNameSurname(int countryId = -1,string? name = null, string? surname = null)
