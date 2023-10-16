@@ -23,6 +23,11 @@ namespace DatabaseLayer
             return gameDate.Year - Birthday.Year;
         }
 
+        public Person()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
+
         /*
         public Agent? Agent { get; internal set; }
         public Coach? Coach { get; internal set; }

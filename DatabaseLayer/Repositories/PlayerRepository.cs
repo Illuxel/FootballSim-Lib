@@ -136,12 +136,13 @@ namespace DatabaseLayer.Repositories
                     {
                         var rowsAffected = connection.Execute(
                         @"INSERT INTO Player (PersonID, PositionCode, ContractId, Speed, 
-                            Endurance, Strike, Physics, Defending, Passing, Dribbling, Rating,  
-                            IndexPosition, CurrentPlayerRating, PlayerPositionGroup, InjuredTo) 
-                        VALUES (@PersonID, @PositionCode, @ContractId, @Speed, 
-                            @Endurance, @Strike, @Physics, @Defending, @Passing, @Dribbling, Rating,
-                            @IndexPosition, @CurrentPlayerRating, @PlayerPositionGroup @InjuredTo)",
+                            Endurance, Strike, Physics, Defending, Passing, Dribbling, Rating, IndexPosition, 
+                            CurrentRating, PlayerPositionGroup, IsJunior, InjuredTo) 
+                        VALUES (@PersonID, @PositionCode, @ContractId, @Speed,
+                            @Endurance, @Strike, @Physics, @Defending, @Passing, @Dribbling, @Rating, @IndexPosition, 
+                            @Rating, @PlayerPositionGroup, @IsJunior, @InjuredTo)",
                         players, transaction);
+                        transaction.Commit();
                     }
                     catch (Exception ex)
                     {

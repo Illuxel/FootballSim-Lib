@@ -46,6 +46,11 @@ namespace DatabaseLayer
         }
 
         public double Salary { get; set; }
+
+        public Contract()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
     }
 
 }
