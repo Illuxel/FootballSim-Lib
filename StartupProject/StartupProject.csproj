@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BusinessLogicLayer\BusinessLogicLayer.csproj" />
     <ProjectReference Include="..\DatabaseLayer\DatabaseLayer.csproj" />
+    <ProjectReference Include="..\RemoteAccessFiles\RemoteAccessFiles.csproj" />
   </ItemGroup>
 
 </Project>

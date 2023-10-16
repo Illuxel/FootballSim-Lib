@@ -146,6 +146,7 @@ namespace DatabaseLayer.Repositories
                             @Endurance, @Strike, @Physics, @Defending, @Passing, @Dribbling, @Rating, @IndexPosition, 
                             @Rating, @PlayerPositionGroup, @IsJunior, @InjuredTo)",
                         players, transaction);
+                        transaction.Commit();
                     }
                     catch (Exception ex)
                     {

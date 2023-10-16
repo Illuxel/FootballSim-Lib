@@ -20,7 +20,6 @@ namespace BusinessLogicLayer.Scenario
         TeamRatingWinCoeffRepository _teamRatingWinCoeffRepository;
         TeamRepository _teamRepository;
 
-
         public GenerateAllMatchesByTour(DateTime gameDate, string ownerTeamId)
         {
             _gameDate = gameDate;

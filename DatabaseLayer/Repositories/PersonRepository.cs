@@ -57,7 +57,7 @@ namespace DatabaseLayer.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
-                person.Id = Guid.NewGuid().ToString();
+                
                
                 var rowsAffected = connection.Execute(
                     @"INSERT INTO Person (ID, Name, Surname, Birthday, CurrentRoleID, CountryID, Icon)
@@ -70,11 +70,6 @@ namespace DatabaseLayer.Repositories
 
         public bool Insert(List<Person> persons)
         {
-            foreach(var person in persons)
-            {
-                person.Id = Guid.NewGuid().ToString();
-            }
-
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
@@ -86,6 +81,7 @@ namespace DatabaseLayer.Repositories
                         @"INSERT INTO Person (ID, Name, Surname, Birthday, CurrentRoleId, CountryId, Icon)
                             VALUES (@ID, @Name, @Surname, @Birthday, @CurrentRoleId, @CountryId, @Icon)",
                         persons, transaction);
+                        transaction.Commit();
                         return rowsAffected == 1;
                     }
                     catch (Exception ex)

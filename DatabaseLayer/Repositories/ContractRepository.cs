@@ -100,7 +100,6 @@ namespace DatabaseLayer.Repositories
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 connection.Open();
-                contract.Id = Guid.NewGuid().ToString();
                 var record = connection.QuerySingleOrDefault<Agent>("SELECT * FROM contract WHERE ID = @id", new { id = contract.Id });
                 bool result = false;
                 if (record == null)
@@ -112,6 +111,35 @@ namespace DatabaseLayer.Repositories
                     result = rowsAffected == 1;
                 }
                 return result;
+            }
+        }
+
+        public bool Insert(List<Contract> contracts)
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        connection.Execute(
+                        @"INSERT INTO Contract (ID, SeasonFrom, SeasonTo, DateFrom, DateTo, TeamId, PersonId, Salary) 
+                            VALUES (@Id, @SeasonFrom, @SeasonTo, @DateFromString, @DateToString, @TeamId, @PersonId, @Salary)",
+                        contracts, transaction);
+                        transaction.Commit();
+                        foreach (var contract in contracts)
+                        {
+                            Console.WriteLine(contract.Id);
+                        }
+                        return true;
+                    }
+                    catch(Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception(ex.Message);
+                    }
+                }
             }
         }
 
