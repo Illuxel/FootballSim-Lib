@@ -61,7 +61,7 @@ namespace BusinessLogicLayer.Services
             var priceWithAge = basePrice * ageCoefficient;
             var finalPrice = (int)(priceWithAge + (priceWithAge * randomCorrelation));
 
-            return finalPrice != 0 ? finalPrice : basePrice;
+            return finalPrice <= 0 ? finalPrice : basePrice;
         }
     }
 }
