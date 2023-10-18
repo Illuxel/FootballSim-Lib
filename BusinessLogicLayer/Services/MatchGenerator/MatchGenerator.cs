@@ -52,6 +52,9 @@ namespace BusinessLogicLayer.Services
         public delegate void GoalHandler(Goal goal);
         public event GoalHandler? OnMatchGoal;
 
+        public delegate void TimeOutHandler();
+        public event TimeOutHandler? OnTimeOut;
+
         public delegate void TeamChangedHandler();
         public event TeamChangedHandler? OnMatchTeamChanged;
 
@@ -204,7 +207,7 @@ namespace BusinessLogicLayer.Services
                         currentEvent.HomeTeam = _matchData.GuestTeam;
                         currentEvent.GuestTeam = _matchData.HomeTeam;
 
-                        OnMatchPaused?.Invoke();
+                        OnTimeOut?.Invoke();
                     }
 
                     if (currentEvent.IsBallIntercepted)
