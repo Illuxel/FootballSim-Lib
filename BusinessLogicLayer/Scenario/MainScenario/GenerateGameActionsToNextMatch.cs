@@ -1,4 +1,6 @@
-﻿using DatabaseLayer.Enums;
+﻿using BusinessLogicLayer.Services;
+
+using DatabaseLayer.Enums;
 using DatabaseLayer.Repositories;
 using DatabaseLayer.Services;
 using System;
@@ -13,6 +15,7 @@ namespace BusinessLogicLayer.Scenario
         private JuniorProcessing _juniorProcessing;
         private PlayerSkillsUpdater _playerSkillsUpdater;
         private TeamRepository _teamRepository;
+        private SponsorContractRequestor _sponsorContractRequestor;
         private GenerateGameActionsToNextMatchSettings _settings;
 
         public GenerateGameActionsToNextMatch(SaveInfo saveInfo, GenerateGameActionsToNextMatchSettings settings)
@@ -23,11 +26,14 @@ namespace BusinessLogicLayer.Scenario
             _teamRepository = new TeamRepository();
             _juniorProcessing = new JuniorProcessing();
             _playerSkillsUpdater = new PlayerSkillsUpdater();
+            _sponsorContractRequestor = new SponsorContractRequestor();
             _settings = settings;
         }
 
         public void SimulateActions()
         {
+            updateSeasonContracts();
+
             //Define count of available scout requests
             resetCountOfAvailableScoutRequests();
 
@@ -42,8 +48,24 @@ namespace BusinessLogicLayer.Scenario
                 //TODO: call another scenario using date interval
             }*/
 
-
             //Increase gameDate and update real date
+        }
+
+        private void updateSeasonContracts()
+        {
+            var gameDate = DateTime.Parse(_saveInfo.PlayerData.GameDate);
+            new RatingActualizer().Actualize(gameDate);
+
+            foreach (var team in _teamRepository.Retrieve())
+            {
+                var contracts = _sponsorContractRequestor.CreateContractRequests(team.Id, gameDate.Year);
+
+                foreach (var contract in contracts)
+                {
+                    team.Budget += contract.Value;
+                    _sponsorContractRequestor.ClaimContract(team.Id, contract);
+                }
+            }
         }
 
         private void resetCountOfAvailableScoutRequests()
