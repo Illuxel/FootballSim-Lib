@@ -64,6 +64,10 @@ namespace DatabaseLayer.Services
             DatabaseManager.SavePathInfo = Path.Combine(LoadGameManagerSettings.BasePath, "SavesInfo.json");
         }
 
+        /// <summary>
+        /// Before using set LoadGameManagerSettings
+        /// </summary>
+        /// <returns></returns>
         public static LoadGameManager GetInstance()
         {
             if (instance == null)
