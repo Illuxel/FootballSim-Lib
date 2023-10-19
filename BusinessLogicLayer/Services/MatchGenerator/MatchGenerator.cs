@@ -64,6 +64,9 @@ namespace BusinessLogicLayer.Services
         public delegate void MatchFinishedHandler(MatchResult result);
         public event MatchFinishedHandler? OnMatchFinished;
 
+        public delegate void InjuredPlayerHandler(Player player);
+        public event InjuredPlayerHandler? OnPlayerInjured;
+
         private int _defaultSparePlayersCount = 7;
         public MatchGenerator(string matchId)
         {
@@ -131,6 +134,14 @@ namespace BusinessLogicLayer.Services
             var firstTime = true;
             var strategyEventName = "BallControl";
 
+            foreach (var player in MatchData.HomeTeam.MainPlayers.Values)
+            {
+                _playedPlayers.Add(player.CurrentPlayer.PersonID, player.CurrentPlayer);
+            }
+            foreach (var player in MatchData.GuestTeam.MainPlayers.Values)
+            {
+                _playedPlayers.Add(player.CurrentPlayer.PersonID, player.CurrentPlayer);
+            }
             while (!_isMatcFinished)
             {
                 var currentEvent = MatchEventFactory.CreateStrategyEvent(strategyEventName, HomeTeamStrategy, EventLocation.Center) as MatchEventProcess;
@@ -198,7 +209,18 @@ namespace BusinessLogicLayer.Services
                     currentMinute += currentEvent.Duration;
                     if(currentEvent.InjuredPlayer.HasValue || currentEvent.RedCardPlayer.HasValue)
                     {
-                        OnMatchPaused?.Invoke();
+                        if(currentEvent.InjuredPlayer.HasValue)
+                        {
+                            if(_playedPlayers.TryGetValue(currentEvent.InjuredPlayer.ToString(), out var currentPlayer))
+                            {
+                                _playerInjuryFinder.SetInjury(currentPlayer, _matchDate);
+                                OnPlayerInjured?.Invoke(currentPlayer);
+                            }
+                            else
+                            {
+                                OnMatchPaused?.Invoke();
+                            }
+                        }
                     }
                     if (currentMinute >= 45 && firstTime)
                     {
@@ -239,7 +261,9 @@ namespace BusinessLogicLayer.Services
             _playerInMatchRepository.Insert(playersInMatch);
 
             var players = _playedPlayers.Values.ToList();
-            updateEnduranceValuesForPlayers(players);
+            players.AddRange(MatchData.GuestTeam.SparedPlayers);
+            players.AddRange(MatchData.HomeTeam.SparedPlayers);
+            _playerRepository.Update(players);
 
             //finalizeGeneration();
         }
@@ -324,7 +348,7 @@ namespace BusinessLogicLayer.Services
 
         private void updatePlayerEndurance(Player currentPlayer)
         {
-            if (_playedPlayers.TryGetValue(currentPlayer.ContractID, out var playerObject))
+            if (_playedPlayers.TryGetValue(currentPlayer.PersonID, out var playerObject))
             {
                 if(!_playerInjuryFinder.IsAlreadyInjuried(playerObject))
                 {
@@ -336,9 +360,9 @@ namespace BusinessLogicLayer.Services
             {
                 if(!_playerInjuryFinder.IsAlreadyInjuried(currentPlayer))
                 {
-                    _playedPlayers.Add(currentPlayer.ContractID, currentPlayer);
-                    var enduranceCost = defineEnduranceCost(_playedPlayers[currentPlayer.ContractID]);
-                    _playedPlayers[currentPlayer.ContractID].Endurance -= enduranceCost;
+                    _playedPlayers.Add(currentPlayer.PersonID, currentPlayer);
+                    var enduranceCost = defineEnduranceCost(_playedPlayers[currentPlayer.PersonID]);
+                    _playedPlayers[currentPlayer.PersonID].Endurance -= enduranceCost;
                 }
             }
         }
@@ -353,12 +377,8 @@ namespace BusinessLogicLayer.Services
             if (_playerInjuryFinder.IsInjuried(currentPlayer))
             {
                 _playerInjuryFinder.SetInjury(currentPlayer, _matchDate);
+                OnPlayerInjured?.Invoke(currentPlayer);
             }
-        }
-
-        private void updateEnduranceValuesForPlayers(List<Player> players)
-        {
-            _playerRepository.UpdateEndurance(players);
         }
 
         private void finalizeGeneration()
