@@ -258,6 +258,35 @@ namespace DatabaseLayer.Repositories
                 return response;
             }
         }
+
+        public Dictionary<string, DateTime> GetNextMatchDate()
+        {
+            using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
+            {
+                connection.Open();
+
+                var response = connection.Query(
+                    @"SELECT Team.ID AS TeamID, MIN(Match.MatchDate) AS MatchDate
+                    FROM Match
+                    JOIN Team ON Match.HomeTeamId = Team.ID OR Match.GuestTeamId = Team.ID
+                    WHERE Match.IsPlayed = 0
+                    GROUP BY TeamID
+                    ORDER BY MatchDate ASC");
+
+                var result = new Dictionary<string, DateTime>();
+                foreach (var item in response)
+                {
+                    DateTime date;
+                    if(DateTime.TryParse(item.MatchDate, out date))
+                    {
+                        result.Add(item.TeamID, date);
+                    }
+                }
+
+                return result;
+            }
+        }
+
     }
 }
 
