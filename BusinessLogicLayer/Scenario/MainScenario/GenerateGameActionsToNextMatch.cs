@@ -1,7 +1,10 @@
-﻿using DatabaseLayer.Enums;
+﻿using System;
+
+using BusinessLogicLayer.Services;
+
+using DatabaseLayer.Enums;
 using DatabaseLayer.Repositories;
 using DatabaseLayer.Services;
-using System;
 
 namespace BusinessLogicLayer.Scenario
 {
@@ -13,11 +16,13 @@ namespace BusinessLogicLayer.Scenario
         private JuniorProcessing _juniorProcessing;
         private PlayerSkillsUpdater _playerSkillsUpdater;
         private TeamRepository _teamRepository;
+        private BudgetManager _budgetManager;
         private GenerateGameActionsToNextMatchSettings _settings;
 
         public GenerateGameActionsToNextMatch(SaveInfo saveInfo, GenerateGameActionsToNextMatchSettings settings)
         {
             _saveInfo = saveInfo;
+            _budgetManager = new BudgetManager();
             _generateAllMatchesByTour = new GenerateAllMatchesByTour(DateTime.Parse(_saveInfo.PlayerData.GameDate), _saveInfo.PlayerData.ClubId);
 
             _teamRepository = new TeamRepository();
@@ -34,6 +39,9 @@ namespace BusinessLogicLayer.Scenario
             //Generate all matches by tour
             _generateAllMatchesByTour.Generate();
             _playerSkillsUpdater.StartTraining(_saveInfo.PlayerData.ClubId, _saveInfo.PlayerData.SelectedTrainingMode);
+
+            var gameDate = DateTime.Parse(_saveInfo.PlayerData.GameDate);
+            _budgetManager.PaySalary(gameDate);
 
             /*var teams = _teamRepository.Retrieve();
             //using scenario for teams
