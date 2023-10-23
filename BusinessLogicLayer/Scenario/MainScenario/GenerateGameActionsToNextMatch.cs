@@ -18,11 +18,12 @@ namespace BusinessLogicLayer.Scenario
         private SponsorContractRequestor _sponsorContractRequestor;
         private GenerateGameActionsToNextMatchSettings _settings;
 
+        private static DateTime _firstDate;
+
         public GenerateGameActionsToNextMatch(SaveInfo saveInfo, GenerateGameActionsToNextMatchSettings settings)
         {
             _saveInfo = saveInfo;
             _generateAllMatchesByTour = new GenerateAllMatchesByTour(DateTime.Parse(_saveInfo.PlayerData.GameDate), _saveInfo.PlayerData.ClubId);
-
             _teamRepository = new TeamRepository();
             _juniorProcessing = new JuniorProcessing();
             _playerSkillsUpdater = new PlayerSkillsUpdater();
@@ -54,16 +55,29 @@ namespace BusinessLogicLayer.Scenario
         private void updateSeasonContracts()
         {
             var gameDate = DateTime.Parse(_saveInfo.PlayerData.GameDate);
-            new RatingActualizer().Actualize(gameDate);
 
-            foreach (var team in _teamRepository.Retrieve())
+            if (_firstDate == DateTime.MinValue)
             {
-                var contracts = _sponsorContractRequestor.CreateContractRequests(team.Id, gameDate.Year);
+                _firstDate = gameDate;
+            }
 
-                foreach (var contract in contracts)
+            var seasonCreator = new SeasonValueCreator();
+            var presentSeason = seasonCreator.GetSeason(gameDate);
+            var fisrtSeason = seasonCreator.GetSeason(_firstDate);
+
+            if (presentSeason == fisrtSeason)
+            {
+                new RatingActualizer().Actualize(gameDate);
+
+                foreach (var team in _teamRepository.Retrieve())
                 {
-                    team.Budget += contract.Value;
-                    _sponsorContractRequestor.ClaimContract(team.Id, contract);
+                    var contracts = _sponsorContractRequestor.CreateContractRequests(team.Id, gameDate.Year);
+
+                    foreach (var contract in contracts)
+                    {
+                        team.Budget += contract.Value;
+                        _sponsorContractRequestor.ClaimContract(team.Id, contract);
+                    }
                 }
             }
         }
