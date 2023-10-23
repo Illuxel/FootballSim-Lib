@@ -229,6 +229,7 @@ namespace DatabaseLayer.Repositories
             }
         }
         
+
         public bool Delete(string personId)
         {
             using (var connection = new SQLiteConnection(DatabaseManager.ConnectionString))
