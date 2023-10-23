@@ -27,7 +27,7 @@ namespace DatabaseLayer.Services
 
         internal string GetSavePath()
         {
-            return Path.Combine(Directory.GetCurrentDirectory(), LoadGameManager.SavesFolderName, SaveName);
+            return Path.Combine(LoadGameManagerSettings.BasePath, LoadGameManager.SavesFolderName, SaveName);
         }
         public SaveInfo(PlayerGameData data, string saveName)
         {
@@ -38,36 +38,45 @@ namespace DatabaseLayer.Services
         internal SaveInfo() { }
     }
 
+    internal static class LoadGameManagerSettings
+    {
+        public static string BasePath { get; internal set; }
+    }
+
     public class LoadGameManager
     {
         internal static string SavesFolderName = "gameSaves";
         public static LoadGameManager instance;
         private PersonRepository _personRepository;
 
-        private LoadGameManager(string pathToSave)
+        private LoadGameManager()
         {
             _personRepository = new PersonRepository();
 
-            if (!pathToSave.Contains(SavesFolderName))
+            if (!LoadGameManagerSettings.BasePath.Contains(SavesFolderName))
             {
-                DatabaseManager.PathToSave = Path.Combine(pathToSave, SavesFolderName);
+                DatabaseManager.PathToSave = Path.Combine(LoadGameManagerSettings.BasePath, SavesFolderName);
             }
             else
             {
-                DatabaseManager.PathToSave = pathToSave;
+                DatabaseManager.PathToSave = LoadGameManagerSettings.BasePath;
             }
-            DatabaseManager.SavePathInfo = Path.Combine(pathToSave, "SavesInfo.json");
+            DatabaseManager.SavePathInfo = Path.Combine(LoadGameManagerSettings.BasePath, "SavesInfo.json");
         }
 
-        public static LoadGameManager GetInstance(string pathToSave = "")
+        /// <summary>
+        /// Before using set LoadGameManagerSettings
+        /// </summary>
+        /// <returns></returns>
+        public static LoadGameManager GetInstance()
         {
             if (instance == null)
             {
-                if(string.IsNullOrEmpty(pathToSave))
+                if(string.IsNullOrEmpty(LoadGameManagerSettings.BasePath))
                 {
-                    pathToSave = Directory.GetCurrentDirectory();
+                    LoadGameManagerSettings.BasePath = Directory.GetCurrentDirectory();
                 }
-                instance = new LoadGameManager(pathToSave);
+                instance = new LoadGameManager();
 
             }
             return instance;

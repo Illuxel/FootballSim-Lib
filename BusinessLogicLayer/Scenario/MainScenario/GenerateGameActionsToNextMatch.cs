@@ -1,9 +1,9 @@
-﻿using BusinessLogicLayer.Services;
-
-using DatabaseLayer.Enums;
+﻿using DatabaseLayer.Enums;
 using DatabaseLayer.Repositories;
 using DatabaseLayer.Services;
+using BusinessLogicLayer.Services;
 using System;
+using System.Globalization;
 
 namespace BusinessLogicLayer.Scenario
 {
@@ -11,24 +11,33 @@ namespace BusinessLogicLayer.Scenario
     public class GenerateGameActionsToNextMatch
     {
         private SaveInfo _saveInfo;
+        private DateTime _gameDate;
+        private string _season;
         private GenerateAllMatchesByTour _generateAllMatchesByTour;
         private JuniorProcessing _juniorProcessing;
         private PlayerSkillsUpdater _playerSkillsUpdater;
         private TeamRepository _teamRepository;
         private SponsorContractRequestor _sponsorContractRequestor;
         private GenerateGameActionsToNextMatchSettings _settings;
+        private TeamPositionCalculator _teamPositionCalculator;
+        private SeasonValueCreator _seasonValueCreator;
 
         private static DateTime _firstSeason;
 
         public GenerateGameActionsToNextMatch(SaveInfo saveInfo, GenerateGameActionsToNextMatchSettings settings)
         {
-            _saveInfo = saveInfo;
-            _generateAllMatchesByTour = new GenerateAllMatchesByTour(DateTime.Parse(_saveInfo.PlayerData.GameDate), _saveInfo.PlayerData.ClubId);
             _teamRepository = new TeamRepository();
             _juniorProcessing = new JuniorProcessing();
             _playerSkillsUpdater = new PlayerSkillsUpdater();
             _sponsorContractRequestor = new SponsorContractRequestor();
             _settings = settings;
+            _teamPositionCalculator = new TeamPositionCalculator();
+            _seasonValueCreator = new SeasonValueCreator();
+
+            _saveInfo = saveInfo;
+            _gameDate = defineGameDate(saveInfo);
+            _season = _seasonValueCreator.GetSeason(_gameDate);
+            _generateAllMatchesByTour = new GenerateAllMatchesByTour(_gameDate, _saveInfo.PlayerData.ClubId);
         }
 
         public void SimulateActions()
@@ -40,7 +49,16 @@ namespace BusinessLogicLayer.Scenario
 
             //Generate all matches by tour
             _generateAllMatchesByTour.Generate();
+
+            _teamPositionCalculator.CalculatePosition(_season);
+
             _playerSkillsUpdater.StartTraining(_saveInfo.PlayerData.ClubId, _saveInfo.PlayerData.SelectedTrainingMode);
+
+            
+            /* _gameDate.AddDays(7);
+            _saveInfo.PlayerData.GameDate = _gameDate.ToString("yyyy-MM-dd");
+            LoadGameManager.GetInstance().SaveGame(_saveInfo);*/
+
 
             /*var teams = _teamRepository.Retrieve();
             //using scenario for teams
@@ -94,6 +112,19 @@ namespace BusinessLogicLayer.Scenario
             {
                 _saveInfo.PlayerData.CountAvailableScoutRequests = 3;
             }
+        }
+
+        private DateTime defineGameDate(SaveInfo save)
+        {
+            var format = "yyyy-MM-dd";
+            DateTime dateTime;
+
+            if (DateTime.TryParseExact(save.PlayerData.GameDate, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime))
+            {
+                return dateTime;
+            }
+
+            return DateTime.MinValue;
         }
     }
 }
