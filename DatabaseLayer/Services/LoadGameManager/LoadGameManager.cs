@@ -38,9 +38,9 @@ namespace DatabaseLayer.Services
         internal SaveInfo() { }
     }
 
-    internal static class LoadGameManagerSettings
+    public static class LoadGameManagerSettings
     {
-        public static string BasePath { get; internal set; }
+        public static string BasePath { get; set; }
     }
 
     public class LoadGameManager
