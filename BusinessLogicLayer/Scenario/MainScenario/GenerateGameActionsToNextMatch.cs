@@ -23,6 +23,8 @@ namespace BusinessLogicLayer.Scenario
         private TeamPositionCalculator _teamPositionCalculator;
         private SeasonValueCreator _seasonValueCreator;
 
+        private static DateTime _firstSeason, _previousDate;
+
         public GenerateGameActionsToNextMatch(SaveInfo saveInfo, GenerateGameActionsToNextMatchSettings settings)
         {
             _budgetManager = new BudgetManager();
@@ -52,8 +54,19 @@ namespace BusinessLogicLayer.Scenario
             _playerSkillsUpdater.StartTraining(_saveInfo.PlayerData.ClubId, _saveInfo.PlayerData.SelectedTrainingMode);
             
             var gameDate = DateTime.Parse(_saveInfo.PlayerData.GameDate);
-            _budgetManager.PaySalary(gameDate);
-            
+
+            if (_previousDate == DateTime.MinValue)
+            {
+                _previousDate = gameDate;
+            }
+
+            var monthDiff = gameDate.Month - _previousDate.Month;
+
+            if (monthDiff > 0)
+            { 
+                _budgetManager.PaySalary(gameDate);
+            }
+
             /* _gameDate.AddDays(7);
             _saveInfo.PlayerData.GameDate = _gameDate.ToString("yyyy-MM-dd");
             LoadGameManager.GetInstance().SaveGame(_saveInfo);*/
