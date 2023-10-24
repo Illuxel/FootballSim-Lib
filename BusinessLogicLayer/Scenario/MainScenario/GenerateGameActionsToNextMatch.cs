@@ -83,7 +83,7 @@ namespace BusinessLogicLayer.Scenario
             var presentSeason = seasonCreator.GetSeason(gameDate);
             var fisrtSeason = seasonCreator.GetSeason(_firstSeason);
 
-            if (presentSeason == fisrtSeason)
+            if (presentSeason != fisrtSeason)
             {
                 return;
             }
