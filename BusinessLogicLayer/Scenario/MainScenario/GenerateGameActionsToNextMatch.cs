@@ -74,18 +74,18 @@ namespace BusinessLogicLayer.Scenario
         {
             var gameDate = DateTime.Parse(_saveInfo.PlayerData.GameDate);
 
-            if (_firstSeason == DateTime.MinValue)
-            {
-                _firstSeason = gameDate;
-            }
-
             var seasonCreator = new SeasonValueCreator();
             var presentSeason = seasonCreator.GetSeason(gameDate);
             var fisrtSeason = seasonCreator.GetSeason(_firstSeason);
 
-            if (presentSeason != fisrtSeason)
+            if (presentSeason == fisrtSeason)
             {
                 return;
+            }
+
+            if (_firstSeason == DateTime.MinValue)
+            {
+                _firstSeason = gameDate;
             }
 
             new RatingActualizer().Actualize(gameDate);
