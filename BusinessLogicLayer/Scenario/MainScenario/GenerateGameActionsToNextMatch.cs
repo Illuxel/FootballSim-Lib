@@ -76,9 +76,9 @@ namespace BusinessLogicLayer.Scenario
 
             var seasonCreator = new SeasonValueCreator();
             var presentSeason = seasonCreator.GetSeason(gameDate);
-            var fisrtSeason = seasonCreator.GetSeason(_firstSeason);
+            var firstSeason = seasonCreator.GetSeason(_firstSeason);
 
-            if (presentSeason == fisrtSeason)
+            if (presentSeason == firstSeason)
             {
                 return;
             }
@@ -100,6 +100,8 @@ namespace BusinessLogicLayer.Scenario
                     _sponsorContractRequestor.ClaimContract(team.Id, contract);
                 }
             }
+
+            _firstSeason = DateTime.Parse(presentSeason);
         }
 
         private void resetCountOfAvailableScoutRequests()
