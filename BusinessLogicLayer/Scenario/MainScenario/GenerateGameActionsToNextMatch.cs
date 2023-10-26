@@ -65,6 +65,7 @@ namespace BusinessLogicLayer.Scenario
             if (monthDiff > 0)
             { 
                 _budgetManager.PaySalary(gameDate);
+                _previousDate = gameDate;
             }
 
             /* _gameDate.AddDays(7);
