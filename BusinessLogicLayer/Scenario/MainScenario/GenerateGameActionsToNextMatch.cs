@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Globalization;
 using BusinessLogicLayer.Services;
 
 using DatabaseLayer.Enums;
@@ -24,7 +24,7 @@ namespace BusinessLogicLayer.Scenario
         private TeamPositionCalculator _teamPositionCalculator;
         private SeasonValueCreator _seasonValueCreator;
 
-        private static DateTime _firstSeason, _previousDate;
+        private static DateTime _previousDate;
 
         public GenerateGameActionsToNextMatch(SaveInfo saveInfo, GenerateGameActionsToNextMatchSettings settings)
         {
@@ -86,27 +86,18 @@ namespace BusinessLogicLayer.Scenario
 
         private void updateSeasonContracts()
         {
-            var gameDate = DateTime.Parse(_saveInfo.PlayerData.GameDate);
+            var seasonEndDate = _seasonValueCreator.GetSeasonEndDate(_season);
 
-            var seasonCreator = new SeasonValueCreator();
-            var presentSeason = seasonCreator.GetSeason(gameDate);
-            var firstSeason = seasonCreator.GetSeason(_firstSeason);
-
-            if (presentSeason == firstSeason)
+            if (seasonEndDate < _gameDate)
             {
                 return;
             }
 
-            if (_firstSeason == DateTime.MinValue)
-            {
-                _firstSeason = gameDate;
-            }
-
-            new RatingActualizer().Actualize(gameDate);
+            new RatingActualizer().Actualize(_gameDate);
 
             foreach (var team in _teamRepository.Retrieve())
             {
-                var contracts = _sponsorContractRequestor.CreateContractRequests(team.Id, gameDate.Year);
+                var contracts = _sponsorContractRequestor.CreateContractRequests(team.Id, _gameDate.Year);
 
                 foreach (var contract in contracts)
                 {
@@ -115,7 +106,7 @@ namespace BusinessLogicLayer.Scenario
                 }
             }
 
-            _firstSeason = DateTime.Parse(presentSeason);
+            _season = _seasonValueCreator.GetSeason(_gameDate);
         }
 
         private void resetCountOfAvailableScoutRequests()
