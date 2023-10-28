@@ -1,9 +1,10 @@
-﻿using DatabaseLayer.Enums;
+﻿using System;
+
+using BusinessLogicLayer.Services;
+
+using DatabaseLayer.Enums;
 using DatabaseLayer.Repositories;
 using DatabaseLayer.Services;
-using BusinessLogicLayer.Services;
-using System;
-using System.Globalization;
 
 namespace BusinessLogicLayer.Scenario
 {
@@ -18,14 +19,16 @@ namespace BusinessLogicLayer.Scenario
         private PlayerSkillsUpdater _playerSkillsUpdater;
         private TeamRepository _teamRepository;
         private SponsorContractRequestor _sponsorContractRequestor;
+        private BudgetManager _budgetManager;
         private GenerateGameActionsToNextMatchSettings _settings;
         private TeamPositionCalculator _teamPositionCalculator;
         private SeasonValueCreator _seasonValueCreator;
 
-        private static DateTime _firstSeason;
+        private static DateTime _firstSeason, _previousDate;
 
         public GenerateGameActionsToNextMatch(SaveInfo saveInfo, GenerateGameActionsToNextMatchSettings settings)
         {
+            _budgetManager = new BudgetManager();
             _teamRepository = new TeamRepository();
             _juniorProcessing = new JuniorProcessing();
             _playerSkillsUpdater = new PlayerSkillsUpdater();
@@ -53,12 +56,25 @@ namespace BusinessLogicLayer.Scenario
             _teamPositionCalculator.CalculatePosition(_season);
 
             _playerSkillsUpdater.StartTraining(_saveInfo.PlayerData.ClubId, _saveInfo.PlayerData.SelectedTrainingMode);
-
             
+            var gameDate = DateTime.Parse(_saveInfo.PlayerData.GameDate);
+
+            if (_previousDate == DateTime.MinValue)
+            {
+                _previousDate = gameDate;
+            }
+
+            var monthDiff = gameDate.Month - _previousDate.Month;
+
+            if (monthDiff > 0)
+            { 
+                _budgetManager.PaySalary(gameDate);
+                _previousDate = gameDate;
+            }
+
             /* _gameDate.AddDays(7);
             _saveInfo.PlayerData.GameDate = _gameDate.ToString("yyyy-MM-dd");
             LoadGameManager.GetInstance().SaveGame(_saveInfo);*/
-
 
             /*var teams = _teamRepository.Retrieve();
             //using scenario for teams
