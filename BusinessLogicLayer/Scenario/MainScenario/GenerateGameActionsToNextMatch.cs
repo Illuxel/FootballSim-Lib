@@ -57,19 +57,17 @@ namespace BusinessLogicLayer.Scenario
 
             _playerSkillsUpdater.StartTraining(_saveInfo.PlayerData.ClubId, _saveInfo.PlayerData.SelectedTrainingMode);
             
-            var gameDate = DateTime.Parse(_saveInfo.PlayerData.GameDate);
-
             if (_previousDate == DateTime.MinValue)
             {
-                _previousDate = gameDate;
+                _previousDate = _gameDate;
             }
 
-            var monthDiff = gameDate.Month - _previousDate.Month;
+            var monthDiff = _gameDate.Month - _previousDate.Month;
 
             if (monthDiff > 0)
             { 
-                _budgetManager.PaySalary(gameDate);
-                _previousDate = gameDate;
+                _budgetManager.PaySalary(_gameDate);
+                _previousDate = _gameDate;
             }
 
             /* _gameDate.AddDays(7);
