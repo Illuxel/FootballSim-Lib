@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Globalization;
 using BusinessLogicLayer.Services;
 
 using DatabaseLayer.Enums;
@@ -18,12 +18,13 @@ namespace BusinessLogicLayer.Scenario
         private JuniorProcessing _juniorProcessing;
         private PlayerSkillsUpdater _playerSkillsUpdater;
         private TeamRepository _teamRepository;
+        private SponsorContractRequestor _sponsorContractRequestor;
         private BudgetManager _budgetManager;
         private GenerateGameActionsToNextMatchSettings _settings;
         private TeamPositionCalculator _teamPositionCalculator;
         private SeasonValueCreator _seasonValueCreator;
 
-        private static DateTime _firstSeason, _previousDate;
+        private static DateTime _previousDate;
 
         public GenerateGameActionsToNextMatch(SaveInfo saveInfo, GenerateGameActionsToNextMatchSettings settings)
         {
@@ -31,6 +32,7 @@ namespace BusinessLogicLayer.Scenario
             _teamRepository = new TeamRepository();
             _juniorProcessing = new JuniorProcessing();
             _playerSkillsUpdater = new PlayerSkillsUpdater();
+            _sponsorContractRequestor = new SponsorContractRequestor();
             _settings = settings;
             _teamPositionCalculator = new TeamPositionCalculator();
             _seasonValueCreator = new SeasonValueCreator();
@@ -43,6 +45,8 @@ namespace BusinessLogicLayer.Scenario
 
         public void SimulateActions()
         {
+            updateSeasonContracts();
+
             //Define count of available scout requests
             resetCountOfAvailableScoutRequests();
 
@@ -53,19 +57,17 @@ namespace BusinessLogicLayer.Scenario
 
             _playerSkillsUpdater.StartTraining(_saveInfo.PlayerData.ClubId, _saveInfo.PlayerData.SelectedTrainingMode);
             
-            var gameDate = DateTime.Parse(_saveInfo.PlayerData.GameDate);
-
             if (_previousDate == DateTime.MinValue)
             {
-                _previousDate = gameDate;
+                _previousDate = _gameDate;
             }
 
-            var monthDiff = gameDate.Month - _previousDate.Month;
+            var monthDiff = _gameDate.Month - _previousDate.Month;
 
             if (monthDiff > 0)
             { 
-                _budgetManager.PaySalary(gameDate);
-                _previousDate = gameDate;
+                _budgetManager.PaySalary(_gameDate);
+                _previousDate = _gameDate;
             }
 
             /* _gameDate.AddDays(7);
@@ -79,8 +81,32 @@ namespace BusinessLogicLayer.Scenario
                 //TODO: call another scenario using date interval
             }*/
 
-
             //Increase gameDate and update real date
+        }
+
+        private void updateSeasonContracts()
+        {
+            var seasonStartDate = _seasonValueCreator.GetSeasonStartDate(_season);
+
+            if (seasonStartDate > _gameDate)
+            {
+                return;
+            }
+
+            new RatingActualizer().Actualize(_gameDate);
+
+            foreach (var team in _teamRepository.Retrieve())
+            {
+                var contracts = _sponsorContractRequestor.CreateContractRequests(team.Id, _gameDate.Year);
+
+                foreach (var contract in contracts)
+                {
+                    team.Budget += contract.Value;
+                    _sponsorContractRequestor.ClaimContract(team.Id, contract);
+                }
+            }
+
+            _season = _seasonValueCreator.GetSeason(_gameDate);
         }
 
         private void resetCountOfAvailableScoutRequests()
