@@ -86,9 +86,9 @@ namespace BusinessLogicLayer.Scenario
 
         private void updateSeasonContracts()
         {
-            var seasonEndDate = _seasonValueCreator.GetSeasonEndDate(_season);
+            var seasonStartDate = _seasonValueCreator.GetSeasonStartDate(_season);
 
-            if (seasonEndDate < _gameDate)
+            if (seasonStartDate > _gameDate)
             {
                 return;
             }
