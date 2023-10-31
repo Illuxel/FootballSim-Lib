@@ -7,8 +7,8 @@ namespace StartupProject
     {
         public static async Task Main(string[] args)
         {
-            var dbDownloader = new RemoteDownloader();
-            await dbDownloader.DatabaseDownload();
+            //var dbDownloader = new RemoteDownloader();
+            //await dbDownloader.DatabaseDownload();
             Program.Main(args);
         }
     }
